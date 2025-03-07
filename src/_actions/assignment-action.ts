@@ -45,7 +45,7 @@ export const getAssignments = async (courseId: number, classId: number) =>
 export const createPersonalAssignment = actionClient
   .metadata({ actionName: 'createPersonalAssignment' })
   .schema(addPersonalAssignmentSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
@@ -89,14 +89,18 @@ export const createPersonalAssignment = actionClient
 export const updateAssignment = actionClient
   .metadata({ actionName: 'updateAssignment' })
   .schema(updateAssignmentSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
     const { userId } = await verifySession();
     const { courseId, assignmentId, classId, ...otherInput } = parsedInput;
     const bodyInput: $CourseClassAssignmentAPI.CreateAssignment.Dto = {
-      ...otherInput,
+      title: otherInput.title!,
+      description: otherInput.description!,
+      deadline: otherInput.deadline!,
+      submission: otherInput.submission!,
+      taskType: otherInput.taskType!,
     };
 
     try {
@@ -141,14 +145,23 @@ export const updateAssignment = actionClient
 export const updatePersonalAssignment = actionClient
   .metadata({ actionName: 'updatePersonalAssignment' })
   .schema(updatePersonalAssignmentSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
     const { userId } = await verifySession();
     const { assignmentId, ...otherInput } = parsedInput;
+    if (!otherInput.title || !otherInput.description || !otherInput.deadline || !otherInput.submission || !otherInput.taskType) {
+      throw new PWAError('Missing required fields');
+    }
     const bodyInput: $PersonalAssignmentAPI.CreateAssignment.Dto = {
-      ...otherInput,
+      title: otherInput.title,
+      description: otherInput.description,
+      deadline: otherInput.deadline,
+      submission: otherInput.submission,
+      taskType: otherInput.taskType,
+      course: '',
+      completionStatus: 'NOT_STARTED'
     };
 
     try {
@@ -189,14 +202,14 @@ export const updatePersonalAssignment = actionClient
 export const createAssignment = actionClient
   .metadata({ actionName: 'createAssignment' })
   .schema(addAssignmentSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
     const { courseId, classId, ...otherInput } = parsedInput;
     const bodyInput: $CourseClassAssignmentAPI.CreateAssignment.Dto = {
       ...otherInput,
-      deadline: new Date(otherInput.deadline).toISOString(),
+      deadline: new Date(otherInput.deadline),
     };
 
     try {
@@ -237,7 +250,7 @@ export const createAssignment = actionClient
 export const deleteAssignment = actionClient
   .metadata({ actionName: 'deleteAssignment' })
   .schema(deleteAssignmentSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {

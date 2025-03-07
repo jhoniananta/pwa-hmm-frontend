@@ -75,8 +75,8 @@ const Assignment = ({
     onSuccess: () => {
       toast.success('Assignment created');
     },
-    onError: ({ error: { serverError, validationErrors, fetchError } }) => {
-      toast.error(serverError || fetchError || validationErrors?.toString() || 'Failed to create assignment');
+    onError: ({ error: { serverError, validationErrors } }) => {
+      toast.error(serverError || validationErrors?.toString() || 'Failed to create assignment');
     },
   })
 
@@ -188,8 +188,8 @@ const Assignment = ({
     onSuccess: () => {
       toast.success('Assignment updated');
     },
-    onError: ({ error: { serverError, validationErrors, fetchError } }) => {
-      toast.error(serverError || fetchError || validationErrors?.toString() || 'Failed to update assignment');
+    onError: ({ error: { serverError, validationErrors } }) => {
+      toast.error(serverError || validationErrors?.toString() || 'Failed to update assignment');
     },
     onSettled: () => {
       setActive(null);
@@ -199,8 +199,8 @@ const Assignment = ({
     onSuccess: () => {
       toast.success('Assignment updated');
     },
-    onError: ({ error: { serverError, validationErrors, fetchError } }) => {
-      toast.error(serverError || fetchError || validationErrors?.toString() || 'Failed to update assignment');
+    onError: ({ error: { serverError, validationErrors } }) => {
+      toast.error(serverError || validationErrors?.toString() || 'Failed to update assignment');
     },
     onSettled: () => {
       setActive(null);
@@ -210,15 +210,15 @@ const Assignment = ({
     onSuccess: () => {
       toast.success('Assignment updated');
     },
-    onError: ({ error: { serverError, validationErrors, fetchError } }) => {
-      toast.error(serverError || fetchError || validationErrors?.toString() || 'Failed to update assignment');
+    onError: ({ error: { serverError, validationErrors } }) => {
+      toast.error(serverError || validationErrors?.toString() || 'Failed to update assignment');
     },
     onSettled: () => {
       setActive(null);
     }
   })
 
-  function updateComp(assignment: (typeof data)[number], status: string) {
+  function updateComp(assignment: (typeof data)[number], status: "NOT_STARTED" | "IN_PROGRESS" | "DONE") {
     if (assignment.type === "personal") {
       exeUPA({
         assignmentId: Number(assignment.id),
@@ -571,7 +571,7 @@ const Assignment = ({
                     {getStatus(active.status!, active.deadline) === 'OVER_DUE_DATE' ? (
                       <Badge variant="warning">Overdue</Badge>
                     ) : (
-                        <Select defaultValue={active.status} onValueChange={(v) => updateComp(active, v)}>
+                        <Select defaultValue={active.status} onValueChange={(v: "NOT_STARTED" | "IN_PROGRESS" | "DONE") => updateComp(active, v)}>
                           <SelectTrigger className='py-0 w-fit h-min'>
                             <SelectValue placeholder='Select Tracker' />
                           </SelectTrigger>

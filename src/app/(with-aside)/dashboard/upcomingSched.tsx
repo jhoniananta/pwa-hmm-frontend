@@ -1,5 +1,26 @@
+'use client';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { type CourseScheduleModel } from 'lms-types';
+
+const UpSchedCard = ({
+  time,
+  description,
+  title,
+}: {
+  title?: string;
+  description?: string;
+  time?: string;
+}) => {
+  return (
+    <div className='relative flex justify-between items-center border-y border-y-abu-1 px-4 py-3'>
+      <div className='text-left'>
+        <p className='text-xs'>{title}</p>
+        <p className='text-2xs font-normal'>{description}</p>
+      </div>
+      <div className='font-normal text-2xs flex items-center'>{time}</div>
+    </div>
+  );
+};
 
 const UpcomingSchedule = ({ 
   schedules 
@@ -59,26 +80,6 @@ const UpcomingSchedule = ({
           )}
         </div>
       </ScrollArea>
-    </div>
-  );
-};
-
-const UpSchedCard = ({
-  time,
-  description,
-  title,
-}: {
-  title?: string;
-  description?: string;
-  time?: string;
-}) => {
-  return (
-    <div className='relative flex justify-between items-center border-y border-y-abu-1 px-4 py-3'>
-      <div className='text-left'>
-        <p className='text-xs'>{title}</p>
-        <p className='text-2xs font-normal'>{description}</p>
-      </div>
-      <div className='font-normal text-2xs flex items-center'>{time}</div>
     </div>
   );
 };

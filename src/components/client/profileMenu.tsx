@@ -1,4 +1,4 @@
-import 'server-only';
+// import 'server-only';
 
 import { IoMdNotificationsOutline } from 'react-icons/io';
 import { IoSettingsOutline } from 'react-icons/io5';

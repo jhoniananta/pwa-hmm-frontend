@@ -1,12 +1,17 @@
 import type { Metadata } from 'next';
-import { Poppins } from 'next/font/google';
+import { Poppins, Poltawski_Nowy } from 'next/font/google';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from '@/components/ui/sonner';
-import { type ReactNode } from "react";
+import { type ReactNode } from 'react';
 
 const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+});
+
+const poltawski = Poltawski_Nowy({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
 });
@@ -17,7 +22,7 @@ export default async function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang='en'>
+    <html lang="en">
       <head>
         <meta name="application-name" content="HMM ITB" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -26,7 +31,12 @@ export default async function RootLayout({
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
-      <body className={cn(poppins.className, 'md:flex')}>
+      <body
+        className={cn(
+          poppins.className,
+          'md:flex [--font-poppins:${poppins.style.fontFamily}] [--font-poltawski:${poltawski.style.fontFamily}]'
+        )}
+      >
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster richColors />
       </body>
@@ -52,8 +62,6 @@ export const metadata: Metadata = {
       { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
       { url: '/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' },
     ],
-    apple: [
-      { url: '/icons/icon-192x192.png' },
-    ],
+    apple: [{ url: '/icons/icon-192x192.png' }],
   },
 };

@@ -61,7 +61,104 @@ const compareDate = (date1: Date, date2: Date) => {
   );
 };
 
-const Calendar = ({ events }: { events?: EventMap[] }) => {
+const SelectMonth = ({
+  month,
+  setMonth,
+  year,
+  setYear,
+}: {
+  month: string;
+  setMonth: (value: string) => void;
+  year: string;
+  setYear: (value: string) => void;
+}) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Popover
+      open={open}
+      onOpenChange={setOpen}
+    >
+      <PopoverTrigger asChild>
+        <button className='text-sm gap-2 flex items-center w-36 justify-end'>
+          {`${MONTHS.find(
+            (m) => m.toLowerCase() === month.toLowerCase()
+          )} ${year}`}
+          <CaretSortIcon className='h-4 w-4 shrink-0 opacity-50' />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className='w-40 p-0 border border-navy'>
+        <Tabs
+          defaultValue='m'
+          className=''
+        >
+          <TabsList className='bg-transparent w-full flex *:flex-1 *:border-none border border-navy/50'>
+            <TabsTrigger value='m'>Months</TabsTrigger>
+            <TabsTrigger value='y'>Years</TabsTrigger>
+          </TabsList>
+          <TabsContent value='m'>
+            <Command>
+              <CommandInput placeholder='Select month..' />
+              <ScrollArea className='h-40'>
+                <CommandGroup>
+                  {MONTHS.map((m) => (
+                    <CommandItem
+                      key={m}
+                      onSelect={(currentValue) => {
+                        setMonth(currentValue === m ? '' : currentValue);
+                        setOpen(false);
+                      }}
+                      value={m}
+                    >
+                      {m}
+                      <CheckIcon
+                        className={cn(
+                          'ml-auto h-4 w-4',
+                          month === m.toLowerCase()
+                            ? 'opacity-100'
+                            : 'opacity-0'
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </ScrollArea>
+            </Command>
+          </TabsContent>
+          <TabsContent value='y'>
+            <Command>
+              <CommandInput placeholder='Select year..' />
+              <ScrollArea className='h-40'>
+                <CommandGroup>
+                  {YEARS.map((y) => (
+                    <CommandItem
+                      key={y}
+                      onSelect={(currentValue) => {
+                        setYear(currentValue);
+                        setOpen(false);
+                      }}
+                      value={y}
+                    >
+                      {y}
+                      <CheckIcon
+                        className={cn(
+                          'ml-auto h-4 w-4',
+                          year === y ? 'opacity-100' : 'opacity-0'
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </ScrollArea>
+            </Command>
+          </TabsContent>
+        </Tabs>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+export default function Calendar({ events }: {events?: EventMap[]}) {
   const [month, setMonth] = useState(getMonth);
   const [year, setYear] = useState(getYear);
   const today = new Date();
@@ -192,102 +289,3 @@ const Calendar = ({ events }: { events?: EventMap[] }) => {
     </div>
   );
 };
-
-const SelectMonth = ({
-  month,
-  setMonth,
-  year,
-  setYear,
-}: {
-  month: string;
-  setMonth: (value: string) => void;
-  year: string;
-  setYear: (value: string) => void;
-}) => {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <Popover
-      open={open}
-      onOpenChange={setOpen}
-    >
-      <PopoverTrigger asChild>
-        <button className='text-sm gap-2 flex items-center w-36 justify-end'>
-          {`${MONTHS.find(
-            (m) => m.toLowerCase() === month.toLowerCase()
-          )} ${year}`}
-          <CaretSortIcon className='h-4 w-4 shrink-0 opacity-50' />
-        </button>
-      </PopoverTrigger>
-      <PopoverContent className='w-40 p-0 border border-navy'>
-        <Tabs
-          defaultValue='m'
-          className=''
-        >
-          <TabsList className='bg-transparent w-full flex *:flex-1 *:border-none border border-navy/50'>
-            <TabsTrigger value='m'>Months</TabsTrigger>
-            <TabsTrigger value='y'>Years</TabsTrigger>
-          </TabsList>
-          <TabsContent value='m'>
-            <Command>
-              <CommandInput placeholder='Select month..' />
-              <ScrollArea className='h-40'>
-                <CommandGroup>
-                  {MONTHS.map((m) => (
-                    <CommandItem
-                      key={m}
-                      onSelect={(currentValue) => {
-                        setMonth(currentValue === m ? '' : currentValue);
-                        setOpen(false);
-                      }}
-                      value={m}
-                    >
-                      {m}
-                      <CheckIcon
-                        className={cn(
-                          'ml-auto h-4 w-4',
-                          month === m.toLowerCase()
-                            ? 'opacity-100'
-                            : 'opacity-0'
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </ScrollArea>
-            </Command>
-          </TabsContent>
-          <TabsContent value='y'>
-            <Command>
-              <CommandInput placeholder='Select year..' />
-              <ScrollArea className='h-40'>
-                <CommandGroup>
-                  {YEARS.map((y) => (
-                    <CommandItem
-                      key={y}
-                      onSelect={(currentValue) => {
-                        setYear(currentValue);
-                        setOpen(false);
-                      }}
-                      value={y}
-                    >
-                      {y}
-                      <CheckIcon
-                        className={cn(
-                          'ml-auto h-4 w-4',
-                          year === y ? 'opacity-100' : 'opacity-0'
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </ScrollArea>
-            </Command>
-          </TabsContent>
-        </Tabs>
-      </PopoverContent>
-    </Popover>
-  );
-};
-
-export default Calendar;

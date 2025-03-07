@@ -12,15 +12,15 @@ export const beforeColors = [
 
 export const colors = ['bg-oren', 'bg-navy', 'bg-hijau', 'bg-kuning'];
 
-export const Assignments = async () => {
-  const assignments = await getUserAssignment();
+export default async function Assignments() {
+  const assignmentsData = await getUserAssignment();
   const today = new Date();
-  const todayAssignments = assignments.filter(({ assignment: { deadline } }) => {
+  const todayAssignments = assignmentsData.filter(({ assignment: { deadline } }) => {
     const deadlineDate = new Date(deadline);
     return deadlineDate.getDate() === today.getDate() && deadlineDate.getMonth() === today.getMonth();
   })
 
-  const tomorrowAssignments = assignments.filter(({ assignment: { deadline } }) => {
+  const tomorrowAssignments = assignmentsData.filter(({ assignment: { deadline } }) => {
     const deadlineDate = new Date(deadline);
     return deadlineDate.getDate() === today.getDate() + 1 && deadlineDate.getMonth() === today.getMonth();
   })
@@ -100,5 +100,3 @@ const AssignmentCard = ({
     </div>
   );
 };
-
-export default Assignments;

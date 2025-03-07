@@ -26,10 +26,9 @@ export default function AvatarUpload({ currentAvatar, name }: AvatarUploadProps)
   const router = useRouter();
 
   const { execute: executeUpdateAvatar } = useAction(updateAvatar, {
-    onError: ({ error: { serverError, validationErrors, fetchError } }) => {
+    onError: ({ error: { serverError, validationErrors } }) => {
       toast.error(
         serverError || 
-        fetchError || 
         validationErrors?.toString() || 
         'Failed to update profile'
       );
@@ -48,10 +47,9 @@ export default function AvatarUpload({ currentAvatar, name }: AvatarUploadProps)
         setSelectedFile(null);
       }
     },
-    onError: ({ error: { serverError, validationErrors, fetchError } }) => {
+    onError: ({ error: { serverError, validationErrors } }) => {
       toast.error(
         serverError || 
-        fetchError || 
         validationErrors?.toString() || 
         'Failed to upload image'
       );

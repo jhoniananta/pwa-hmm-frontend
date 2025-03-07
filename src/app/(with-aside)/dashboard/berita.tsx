@@ -5,6 +5,20 @@ import Image from 'next/image';
 import { useInterval } from '@/hooks/useInterval';
 import { cn } from '@/lib/utils';
 
+function Dot({
+  active,
+  ...props
+}: { active: boolean } & HTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button
+      className={cn(
+        'md:w-2 w-1.5 h-1.5 md:h-2 rounded-full bg-[#aaa] focus:outline-none transition-all hover:bg-white',
+        active && 'bg-abu-1 md:h-2.5 h-2 w-2 md:w-2.5'
+      )}
+      {...props}
+    />
+  );
+}
 export default function Berita() {
   const images = ['berita.png', 'logo.png', 'store.png'];
   const ref = useRef(<div />) as unknown as RefObject<HTMLDivElement>;
@@ -171,17 +185,3 @@ export default function Berita() {
   );
 }
 
-function Dot({
-  active,
-  ...props
-}: { active: boolean } & HTMLAttributes<HTMLButtonElement>) {
-  return (
-    <button
-      className={cn(
-        'md:w-2 w-1.5 h-1.5 md:h-2 rounded-full bg-[#aaa] focus:outline-none transition-all hover:bg-white',
-        active && 'bg-abu-1 md:h-2.5 h-2 w-2 md:w-2.5'
-      )}
-      {...props}
-    />
-  );
-}

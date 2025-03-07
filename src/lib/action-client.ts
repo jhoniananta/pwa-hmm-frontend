@@ -5,12 +5,12 @@ import {PWAError} from "@/lib/error";
 import {redirect} from "next/navigation";
 
 export const actionClient = createSafeActionClient({
-  handleReturnedServerError(e) {
+  handleServerErrorLog(e) {
     if (e.message.includes("PWAError")) {
-      return e.message.replace("(PWAError)", "");
+      console.error(e.message.replace("(PWAError)", ""));
+    } else {
+      console.error(DEFAULT_SERVER_ERROR_MESSAGE);
     }
-
-    return DEFAULT_SERVER_ERROR_MESSAGE;
   },
   defineMetadataSchema() {
     return z.object({
@@ -22,7 +22,7 @@ export const actionClient = createSafeActionClient({
   console.log("LOGGING MIDDLEWARE");
 
   // Here we await the action execution.
-  const result = await next({ ctx: null });
+  const result = await next({ ctx: {} });
 
   console.log("Result ->", result);
   console.log("Client input ->", clientInput);

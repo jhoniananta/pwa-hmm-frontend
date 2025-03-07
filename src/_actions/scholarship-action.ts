@@ -20,7 +20,7 @@ export const getScholarships = fetchAction<$ScholarshipAPI.GetScholarships.Respo
 export const createScholarship = actionClient
   .metadata({ actionName: 'createScholarship' })
   .schema(addScholarshipSchema, {
-    handleValidationErrorsShape: (ve) => flattenValidationErrors(ve).fieldErrors,
+    handleValidationErrorsShape: async (ve) => flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
     try {
@@ -56,7 +56,7 @@ export const createScholarship = actionClient
 export const updateScholarship = actionClient
   .metadata({ actionName: 'updateScholarship' })
   .schema(updateScholarshipSchema, {
-    handleValidationErrorsShape: (ve) => flattenValidationErrors(ve).fieldErrors,
+    handleValidationErrorsShape: async (ve) => (await flattenValidationErrors(ve)).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
     const { scholarshipId, ...rest } = parsedInput;
@@ -94,7 +94,7 @@ export const updateScholarship = actionClient
 export const deleteScholarship = actionClient
   .metadata({ actionName: 'deleteScholarship' })
   .schema(deleteScholarshipSchema, {
-    handleValidationErrorsShape: (ve) => flattenValidationErrors(ve).fieldErrors,
+    handleValidationErrorsShape: async (ve) => flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
     try {

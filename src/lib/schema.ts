@@ -32,10 +32,14 @@ export const signInSchema = z.object({
 export const userSchema = z.object({
   name: z.string().min(4, { message: 'Name must be at least 4 characters' }),
   email: z.string().email({ message: 'Invalid email format' }),
-  address: z.string().min(4, { message: 'Address must be at least 4 characters' }),
+  address: z
+    .string()
+    .min(4, { message: 'Address must be at least 4 characters' }),
   phoneNumber: z.string().min(10, { message: 'Invalid phone number' }),
   dateOfBirth: z.string(),
-  lineId: z.string().min(4, { message: 'Line ID must be at least 4 characters' }),
+  lineId: z
+    .string()
+    .min(4, { message: 'Line ID must be at least 4 characters' }),
   bloodType: z.string().max(3, { message: 'Invalid blood type' }),
   emergencyNumber: z.string().min(10, { message: 'Invalid emergency number' }),
   medicalHistories: z.array(z.string()),
@@ -43,21 +47,29 @@ export const userSchema = z.object({
   UKM: z.array(z.string()),
 });
 
-export const signUpSchema = userSchema.extend({
-  password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
-  confirmPassword: z.string()
-}).refine(data => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
-});
+export const signUpSchema = userSchema
+  .extend({
+    password: z
+      .string()
+      .min(6, { message: 'Password must be at least 6 characters' }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
 
 export const editProfileSchema = z.object({
   name: z.string().min(4, { message: 'Name must be at least 4 characters' }),
   email: z.string().email({ message: 'Invalid email format' }),
-  address: z.string().min(4, { message: 'Address must be at least 4 characters' }),
+  address: z
+    .string()
+    .min(4, { message: 'Address must be at least 4 characters' }),
   phoneNumber: z.string().min(10, { message: 'Invalid phone number' }),
   dateOfBirth: z.string(),
-  lineId: z.string().min(4, { message: 'Line ID must be at least 4 characters' }),
+  lineId: z
+    .string()
+    .min(4, { message: 'Line ID must be at least 4 characters' }),
   bloodType: z.string().max(3, { message: 'Invalid blood type' }),
   emergencyNumber: z.string().min(10, { message: 'Invalid emergency number' }),
   medicalHistories: z.array(z.string()),
@@ -85,7 +97,8 @@ export const addPersonalAssignmentSchema = z.object({
 
 export const addAssignmentSchema = z.object({
   title: z.string().min(3, { message: 'Input at least 3 characters' }),
-  deadline: z.string()
+  deadline: z
+    .string()
     .transform((str) => {
       // Ensure the string ends with Z for UTC timezone
       const date = new Date(str);
@@ -170,13 +183,16 @@ export const deleteAssignmentSchema = z.object({
 // course schema
 export const addCourseSchema = z.object({
   code: z.string().min(1, { message: 'Code is required' }),
-  image: z.union([z.literal(''), z.string().url({ message: 'Invalid image URL' }).optional()]),
+  image: z.union([
+    z.literal(''),
+    z.string().url({ message: 'Invalid image URL' }).optional(),
+  ]),
   title: z.string().min(1, { message: 'Title is required' }),
   description: z.string().optional(),
   status: z.nativeEnum(CourseStatusModel, { message: 'Invalid status' }),
   categoryId: z.union([
-    z.literal(""), 
-    z.number({ message: 'Category ID must be a number' }).optional()
+    z.literal(''),
+    z.number({ message: 'Category ID must be a number' }).optional(),
   ]),
 });
 export const deleteCourseSchema = z.object({
@@ -255,7 +271,10 @@ export const updateClassSchema = z.object({
   classId: z
     .number({ message: 'Class ID must be a number' })
     .min(1, { message: 'Class ID must be at least 1' }),
-  name: z.string().min(3, { message: 'Name must be at least 3 characters' }).optional(),
+  name: z
+    .string()
+    .min(3, { message: 'Name must be at least 3 characters' })
+    .optional(),
   description: z.string().optional(),
   startTime: z.date({ message: 'Invalid start time format' }).optional(),
   endTime: z.date({ message: 'Invalid end time format' }).optional(),
@@ -276,20 +295,22 @@ export const deleteClassSchema = z.object({
 export const addEventSchema = z.object({
   title: z.string().min(1, { message: 'Title is required' }),
   description: z.string().optional(),
-  date: z.date({ message: 'Invalid date format' })
+  date: z.date({ message: 'Invalid date format' }),
 });
 
 export const updateEventSchema = z.object({
-  id: z.number({ message: 'Event ID must be a number' })
+  id: z
+    .number({ message: 'Event ID must be a number' })
     .min(1, { message: 'Event ID must be at least 1' }),
   title: z.string().min(1, { message: 'Title is required' }).optional(),
   description: z.string().optional(),
-  date: z.date({ message: 'Invalid date format' }).optional()
+  date: z.date({ message: 'Invalid date format' }).optional(),
 });
 
 export const deleteEventSchema = z.object({
-  eventId: z.number({ message: 'Event ID must be a number' })
-    .min(1, { message: 'Event ID must be at least 1' })
+  eventId: z
+    .number({ message: 'Event ID must be a number' })
+    .min(1, { message: 'Event ID must be at least 1' }),
 });
 
 import { UserRoleModel } from 'lms-types';
@@ -344,16 +365,60 @@ export const addScholarshipSchema = z.object({
   scope: z.string().min(1, { message: 'Scope is required' }),
 });
 
+export const beasiswaFormSchema = z.object({
+  namaMahasiswa: z.string().min(1, {message: 'Nama Mahasiswa is required'}),
+  alamat: z.string().min(1, {message: 'Alamat is required'}),
+  asalKota: z.string().min(1, {message: 'Asal Kota is required'}),
+
+  // Example for scholarship fields:
+  penawaranBeasiswa1: z.enum([
+    'Beasiswa UKT',
+    'Beasiswa Makan',
+    'Beasiswa Proyek',
+    'Beasiswa Tempat Tinggal',
+    'Lainnya'
+  ], {message: 'Invalid penawaran beasiswa option'}),
+
+  pilihanPembiayaan: z.string().min(1, {message: 'Pilihan Pembiayaan is required'}),
+
+  penawaranBeasiswa2: z.enum([
+    'Beasiswa UKT',
+    'Beasiswa Makan',
+    'Beasiswa Proyek',
+    'Beasiswa Tempat Tinggal',
+    'Lainnya',
+  ], {message: 'Invalid penawaran beasiswa option'}),
+
+  penawaranBeasiswa3: z.enum([
+    'Beasiswa UKT',
+    'Beasiswa Makan',
+    'Beasiswa Proyek',
+    'Beasiswa Tempat Tinggal',
+    'Lainnya',
+  ], {message: 'Invalid penawaran beasiswa option'}),
+
+  // For files, you can just mark them as unknown or optional,
+  // then handle them separately in your endpoint
+  suratKeterangan: z.any().optional(),
+  dokumenKesepakatan: z.any().optional(),
+  dokumenSumberPendanaan: z.any().optional(),
+});
+
 export const updateScholarshipSchema = z.object({
   scholarshipId: z.number().min(1, { message: 'Scholarship ID is required' }),
-  title: z.string().min(3, { message: 'Title must be at least 3 characters' }).optional(),
+  title: z
+    .string()
+    .min(3, { message: 'Title must be at least 3 characters' })
+    .optional(),
   description: z.string().optional(),
   provider: z.string().min(1, { message: 'Provider is required' }).optional(),
   deadline: z.date().optional(),
   reference: z.string().url({ message: 'Must be a valid URL' }).optional(),
-  funding: z.enum(['PARTIALLY_FUNDED', 'FULLY_FUNDED'] as const, {
-    message: 'Invalid funding type',
-  }).optional(),
+  funding: z
+    .enum(['PARTIALLY_FUNDED', 'FULLY_FUNDED'] as const, {
+      message: 'Invalid funding type',
+    })
+    .optional(),
   scope: z.string().min(1, { message: 'Scope is required' }).optional(),
 });
 
@@ -400,7 +465,10 @@ export const addCategorySchema = z.object({
 
 export const updateCategorySchema = z.object({
   categoryId: z.number().min(1, { message: 'Category ID is required' }),
-  title: z.string().min(3, { message: 'Title must be at least 3 characters' }).optional(),
+  title: z
+    .string()
+    .min(3, { message: 'Title must be at least 3 characters' })
+    .optional(),
 });
 
 export const deleteCategorySchema = z.object({
@@ -410,10 +478,10 @@ export const deleteCategorySchema = z.object({
 // Add this to your existing schema.ts file
 export const updateCourseSchema = z.object({
   courseId: z.number(),
-  code: z.string().min(1, "Code is required"),
+  code: z.string().min(1, 'Code is required'),
   status: z.enum(['PUBLISHED', 'DRAFT']),
   image: z.string().url().optional().nullable(),
-  title: z.string().min(1, "Title is required"),
+  title: z.string().min(1, 'Title is required'),
   description: z.string().optional(),
   categoryId: z.number().optional(),
 });
@@ -429,7 +497,10 @@ export const addLessonSchema = z.object({
 export const updateLessonSchema = z.object({
   courseId: z.number().min(1, { message: 'Course ID is required' }),
   lessonId: z.number().min(1, { message: 'Lesson ID is required' }),
-  title: z.string().min(3, { message: 'Title must be at least 3 characters' }).optional(),
+  title: z
+    .string()
+    .min(3, { message: 'Title must be at least 3 characters' })
+    .optional(),
   description: z.string().optional(),
   references: z.array(z.string()).optional(),
 });

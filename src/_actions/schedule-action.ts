@@ -29,7 +29,7 @@ export const getScheduleById = async (courseId: number, scheduleId: number) =>
 export const createSchedule = actionClient
   .metadata({ actionName: 'createSchedule' })
   .schema(createScheduleSchema, {
-    handleValidationErrorsShape: (ve) => flattenValidationErrors(ve).fieldErrors,
+    handleValidationErrorsShape: async (ve) => flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
     try {
@@ -67,7 +67,7 @@ export const createSchedule = actionClient
 export const updateSchedule = actionClient
   .metadata({ actionName: 'updateSchedule' })
   .schema(updateScheduleSchema, {
-    handleValidationErrorsShape: (ve) => flattenValidationErrors(ve).fieldErrors,
+    handleValidationErrorsShape: async (ve) => flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
     try {
@@ -106,7 +106,7 @@ export const updateSchedule = actionClient
 export const deleteSchedule = actionClient
   .metadata({ actionName: 'deleteSchedule' })
   .schema(deleteScheduleSchema, {
-    handleValidationErrorsShape: (ve) => flattenValidationErrors(ve).fieldErrors,
+    handleValidationErrorsShape: async (ve) => flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
     try {
