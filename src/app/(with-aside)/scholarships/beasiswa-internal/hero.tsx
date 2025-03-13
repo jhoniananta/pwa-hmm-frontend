@@ -30,14 +30,14 @@ export default function HeroSection(){
             size={'lg'}
             className="py-4 text-center whitespace-nowrap border-4 border-solid border-[#4541B9] rounded-[30px] max-md:px-5 2xl:h-[71px] 2xl:w-[352px]"
           >
-            <Link href="" className="text-2xl">Alur Pendaftaran</Link>
+            <Link href="/scholarships/step-registrasi" className="text-2xl">Alur Pendaftaran</Link>
           </Button>
           <Button
             variant={'secondary'}
             size={'lg'}
             className="py-4 text-center whitespace-nowrap border-4 border-solid border-[#4541B9] rounded-[30px] max-md:px-5 2xl:h-[71px] 2xl:w-[352px]"
           >
-            <Link href="" className="text-2xl">Daftar Sekarang</Link>
+            <Link href="/scholarships/registration" className="text-2xl">Daftar Sekarang</Link>
           </Button>
         </div>
       </div>

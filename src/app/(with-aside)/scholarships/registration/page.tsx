@@ -2,6 +2,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import {toast} from 'sonner';
 import type { z } from 'zod';
 import { beasiswaFormSchema } from '@/lib/schema';
 
@@ -18,28 +19,48 @@ export default function RegistrationBeasiswaHMM() {
 
   const onSubmit = async (formValues: BeasiswaFormValues) => {
     try {
-      // Build multipart/form-data
       const formData = new FormData();
-      formData.append('namaMahasiswa', formValues.namaMahasiswa);
-      formData.append('alamat', formValues.alamat);
-      formData.append('asalKota', formValues.asalKota);
-      formData.append('penawaranBeasiswa1', formValues.penawaranBeasiswa1);
-      formData.append('pilihanPembiayaan', formValues.pilihanPembiayaan);
-      formData.append('penawaranBeasiswa2', formValues.penawaranBeasiswa2);
-      formData.append('penawaranBeasiswa3', formValues.penawaranBeasiswa3);
 
-      // If the user selected files, append them
-      if (formValues.suratKeterangan?.[0]) {
-        formData.append('suratKeterangan', formValues.suratKeterangan[0]);
-      }
-      if (formValues.dokumenKesepakatan?.[0]) {
-        formData.append('dokumenKesepakatan', formValues.dokumenKesepakatan[0]);
-      }
-      if (formValues.dokumenSumberPendanaan?.[0]) {
+      // Basic Information
+      formData.append('namaMahasiswa', formValues.namaMahasiswa);
+      formData.append('nim', String(formValues.nim));
+      formData.append('angkatan', String(formValues.angkatan));
+      formData.append('penawaranBeasiswa', formValues.penawaranBeasiswa);
+      formData.append('rincianBiaya', String(formValues.rincianBiaya));
+
+      // File uploads
+      if (formValues.suratPermohonanBeasiswa?.[0]) {
         formData.append(
-          'dokumenSumberPendanaan',
-          formValues.dokumenSumberPendanaan[0]
+          'suratPermohonanBeasiswa',
+          formValues.suratPermohonanBeasiswa[0]
         );
+      }
+      if (formValues.suratKeteranganAktif?.[0]) {
+        formData.append(
+          'suratKeteranganAktif',
+          formValues.suratKeteranganAktif[0]
+        );
+      }
+      if (formValues.suratKeteranganTidakMampu?.[0]) {
+        formData.append(
+          'suratKeteranganTidakMampu',
+          formValues.suratKeteranganTidakMampu[0]
+        );
+      }
+      if (formValues.rincianBiayaUKT?.[0]) {
+        formData.append('rincianBiayaUKT', formValues.rincianBiayaUKT[0]);
+      }
+      if (formValues.slipGaji?.[0]) {
+        formData.append('slipGaji', formValues.slipGaji[0]);
+      }
+      if (formValues.suratCV?.[0]) {
+        formData.append('suratCV', formValues.suratCV[0]);
+      }
+      if (formValues.esaiFinansial?.[0]) {
+        formData.append('esaiFinansial', formValues.esaiFinansial[0]);
+      }
+      if (formValues.tagihanListrik?.[0]) {
+        formData.append('tagihanListrik', formValues.tagihanListrik[0]);
       }
 
       // POST to our API route
@@ -58,18 +79,21 @@ export default function RegistrationBeasiswaHMM() {
   };
 
   return (
-    <>
-      <div className="max-w-[1355px] mx-auto p-6">
-        <h1 className="text-2xl font-bold mb-4">
+    <div className='min-h-screen flex items-center justify-center'>
+      <div className="max-w-[1355px] p-6 flex flex-col w-full justify-center gap-4">
+        <h1 className="text-2xl text-center font-bold mb-4 bg-blue-900 text-white p-4 rounded w-full">
           Formulir Pendaftaran Beasiswa HMM
         </h1>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <h2 className="text-lg font-bold mb-4">Informasi Pendaftaran</h2>
+          {/* Field Nama */}
           <div>
             <label className="block font-medium mb-1">Nama Mahasiswa</label>
             <input
               type="text"
               {...register('namaMahasiswa')}
               className="w-full border border-gray-300 p-2 rounded"
+              placeholder='Masukkan nama lengkap'
             />
             {errors.namaMahasiswa && (
               <p className="text-red-500 text-sm">
@@ -77,113 +101,71 @@ export default function RegistrationBeasiswaHMM() {
               </p>
             )}
           </div>
-
+          
+          {/* Field NIM */}
           <div>
-            <label className="block font-medium mb-1">Alamat</label>
+            <label className="block font-medium mb-1">NIM</label>
             <input
               type="text"
-              {...register('alamat')}
+              {...register('nim')}
               className="w-full border border-gray-300 p-2 rounded"
+              placeholder='Misal: 13121142'
             />
-            {errors.alamat && (
-              <p className="text-red-500 text-sm">{errors.alamat.message}</p>
+            {errors.nim && (
+              <p className="text-red-500 text-sm">{errors.nim.message}</p>
             )}
           </div>
 
+          {/* Field Angkatan */}
           <div>
-            <label className="block font-medium mb-1">Asal Kota</label>
+            <label className="block font-medium mb-1">Angkatan</label>
             <input
               type="text"
-              {...register('asalKota')}
+              {...register('angkatan')}
               className="w-full border border-gray-300 p-2 rounded"
+              placeholder='Misal: 2021, 2022, 2023'
             />
-            {errors.asalKota && (
-              <p className="text-red-500 text-sm">{errors.asalKota.message}</p>
+            {errors.angkatan && (
+              <p className="text-red-500 text-sm">{errors.angkatan.message}</p>
             )}
           </div>
-
+          
+          {/* Select option Penawaran Beasiswa */}
           <div>
             <label className="block font-medium mb-1">
-              Penawaran Beasiswa 1
+              Beasiswa yang Dibutuhkan
             </label>
             <select
-              {...register('penawaranBeasiswa1')}
+              {...register('penawaranBeasiswa')}
               className="w-full border border-gray-300 p-2 rounded"
             >
               <option value="">-- Pilih --</option>
-              <option value="Beasiswa Penuh">Beasiswa Penuh</option>
-              <option value="Beasiswa Proyek">Beasiswa Proyek</option>
-              <option value="Beasiswa Prestasi Tingkat Tinggi">
-                Beasiswa Prestasi Tingkat Tinggi
+              <option value="Beasiswa UKT">Beasiswa UKT</option>
+              <option value="Beasiswa Bulanan">Beasiswa Bulanan</option>
+              <option value="Beasiswa Tunggakan">
+                Beasiswa Tunggakan
               </option>
-              <option value="Beasiswa Loyalty">Beasiswa Loyalty</option>
               <option value="Lainnya">Lainnya</option>
             </select>
-            {errors.penawaranBeasiswa1 && (
+            {errors.penawaranBeasiswa && (
               <p className="text-red-500 text-sm">
-                {errors.penawaranBeasiswa1.message}
+                {errors.penawaranBeasiswa.message}
               </p>
             )}
           </div>
-
+          
+          {/* Field Rincian Biaya */}
           <div>
-            <label className="block font-medium mb-1">Pilihan Pembiayaan</label>
+            <label className="block font-medium mb-1">Rincian Biaya UKT Semester berjalan/tunggakan</label>
             <input
               type="text"
-              {...register('pilihanPembiayaan')}
+              {...register('rincianBiaya')}
               className="w-full border border-gray-300 p-2 rounded"
+              placeholder='Misal: 12.500.000'
             />
-            {errors.pilihanPembiayaan && (
+            {errors.rincianBiaya && (
               <p className="text-red-500 text-sm">
-                {errors.pilihanPembiayaan.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label className="block font-medium mb-1">
-              Penawaran Beasiswa 2
-            </label>
-            <select
-              {...register('penawaranBeasiswa2')}
-              className="w-full border border-gray-300 p-2 rounded"
-            >
-              <option value="">-- Pilih --</option>
-              <option value="Beasiswa Penuh">Beasiswa Penuh</option>
-              <option value="Beasiswa Proyek">Beasiswa Proyek</option>
-              <option value="Beasiswa Prestasi Tingkat Tinggi">
-                Beasiswa Prestasi Tingkat Tinggi
-              </option>
-              <option value="Beasiswa Loyalty">Beasiswa Loyalty</option>
-              <option value="Lainnya">Lainnya</option>
-            </select>
-            {errors.penawaranBeasiswa2 && (
-              <p className="text-red-500 text-sm">
-                {errors.penawaranBeasiswa2.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label className="block font-medium mb-1">
-              Penawaran Beasiswa 3
-            </label>
-            <select
-              {...register('penawaranBeasiswa3')}
-              className="w-full border border-gray-300 p-2 rounded"
-            >
-              <option value="">-- Pilih --</option>
-              <option value="Beasiswa Penuh">Beasiswa Penuh</option>
-              <option value="Beasiswa Proyek">Beasiswa Proyek</option>
-              <option value="Beasiswa Prestasi Tingkat Tinggi">
-                Beasiswa Prestasi Tingkat Tinggi
-              </option>
-              <option value="Beasiswa Loyalty">Beasiswa Loyalty</option>
-              <option value="Lainnya">Lainnya</option>
-            </select>
-            {errors.penawaranBeasiswa3 && (
-              <p className="text-red-500 text-sm">
-                {errors.penawaranBeasiswa3.message}
+                {errors.rincianBiaya.message}
               </p>
             )}
           </div>
@@ -192,45 +174,105 @@ export default function RegistrationBeasiswaHMM() {
 
           <h2 className="text-xl font-semibold">Dokumen Pendukung</h2>
           <div>
-            <label className="block font-medium mb-1">Surat Keterangan</label>
+            <label className="block font-medium mb-1">Surat Permohonan Beasiswa Ditanda tangani Orang Tua dan Calon Penerima Beasiswa</label>
             <input
               type="file"
-              {...register('suratKeterangan')}
+              {...register('suratPermohonanBeasiswa')}
               className="block w-full text-sm text-gray-900 border border-gray-300 rounded cursor-pointer"
             />
-            {errors.suratKeterangan && (
+            {errors.suratPermohonanBeasiswa && (
               <p className="text-red-500 text-sm">
-                {errors.suratKeterangan.message as string}
+                {errors.suratPermohonanBeasiswa.message as string}
               </p>
             )}
           </div>
           <div>
             <label className="block font-medium mb-1">
-              Dokumen Kesepakatan
+              Surat Keterangan Aktif Kuliah
             </label>
             <input
               type="file"
-              {...register('dokumenKesepakatan')}
+              {...register('suratKeteranganAktif')}
               className="block w-full text-sm text-gray-900 border border-gray-300 rounded cursor-pointer"
             />
-            {errors.dokumenKesepakatan && (
+            {errors.suratKeteranganAktif && (
               <p className="text-red-500 text-sm">
-                {errors.dokumenKesepakatan.message as string}
+                {errors.suratKeteranganAktif.message as string}
               </p>
             )}
           </div>
           <div>
             <label className="block font-medium mb-1">
-              Dokumen Sumber Pendanaan
+              Surat Keterangan Tidak Mampu (opsional)
             </label>
             <input
               type="file"
-              {...register('dokumenSumberPendanaan')}
+              {...register('suratKeteranganTidakMampu')}
               className="block w-full text-sm text-gray-900 border border-gray-300 rounded cursor-pointer"
             />
-            {errors.dokumenSumberPendanaan && (
+            {errors.suratKeteranganTidakMampu && (
               <p className="text-red-500 text-sm">
-                {errors.dokumenSumberPendanaan.message as string}
+                {errors.suratKeteranganTidakMampu.message as string}
+              </p>
+            )}
+          </div>
+          <div>
+            <label className="block font-medium mb-1">
+              Rincian Biaya UKT Semester Berjalan dan/atau Tunggakan
+            </label>
+            <input
+              type="file"
+              {...register('rincianBiayaUKT')}
+              className="block w-full text-sm text-gray-900 border border-gray-300 rounded cursor-pointer"
+            />
+            {errors.rincianBiayaUKT && (
+              <p className="text-red-500 text-sm">
+                {errors.rincianBiayaUKT.message as string}
+              </p>
+            )}
+          </div>
+          <div>
+            <label className="block font-medium mb-1">
+              Curriculum Vitae (Lampirkan Fotokopi KTP Mahasiswa, Kartu Keluarga, dan Kartu Tanda Mahasiswa)
+            </label>
+            <input
+              type="file"
+              {...register('suratCV')}
+              className="block w-full text-sm text-gray-900 border border-gray-300 rounded cursor-pointer"
+            />
+            {errors.suratCV && (
+              <p className="text-red-500 text-sm">
+                {errors.suratCV.message as string}
+              </p>
+            )}
+          </div>
+          <div>
+            <label className="block font-medium mb-1">
+              Essai Kondisi Finansial Terbaru (500 kata)
+            </label>
+            <input
+              type="file"
+              {...register('esaiFinansial')}
+              className="block w-full text-sm text-gray-900 border border-gray-300 rounded cursor-pointer"
+            />
+            {errors.esaiFinansial && (
+              <p className="text-red-500 text-sm">
+                {errors.esaiFinansial.message as string}
+              </p>
+            )}
+          </div>
+          <div>
+            <label className="block font-medium mb-1">
+              Tagihan Listrik
+            </label>
+            <input
+              type="file"
+              {...register('tagihanListrik')}
+              className="block w-full text-sm text-gray-900 border border-gray-300 rounded cursor-pointer"
+            />
+            {errors.tagihanListrik && (
+              <p className="text-red-500 text-sm">
+                {errors.tagihanListrik.message as string}
               </p>
             )}
           </div>
@@ -243,6 +285,6 @@ export default function RegistrationBeasiswaHMM() {
           </button>
         </form>
       </div>
-    </>
+    </div>
   );
 }

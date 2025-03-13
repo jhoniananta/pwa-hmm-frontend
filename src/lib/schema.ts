@@ -366,42 +366,43 @@ export const addScholarshipSchema = z.object({
 });
 
 export const beasiswaFormSchema = z.object({
-  namaMahasiswa: z.string().min(1, {message: 'Nama Mahasiswa is required'}),
-  alamat: z.string().min(1, {message: 'Alamat is required'}),
-  asalKota: z.string().min(1, {message: 'Asal Kota is required'}),
+  namaMahasiswa: z.string().min(1, { message: 'Nama Mahasiswa is required' }),
+  nim: z
+    .number()
+    .min(1, { message: 'NIM is required' })
+    .refine((val) => /^131\d{5}$/.test(String(val)), {
+      message: 'NIM must be 8 digits and start with 131',
+    }),
+  angkatan: z
+    .number()
+    .min(1000, { message: 'Angkatan must be a valid year (4 digits)' })
+    .max(9999, { message: 'Angkatan must be a valid year (4 digits)' })
+    .int({ message: 'Angkatan must be a whole number' }),
 
   // Example for scholarship fields:
-  penawaranBeasiswa1: z.enum([
-    'Beasiswa UKT',
-    'Beasiswa Makan',
-    'Beasiswa Proyek',
-    'Beasiswa Tempat Tinggal',
-    'Lainnya'
-  ], {message: 'Invalid penawaran beasiswa option'}),
+  penawaranBeasiswa: z.enum(
+    ['Beasiswa UKT', 'Beasiswa Bulanan', 'Beasiswa Tunggakan', 'Lainnya'],
+    { message: 'Invalid penawaran beasiswa option' }
+  ),
 
-  pilihanPembiayaan: z.string().min(1, {message: 'Pilihan Pembiayaan is required'}),
-
-  penawaranBeasiswa2: z.enum([
-    'Beasiswa UKT',
-    'Beasiswa Makan',
-    'Beasiswa Proyek',
-    'Beasiswa Tempat Tinggal',
-    'Lainnya',
-  ], {message: 'Invalid penawaran beasiswa option'}),
-
-  penawaranBeasiswa3: z.enum([
-    'Beasiswa UKT',
-    'Beasiswa Makan',
-    'Beasiswa Proyek',
-    'Beasiswa Tempat Tinggal',
-    'Lainnya',
-  ], {message: 'Invalid penawaran beasiswa option'}),
+  rincianBiaya: z
+    .number()
+    .min(0, { message: 'Biaya tidak boleh negatif' })
+    .max(1000000000, { message: 'Biaya terlalu besar' })
+    .refine((val) => Number.isInteger(val), {
+      message: 'Biaya harus dalam bentuk angka bulat (Rupiah)',
+    }),
 
   // For files, you can just mark them as unknown or optional,
   // then handle them separately in your endpoint
-  suratKeterangan: z.any().optional(),
-  dokumenKesepakatan: z.any().optional(),
-  dokumenSumberPendanaan: z.any().optional(),
+  suratPermohonanBeasiswa: z.any().optional(),
+  suratKeteranganAktif: z.any().optional(),
+  suratKeteranganTidakMampu: z.any().optional(),
+  rincianBiayaUKT: z.any().optional(),
+  slipGaji: z.any().optional(),
+  suratCV: z.any().optional(),
+  esaiFinansial: z.any().optional(),
+  tagihanListrik: z.any().optional(),
 });
 
 export const updateScholarshipSchema = z.object({
