@@ -4,6 +4,7 @@ import { BsTelephone } from 'react-icons/bs';
 import { getFullUser } from '@/lib/dal';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import EditProfile from './edit-profile-button';
+import AvatarUpload from '@/components/client/avatar-upload';
 
 const ProfilePage = async () => {
   const user = await getFullUser();
@@ -32,20 +33,10 @@ const ProfilePage = async () => {
   return (
     <main className='flex flex-col items-stretch w-full h-max gap-6 relative'>
       <div className='rounded-xl flex flex-col flex-1 bg-white'>
-        <div className='bg-navy min-h-[15vh] w-full z-0 relative md:mb-20 mb-16 rounded-t-xl flex justify-end items-center pr-6'>
-          <EditProfile />
-          <div className='flex items-center justify-center p-1.5 bg-white w-fit rounded-full absolute left-[7.5%] bottom-0 translate-y-1/2'>
-            <Avatar className='md:w-40 md:h-40 h-32 w-32'>
-              <AvatarImage
-                src={avatar}
-                alt='avatar'
-              />
-              <AvatarFallback className='bg-white'>
-                {name.split(' ').map((t: string) => t[0])}
-              </AvatarFallback>
-            </Avatar>
-          </div>
-        </div>
+        <AvatarUpload
+          currentAvatar={avatar}
+          name={name}
+        />
         <div className='flex gap-6 md:gap-8 flex-col md:px-16 px-8 md:py-8 py-8 shadow-md'>
           <div className=''>
             <h1 className='text-xl font-bold'>{name}</h1>

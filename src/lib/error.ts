@@ -7,10 +7,12 @@ export class PWAError extends Error {
   }
 }
 
-export async function handleError(err: { message: string, errorCode: string } | any) {
+export async function handleError(err: { message: string, errorCode: string } | any, name?: string) {
   if (err.errorCode === 'LMS3003') {
     return redirect('/sign-out');
   }
+
+  console.log({ code: err.errorCode, message: err.message, name });
 
   throw new PWAError(err.message);
 }

@@ -32,8 +32,8 @@ export default function SignIn() {
       toast.success('Sign in success');
       router.push('/dashboard')
     },
-    onError: ({error: {serverError, validationErrors, fetchError}}) => {
-      toast.error(serverError || fetchError || validationErrors?.toString() || 'Sign in failed');
+    onError: ({error: {serverError, validationErrors}}) => {
+      toast.error(serverError || validationErrors?.toString() || 'Sign in failed');
     },
   });
   const form = useForm<z.infer<typeof signInSchema>>({

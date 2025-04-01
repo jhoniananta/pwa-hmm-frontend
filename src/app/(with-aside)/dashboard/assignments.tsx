@@ -1,7 +1,7 @@
 import Button from '@/components/ui/button/button';
-import {ScrollArea} from '@/components/ui/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import Link from 'next/link';
-import {getAssignments} from "@/_actions/assignment-action";
+import { getUserAssignment } from "@/_actions/assignment-action";
 
 export const beforeColors = [
   'before:bg-oren',
@@ -12,15 +12,15 @@ export const beforeColors = [
 
 export const colors = ['bg-oren', 'bg-navy', 'bg-hijau', 'bg-kuning'];
 
-export const Assignments = async () => {
-  const assignments = await getAssignments();
+export default async function Assignments() {
+  const assignmentsData = await getUserAssignment();
   const today = new Date();
-  const todayAssignments = assignments.filter(({assignment: {deadline}}) => {
+  const todayAssignments = assignmentsData.filter(({ assignment: { deadline } }) => {
     const deadlineDate = new Date(deadline);
     return deadlineDate.getDate() === today.getDate() && deadlineDate.getMonth() === today.getMonth();
   })
 
-  const tomorrowAssignments = assignments.filter(({assignment: {deadline}}) => {
+  const tomorrowAssignments = assignmentsData.filter(({ assignment: { deadline } }) => {
     const deadlineDate = new Date(deadline);
     return deadlineDate.getDate() === today.getDate() + 1 && deadlineDate.getMonth() === today.getMonth();
   })
@@ -29,11 +29,11 @@ export const Assignments = async () => {
 
   return (
     <div className='md:w-1/2 h-96 bg-white rounded-lg shadow-md py-6 flex flex-col'>
-      <h3 className='font-bold px-6 mb-2'>Assignments</h3>
+      <h3 className='font-bold px-6 mb-2 text-center'>Assignments</h3>
       <ScrollArea className='h-64'>
         <div className='flex flex-col text-center font-medium'>
           <h5 className='font-semibold my-2'>Today</h5>
-          {todayAssignments.map(({assignment, type}, index) => (
+          {todayAssignments.map(({ assignment, type }, index) => (
             <AssignmentCard
               key={index + assignment.title + pageId}
               title={assignment.title}
@@ -47,7 +47,7 @@ export const Assignments = async () => {
             <p className='text-xs text-muted-foreground border-y border-y-abu-1 py-3'>No Assignments</p>
           )}
           <h5 className='font-semibold my-2'>Tomorrow</h5>
-          {tomorrowAssignments.map(({assignment}, index) => (
+          {tomorrowAssignments.map(({ assignment }, index) => (
             <AssignmentCard
               key={index + assignment.title + pageId}
               title={assignment.title}
@@ -73,11 +73,11 @@ export const Assignments = async () => {
 };
 
 const AssignmentCard = ({
-                          title,
-                          desc,
-                          time,
-                          index = 0,
-                        }: {
+  title,
+  desc,
+  time,
+  index = 0,
+}: {
   title: string;
   desc: string;
   time: Date;
@@ -100,5 +100,3 @@ const AssignmentCard = ({
     </div>
   );
 };
-
-export default Assignments;

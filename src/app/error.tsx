@@ -1,11 +1,11 @@
 'use client';
 
-import type {Metadata} from 'next';
+import type { Metadata } from 'next';
 
 export default function Error({
-                                error,
-                                reset,
-                              }: {
+  error,
+  reset,
+}: {
   error: Error & { digest?: string };
   reset: () => void;
 }) {
@@ -15,7 +15,7 @@ export default function Error({
         <p className='text-2xl md:text-4xl font-medium'>Error</p>
         <p
           className=''>{error.message.includes("PWAError") ?
-          error.message.replace("(PWAError)", "") : 'Oops... an Error occurred'}</p>
+            error.message.replace("(PWAError)", "") : 'Oops... an Error occurred'}</p>
       </div>
       <button
         onClick={reset}

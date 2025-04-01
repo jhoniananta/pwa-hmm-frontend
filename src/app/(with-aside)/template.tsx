@@ -3,21 +3,23 @@ import HeaderNav from '@/components/client/header';
 import Navbar from '@/components/client/navbar';
 import ProfileMenu from '@/components/client/profileMenu';
 import MainTransition from './transition';
-import {ReactNode} from "react";
+import { ReactNode, Suspense } from "react";
 
 export default function Template({
-                                   children,
-                                 }: Readonly<{
+  children,
+}: Readonly<{
   children: ReactNode;
 }>) {
   return (
     <>
       <Navbar>
-        <ProfileMenu/>
+        <Suspense fallback={<div>Loading...</div>}>
+          <ProfileMenu />
+        </Suspense>
       </Navbar>
       <MainTransition>
-        <HeaderNav/>
-        <ClientBreadcrumb/>
+        <HeaderNav />
+        <ClientBreadcrumb />
         {children}
       </MainTransition>
     </>

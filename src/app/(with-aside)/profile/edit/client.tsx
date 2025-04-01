@@ -1,276 +1,161 @@
-import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
+'use client';
+
+import { editProfile } from '@/_actions/user-action';
+import { Form } from '@/components/ui/form';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { editProfileSchema } from '@/lib/schema';
+import { useState } from 'react';
+import { useAction } from 'next-safe-action/hooks';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowBigLeft, ArrowBigRight, Check } from 'lucide-react';
 import Button from '@/components/ui/button/button';
-import {Input} from '@/components/ui/input';
-import {Label} from '@/components/ui/label';
-import {getFullUser} from '@/lib/dal';
-import Link from 'next/link';
-import {z} from 'zod';
+import FormInput from '@/components/form-input';
+import { z } from 'zod';
+import { type PublicUserModel } from 'lms-types';
 
-const schema = z.object({
-  name: z
-    .string()
-    .min(4, {message: 'Name must be at least 4 characters long'}),
-  nim: z
-    .string()
-    .length(10, {message: 'NIM must be 10 characters long'})
-    .refine((nim) => nim.slice(0, 3) === '131', {
-      message: 'NIM must start with 131',
-    }),
-  location: z
-    .string()
-    .min(4, {message: 'Location must be at least 4 characters long'}),
-  phoneNumber: z
-    .string()
-    .min(10, {message: 'Phone number must be at least 10 characters long'}),
-  email: z.string().email({message: 'Invalid email'}),
-  born: z
-    .string()
-    .max(2, {message: 'Only 2 digits or less number is valid'})
-    .refine((born) => parseInt(born) <= 31, {
-      message: 'Born year must be less than 31',
-    }),
-  address: z
-    .string()
-    .min(4, {message: 'Address must be at least 4 characters long'}),
-  city: z
-    .string()
-    .min(4, {message: 'City must be at least 4 characters long'}),
-  bloodType: z
-    .string()
-    .max(2, {message: 'Blood type must be 1 or 2 characters long'}),
-  illness: z
-    .string()
-    .min(4, {message: 'Illness must be at least 4 characters long'}),
-  lineId: z
-    .string()
-    .min(4, {message: 'Line ID must be at least 4 characters long'}),
-  emergencyNumber: z.string().min(10, {
-    message: 'Emergency number must be at least 10 characters long',
-  }),
-  hmmPos: z.string().min(4, {message: 'Invalid'}),
-  ukm: z.string(),
-  hobby: z.string().min(4, {message: 'Invalid hobby'}),
-});
+type FormField = {
+  name: keyof z.infer<typeof editProfileSchema>;
+  type: 'email' | 'date' | 'text' | 'password';
+  label: string;
+  isArray?: boolean;
+};
 
-export default async function EditProfile({
-                                            searchParams,
-                                          }: {
-  searchParams: Record<string, string>;
-}) {
-  const user = await getFullUser();
+const step1: FormField[] = [
+  { name: 'name', type: 'text', label: 'Name' },
+  { name: 'email', type: 'email', label: 'Email' },
+];
 
-  if (!user) {
-    return <div className='w-full h-full flex place-items-center'>Failed to fetch user data</div>;
-  }
+const step2: FormField[] = [
+  { name: 'address', type: 'text', label: 'Address' },
+  { name: 'phoneNumber', type: 'text', label: 'Phone Number' },
+  { name: 'dateOfBirth', type: 'date', label: 'Date of Birth' },
+  { name: 'lineId', type: 'text', label: 'Line ID' },
+];
 
-  const {
-    name,
-    avatar,
-    email,
-    phoneNumber,
-    NIM,
-    medicalHistories,
-    hobbies,
-    emergencyNumber,
-    lineId,
-    UKM,
-    dateOfBirth,
-    address,
-    bloodType,
-  } = user;
+const step3: FormField[] = [
+  { name: 'bloodType', type: 'text', label: 'Blood Type' },
+  { name: 'emergencyNumber', type: 'text', label: 'Emergency Number' },
+  { name: 'medicalHistories', type: 'text', label: 'Medical Histories', isArray: true },
+];
 
-  const page = parseInt(searchParams['page'] ?? '1');
+const step4: FormField[] = [
+  { name: 'hobbies', type: 'text', label: 'Hobbies', isArray: true },
+  { name: 'UKM', type: 'text', label: 'UKM', isArray: true },
+];
 
-  const inputLists: {
-    label: string;
-    type: string;
-    name: string;
-    id: string;
-    defaultValue?: string;
-  }[] = [
-    {
-      label: 'Name',
-      type: 'text',
-      name: 'name',
-      id: 'name',
-      defaultValue: name,
+const steps: FormField[][] = [step1, step2, step3, step4];
+
+export default function EditProfile({ user }: { user: PublicUserModel }) {
+  const router = useRouter();
+  const [step, setStep] = useState(1);
+  const [prevStep, setPrevStep] = useState(1);
+
+  const form = useForm({
+    resolver: zodResolver(editProfileSchema),
+    defaultValues: {
+      name: user.name,
+      email: user.email,
+      address: user.address,
+      phoneNumber: user.phoneNumber || '',
+      dateOfBirth: user.dateOfBirth as unknown as string,
+      lineId: user.lineId || '',
+      bloodType: user.bloodType || '',
+      emergencyNumber: user.emergencyNumber || '',
+      medicalHistories: user.medicalHistories || [],
+      hobbies: user.hobbies || [],
+      UKM: user.UKM || [],
     },
-    {
-      label: 'NIM',
-      type: 'number',
-      name: 'nim',
-      id: 'nim',
-      defaultValue: NIM,
+  });
+
+  const { execute, isExecuting } = useAction(editProfile, {
+    onSuccess: () => {
+      toast.success('Profile updated successfully');
+      router.push('/profile');
     },
-    {
-      label: 'Location',
-      type: 'text',
-      name: 'location',
-      id: 'location',
-      defaultValue: address,
+    onError: (error) => {
+      toast.error(error.error.serverError || 'Failed to update profile');
     },
-    {
-      label: 'Phone Number',
-      type: 'number',
-      name: 'phoneNumber',
-      id: 'phoneNumber',
-      defaultValue: phoneNumber!,
-    },
-    {
-      label: 'Email',
-      type: 'email',
-      name: 'email',
-      id: 'email',
-      defaultValue: email,
-    },
-    {
-      label: 'Born',
-      type: 'date',
-      name: 'born',
-      id: 'born',
-      defaultValue: new Date(dateOfBirth).toDateString(),
-    },
-    {
-      label: 'Address',
-      type: 'text',
-      name: 'address',
-      id: 'address',
-      defaultValue: address,
-    },
-    {
-      label: 'City',
-      type: 'text',
-      name: 'city',
-      id: 'city',
-      defaultValue: address,
-    },
-    {
-      label: 'Blood Type',
-      type: 'text',
-      name: 'bloodType',
-      id: 'bloodType',
-      defaultValue: bloodType,
-    },
-    {
-      label: 'Medical History',
-      type: 'text',
-      name: 'illness',
-      id: 'illness',
-      defaultValue: medicalHistories.join(', '),
-    },
-    {
-      label: 'Line ID',
-      type: 'text',
-      name: 'lineId',
-      id: 'lineId',
-      defaultValue: lineId,
-    },
-    {
-      label: 'Emergency Number',
-      type: 'number',
-      name: 'emergencyNumber',
-      id: 'emergencyNumber',
-      defaultValue: emergencyNumber,
-    },
-    {
-      label: 'HMM Division',
-      type: 'text',
-      name: 'hmmPos',
-      id: 'hmmPos',
-      defaultValue: '',
-    },
-    {
-      label: 'UKM',
-      type: 'text',
-      name: 'ukm',
-      id: 'ukm',
-      defaultValue: UKM.join(', '),
-    },
-    {
-      label: 'Hobby',
-      type: 'text',
-      name: 'hobby',
-      id: 'hobby',
-      defaultValue: hobbies.join(', '),
-    },
-  ];
+  });
+
+  const onSubmit: SubmitHandler<z.infer<typeof editProfileSchema>> = async (data, e) => {
+    e?.preventDefault();
+    await execute(data);
+  };
 
   return (
-    <main className='w-full h-full space-y-4 md:space-y-6'>
-      <div className='rounded-xl flex flex-col flex-1 bg-white'>
-        <div
-          className='bg-navy min-h-[15vh] w-full z-0 relative md:mb-20 mb-16 rounded-t-xl flex justify-end items-center pr-6'>
-          <div
-            className='flex items-center justify-center p-1.5 bg-white w-fit rounded-full absolute left-1/2 -translate-x-1/2 bottom-0 translate-y-1/2'>
-            <Avatar className='md:w-40 md:h-40 h-32 w-32'>
-              <AvatarImage
-                src={avatar}
-                alt='avatar'
-              />
-              <AvatarFallback className='bg-white'>
-                {name.split(' ').map((t: string) => t[0])}
-              </AvatarFallback>
-            </Avatar>
-          </div>
-        </div>
-        <form className='flex gap-4 md:gap-4 flex-col md:px-16 px-8 md:py-8 py-8 shadow-md rounded-b-xl'>
-          {inputLists.map((data, i) => {
-            if (Math.floor(i / 5) === page - 1) {
-              return (
-                <div
-                  className='space-y-2'
-                  key={data.label}
-                >
-                  <Label
-                    className='text-navy'
-                    htmlFor={data.id}
-                    key={i}
-                  >
-                    {data.label}
-                  </Label>
-                  <Input
-                    id={data.id}
-                    name={data.name}
-                    type={data.type}
-                    defaultValue={data.defaultValue}
-                    key={i}
-                  />
-                </div>
-              );
+    <div className="w-full max-w-md mx-auto p-6">
+      <Form {...form}>
+        <form 
+          onSubmit={(e) => {
+            if (step === steps.length) {
+              form.handleSubmit(onSubmit)(e);
+            } else {
+              e.preventDefault();
             }
-          })}
-          <div className='mt-8 flex gap-4 w-full *:flex-1'>
-            <Link
-              href={
-                page === 1
-                  ? '/profile'
-                  : `
-              ?page=${page - 1}
-            `
-              }
-              className='rounded-lg bg-navy flex items-center justify-center text-white py-2'
+          }} 
+          className="space-y-6"
+        >
+          {/* Step indicator */}
+          <div className="flex justify-between items-center">
+            <span className="text-sm">Step {step}/{steps.length}</span>
+          </div>
+
+          {/* Form fields */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`step-${step}`}
+              initial={{ opacity: 0, x: step > prevStep ? 100 : -100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: step > prevStep ? -100 : 100 }}
+              className="space-y-4"
             >
-              {page === 1 ? 'Back to Profile' : 'Back'}
-            </Link>
-            {page === 3 && (
-              <Button
-                type='submit'
-                className='rounded-lg py-2 w-auto px-0'
-              >
-                Save
-              </Button>
-            )}
-            {(page === 1 || page === 2) && (
-              <Link
-                href={`?page=${page + 1}`}
-                className='rounded-lg bg-navy flex items-center justify-center text-white py-2'
-              >
-                Next
-              </Link>
-            )}
+              {steps[step - 1].map((field, index) => (
+                <FormInput
+                  key={field.name}
+                  index={index}
+                  form={form}
+                  isPassword={false}
+                  {...field}
+                />
+              ))}
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Navigation buttons */}
+          <div className="flex justify-between gap-4">
+            <Button
+              type="button"
+              onClick={() => {
+                setPrevStep(step);
+                setStep(step - 1);
+              }}
+              disabled={step === 1}
+            >
+              <ArrowBigLeft className="w-6 h-6" />
+            </Button>
+
+            <Button
+              type={step === steps.length ? 'submit' : 'button'}
+              onClick={() => {
+                if (step < steps.length) {
+                  setPrevStep(step);
+                  setStep(step + 1);
+                }
+              }}
+              disabled={isExecuting}
+            >
+              {step === steps.length ? (
+                <Check className="w-6 h-6" />
+              ) : (
+                <ArrowBigRight className="w-6 h-6" />
+              )}
+            </Button>
           </div>
         </form>
-      </div>
-    </main>
+      </Form>
+    </div>
   );
 }

@@ -28,7 +28,7 @@ export default function Modal({ children }: { children: React.ReactNode }) {
       >
         <motion.div
           layoutId='modal-edit-profile'
-          className='w-[min(90vw,32rem)]'
+          className='w-[min(90vw,32rem)] bg-white rounded-lg'
         >
           {children}
         </motion.div>

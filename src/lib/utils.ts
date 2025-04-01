@@ -21,3 +21,9 @@ export const getTokenFromResponse = (res: Response) => {
 export function cookieGenerator(access_token: string, refresh_token: string) {
   return `accessToken=${access_token}; refreshToken=${refresh_token}`;
 }
+
+export function UUC2N(str: string | undefined) {
+  if (!str) return 'not started';
+  return str.replace(/_/g, ' ').replace(/-/g, ' ').toLowerCase();
+}
+

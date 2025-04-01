@@ -22,9 +22,9 @@ const formatter = (path: string) => {
 };
 
 export default function AdminBreadcrumb({
-                                           className,
-                                           ...props
-                                         }: HTMLAttributes<HTMLDivElement>) {
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) {
   const pathname = usePathname();
   const array = pathname.split('/').slice(3);
 
@@ -40,7 +40,7 @@ export default function AdminBreadcrumb({
           <>
             <BreadcrumbItem key={path + index}>
               <BreadcrumbLink
-                href={"/portal/atur-atur/" + array.slice(0, index + 1)
+                href={"/portal/admin/" + array.slice(0, index + 1)
                   .join('/')}
                 className='capitalize'
               >

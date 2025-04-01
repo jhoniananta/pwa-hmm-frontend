@@ -1,8 +1,9 @@
+import ComingSoon from "@/components/coming-soon";
 
 const MyCareerPage = () => {
   return (
     <div className='h-full flex items-center justify-center'>
-      <h1 className='md:text-4xl text-2xl font-bold text-muted-foreground'>Coming Soon</h1>
+      <ComingSoon />
     </div>
   );
 };

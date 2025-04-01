@@ -1,6 +1,7 @@
 'use client';
 
 import { signUp } from '@/_actions/user-action';
+import Spinner from '@/components/client/spinner';
 import Button from '@/components/ui/button/button';
 import {
   Form,
@@ -12,20 +13,19 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { signUpSchema } from '@/lib/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowBigLeft, ArrowBigRight, Check, Plus, X } from 'lucide-react';
+import { useAction } from 'next-safe-action/hooks';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { type BaseSyntheticEvent, ChangeEvent, useState } from 'react';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
-import { z } from 'zod';
-import { useAction } from 'next-safe-action/hooks';
 import { toast } from 'sonner';
-import { signUpSchema } from '@/lib/schema';
-import { useRouter } from 'next/navigation';
-import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowBigLeft, ArrowBigRight, Check, Plus, X } from 'lucide-react';
-import Spinner from '@/components/client/spinner';
+import { z } from 'zod';
 
 export default function SignUp() {
   const router = useRouter();
@@ -39,16 +39,10 @@ export default function SignUp() {
         router.push('/sign-in');
       },
       onError: ({
-        error: {
-          serverError,
-          fetchError,
-          validationErrors,
-          bindArgsValidationErrors,
-        },
+        error: { serverError, validationErrors, bindArgsValidationErrors },
       }) => {
         toast.error(
           serverError ||
-            fetchError ||
             validationErrors?.toString() ||
             bindArgsValidationErrors ||
             'Sign up failed'
@@ -90,44 +84,44 @@ export default function SignUp() {
   const dir = step > prevStep ? 'right' : 'left';
 
   return (
-    <div className='relative w-full min-h-dvh flex items-center justify-center'>
+    <div className="relative w-full min-h-dvh flex items-center justify-center">
       {/* Add images for background */}
       <Image
-        src='/hmm-vstock/bp-black-transparent.png'
-        className=' opacity-20 absolute z-0 left-0 bottom-0 w-2/5 md:w-1/6'
-        alt='bp-black-transparent'
+        src="/hmm-vstock/bp-black-transparent.png"
+        className=" opacity-20 absolute z-0 left-0 bottom-0 w-2/5 md:w-1/6"
+        alt="bp-black-transparent"
         width={2000}
         height={2000}
       />
       <Image
-        src='/hmm-vstock/bp-black-transparent.png'
-        className=' opacity-20 absolute z-0 right-0 top-0 w-1/3 md:w-1/6'
-        alt='bp-black-transparent'
+        src="/hmm-vstock/bp-black-transparent.png"
+        className=" opacity-20 absolute z-0 right-0 top-0 w-1/3 md:w-1/6"
+        alt="bp-black-transparent"
         width={2000}
         height={2000}
       />
       <Form {...form}>
         <form
           onSubmit={(e) => form.handleSubmit(onSubmit)(e)}
-          className='flex flex-col items-center max-w-64 gap-4 z-[1]'
+          className="flex flex-col items-center max-w-64 gap-4 z-[1]"
         >
-          <h1 className=''>Sign Up</h1>
-          <h4 className='text-center font-semibold'>
+          <h1 className="">Sign Up</h1>
+          <h4 className="text-center font-semibold">
             Enter your details below to sign up a new account
           </h4>
-          <div className='flex w-full justify-between text-xs'>
+          <div className="flex w-full justify-between text-xs">
             <button
               onClick={() => {
                 setStep(1);
                 form.reset();
               }}
-              className='text-red-600'
+              className="text-red-600"
             >
               Clear
             </button>
-            <p className='text-left text-xs text-navy'>
+            <p className="text-left text-xs text-navy">
               Step{' '}
-              <AnimatePresence mode='wait'>
+              <AnimatePresence mode="wait">
                 <motion.span
                   initial={{ y: -10 }}
                   animate={{ y: 0 }}
@@ -141,13 +135,13 @@ export default function SignUp() {
             </p>
           </div>
           {!form.formState.isValid && form.formState.submitCount > 0 && (
-            <p className='text-red-600 text-xs text-left w-full'>
+            <p className="text-red-600 text-xs text-left w-full">
               Please recheck the inputs
             </p>
           )}
-          <AnimatePresence mode='wait'>
+          <AnimatePresence mode="wait">
             <motion.div
-              className='flex flex-col gap-4 w-full'
+              className="flex flex-col gap-4 w-full"
               key={`form-signup-${step}`}
               initial={{
                 opacity: 0,
@@ -201,10 +195,10 @@ export default function SignUp() {
               ))}
             </motion.div>
           </AnimatePresence>
-          <div className='w-full flex justify-between items-center'>
+          <div className="w-full flex justify-between items-center">
             <Button
-              id='prev-button-sign-up'
-              type='button'
+              id="prev-button-sign-up"
+              type="button"
               onClick={() => {
                 if (step > 1) {
                   setPrevStep(step);
@@ -212,12 +206,12 @@ export default function SignUp() {
                 }
               }}
               disabled={step === 1}
-              className='aspect-square p-0 flex items-center justify-center w-12 h-12 bg-transparent border border-navy text-navy hover:bg-navy/10 transition-all'
+              className="aspect-square p-0 flex items-center justify-center w-12 h-12 bg-transparent border border-navy text-navy hover:bg-navy/10 transition-all"
             >
               <ArrowBigLeft />
             </Button>
             <Button
-              id='submit-button-sign-up'
+              id="submit-button-sign-up"
               type={step === steps.length ? 'button' : 'button'}
               disabled={
                 isExecuting ||
@@ -237,7 +231,7 @@ export default function SignUp() {
               }}
             >
               {isExecuting ? (
-                <Spinner className='h-4 w-4' />
+                <Spinner className="h-4 w-4" />
               ) : step === steps.length ? (
                 <Check />
               ) : (
@@ -245,10 +239,10 @@ export default function SignUp() {
               )}
             </Button>
           </div>
-          <span className='flex gap-1'>
+          <span className="flex gap-1">
             <h6>{'Already have account?'}</h6>
-            <Link href='/sign-in'>
-              <h6 className='font-bold'>Sign in</h6>
+            <Link href="/sign-in">
+              <h6 className="font-bold">Sign in</h6>
             </Link>
           </span>
         </form>
@@ -403,20 +397,20 @@ function FormInput({
       control={form.control}
       name={name}
       render={({ field: { onChange, value, ...props } }) => (
-        <FormItem className='w-full space-y-1'>
-          <FormLabel className='self-start text-navy font-semibold'>
+        <FormItem className="w-full space-y-1">
+          <FormLabel className="self-start text-navy font-semibold">
             {optional ? label : label + '*'}
           </FormLabel>
           {isArray && (
-            <div className='w-full flex flex-wrap gap-2'>
+            <div className="w-full flex flex-wrap gap-2">
               {(form.getValues(name) as string[])?.map((v) => (
                 <motion.div
                   key={v}
-                  className='bg-navy/90 flex py-1 gap-1 items-center text-white font-medium px-1.5 text-xs rounded-md'
+                  className="bg-navy/90 flex py-1 gap-1 items-center text-white font-medium px-1.5 text-xs rounded-md"
                 >
                   {v}
                   <X
-                    className='w-3 h-3 text-white cursor-pointer'
+                    className="w-3 h-3 text-white cursor-pointer"
                     strokeWidth={3}
                     onClick={() =>
                       form.setValue(
@@ -431,29 +425,30 @@ function FormInput({
           )}
           <FormControl>
             {isPassword ? (
-              <div className='relative items-center flex'>
+              <div className="relative items-center flex">
                 <Input
-                  className=''
+                  className=""
                   type={show ? 'text' : 'password'}
                   onChange={onChange}
                   {...props}
                 />
                 {show ? (
                   <FiEye
-                    className='absolute right-3 cursor-pointer text-navy'
+                    className="absolute right-3 cursor-pointer text-navy"
                     onClick={() => setShow(false)}
                   />
                 ) : (
                   <FiEyeOff
-                    className='absolute right-3 cursor-pointer text-navy'
+                    className="absolute right-3 cursor-pointer text-navy"
                     onClick={() => setShow(true)}
                   />
                 )}
               </div>
             ) : (
-              <div className='relative items-center flex'>
+              <div className="relative items-center flex">
                 <Input
-                  className=''
+                  className=""
+                  id={'input-signup-' + name}
                   type={type}
                   autoFocus={index === 0}
                   onChange={
@@ -493,7 +488,9 @@ function FormInput({
                 {isArray && (
                   <Plus
                     className={`absolute right-3 transform ${
-                      _value.length < 3 || value?.length! >= 5
+                      _value.length < 3 ||
+                      value?.length! >= 5 ||
+                      (value as string[]).includes(_value)
                         ? 'text-navy/50 cursor-not-allowed'
                         : 'text-navy cursor-pointer'
                     }`}
@@ -503,6 +500,10 @@ function FormInput({
                       if ((value as string[]).includes(_value)) return;
                       form.setValue(name, [...(value as string[]), _value]);
                       setValue('');
+                      const input = document.getElementById(
+                        'input-signup-' + name
+                      );
+                      input?.focus();
                     }}
                   />
                 )}
@@ -510,9 +511,9 @@ function FormInput({
             )}
           </FormControl>
           {desc && (
-            <FormDescription className='text-xs'>{desc}</FormDescription>
+            <FormDescription className="text-xs">{desc}</FormDescription>
           )}
-          <FormMessage className='text-xs' />
+          <FormMessage className="text-xs" />
         </FormItem>
       )}
     />

@@ -10,12 +10,14 @@ export const env = createEnv({
       z.number().int().positive().min(1),
     ),
     API_URL: z.string(),
+    BLOB_READ_WRITE_TOKEN: z.string(),
   },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     AUTH_SECRET: process.env.AUTH_SECRET,
     SESSION_MAX_AGE: process.env.SESSION_MAX_AGE,
     API_URL: process.env.API_URL,
+    BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
   },
   emptyStringAsUndefined: true,
 })
