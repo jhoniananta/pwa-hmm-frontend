@@ -31,8 +31,8 @@ export const uploadProfileImage = actionClient
     file: z.instanceof(FormData),
     oldImageUrl: z.string().nullable().optional(),
   }), {
-    handleValidationErrorsShape: (ve) =>
-      flattenValidationErrors(ve).fieldErrors,
+    handleValidationErrorsShape: async (ve) =>
+      Promise.resolve(flattenValidationErrors(ve).fieldErrors),
   })
   .action(async ({ parsedInput }) => {
     try {
@@ -67,8 +67,8 @@ export const uploadCourseImage = actionClient
     file: z.instanceof(FormData),
     oldImageUrl: z.string().nullable().optional(),
   }), {
-    handleValidationErrorsShape: (ve) =>
-      flattenValidationErrors(ve).fieldErrors,
+    handleValidationErrorsShape: async (ve) =>
+      Promise.resolve(flattenValidationErrors(ve).fieldErrors),
   })
   .action(async ({ parsedInput }) => {
     try {
@@ -103,8 +103,8 @@ export const uploadScholarshipImage = actionClient
     file: z.instanceof(FormData),
     oldImageUrl: z.string().nullable().optional(),
   }), {
-    handleValidationErrorsShape: (ve) =>
-      flattenValidationErrors(ve).fieldErrors,
+    handleValidationErrorsShape: async (ve) =>
+      Promise.resolve(flattenValidationErrors(ve).fieldErrors),
   })
   .action(async ({ parsedInput }) => {
     try {
@@ -136,8 +136,8 @@ export const uploadPDF = actionClient
     actionName: 'uploadPDF',
   })
   .schema(uploadImageSchema, {
-    handleValidationErrorsShape: (ve) =>
-      flattenValidationErrors(ve).fieldErrors,
+    handleValidationErrorsShape: async (ve) =>
+      Promise.resolve(flattenValidationErrors(ve).fieldErrors),
   })
   .action(async ({ parsedInput }) => {
     try {
@@ -175,8 +175,8 @@ export const uploadDocument = actionClient
     allowedTypes: z.array(z.string()).optional(),
     folder: z.string().optional(),
   }), {
-    handleValidationErrorsShape: (ve) =>
-      flattenValidationErrors(ve).fieldErrors,
+    handleValidationErrorsShape: async (ve) =>
+      Promise.resolve(flattenValidationErrors(ve).fieldErrors),
   })
   .action(async ({ parsedInput }) => {
     try {

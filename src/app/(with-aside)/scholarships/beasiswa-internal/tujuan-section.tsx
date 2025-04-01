@@ -9,7 +9,7 @@ export default function TujuanBeasiswaSection() {
             width={720}
             height={550}
             alt="background"
-            className="object-cover md:object-fill absolute inset-0 size-full max-md:rounded-2xl md:rounded-3xl"
+            className="object-cover absolute inset-0 size-full max-md:rounded-2xl md:rounded-3xl"
           />
         </div>
         <div className="max-w-[720px] h-full md:max-h-[550px] max-md:rounded-2xl md:rounded-3xl relative bg-white md:w-1/2 py-12 px-8">

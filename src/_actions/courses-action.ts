@@ -81,7 +81,7 @@ export const deleteCourse = actionClient
     actionName: 'deleteCourse',
   })
   .schema(deleteCourseSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput: { courseId } }) => {
@@ -97,7 +97,7 @@ export const createCourse = actionClient
     actionName: 'createCourse',
   })
   .schema(addCourseSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
@@ -141,7 +141,7 @@ export const updateCourseStatus = actionClient
     courseId: z.number(),
     status: z.enum(['PUBLISHED', 'DRAFT'])
   }), {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput: { courseId, status } }) => {
@@ -165,7 +165,7 @@ export const updateCourseCategory = actionClient
     courseId: z.number(),
     categoryId: z.number()
   }), {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput: { courseId, categoryId } }) => {
@@ -189,7 +189,7 @@ export const updateCourseCode = actionClient
     courseId: z.number(),
     code: z.string()
   }), {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput: { courseId, code } }) => {
@@ -210,7 +210,7 @@ export const updateCourse = actionClient
     actionName: 'updateCourse',
   })
   .schema(updateCourseSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {

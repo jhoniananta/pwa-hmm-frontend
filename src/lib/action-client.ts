@@ -5,7 +5,7 @@ import {PWAError} from "@/lib/error";
 import {redirect} from "next/navigation";
 
 export const actionClient = createSafeActionClient({
-  handleServerErrorLog(e) {
+  handleServerError(e) {
     if (e.message.includes("PWAError")) {
       console.error(e.message.replace("(PWAError)", ""));
     } else {

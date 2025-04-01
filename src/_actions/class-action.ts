@@ -28,7 +28,7 @@ export const getClassById = async (courseId: number, classId: number) =>
 export const createClass = actionClient
   .metadata({ actionName: 'createClass' })
   .schema(addClassSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
@@ -65,7 +65,7 @@ export const createClass = actionClient
 export const updateClass = actionClient
   .metadata({ actionName: 'updateClass' })
   .schema(updateClassSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
@@ -106,7 +106,7 @@ export const updateClass = actionClient
 export const deleteClass = actionClient
   .metadata({ actionName: 'deleteClass' })
   .schema(deleteClassSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {

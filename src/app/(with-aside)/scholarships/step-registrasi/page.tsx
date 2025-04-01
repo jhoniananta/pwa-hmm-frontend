@@ -1,76 +1,92 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { ChevronDown } from "lucide-react"
-import { cn } from "@/lib/utils"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
+import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export default function MultiStepPage() {
-  const [activeStep, setActiveStep] = useState(1)
-  const [expandedMobileStep, setExpandedMobileStep] = useState<number | null>(null)
+  const [activeStep, setActiveStep] = useState(1);
+  const [expandedMobileStep, setExpandedMobileStep] = useState<number | null>(
+    null
+  );
 
   const steps = [
     {
       id: 1,
-      title: "Alur Tahap 1",
+      title: 'Alur Tahap 1',
       content:
-        "Pada tahap ini, pengguna akan diminta untuk memasukkan informasi dasar seperti nama, email, dan nomor telepon.",
+        'Pada tahap ini, pengguna akan diminta untuk memasukkan informasi dasar seperti nama, email, dan nomor telepon.',
       images: [],
     },
     {
       id: 2,
-      title: "Alur Tahap 2",
+      title: 'Alur Tahap 2',
       content:
-        "Pada tahap ini, mahasiswa akan diminta untuk melakukan pengisian data-data penting yang dibutuhkan dalam rangka seleksi dan penyaringan calon penerima beasiswa.",
-      images: ["/placeholder.svg?height=200&width=300", "/placeholder.svg?height=200&width=300"],
+        'Pada tahap ini, mahasiswa akan diminta untuk melakukan pengisian data-data penting yang dibutuhkan dalam rangka seleksi dan penyaringan calon penerima beasiswa.',
+      images: [
+        '/images/informasi-beasiswa/bg-kart.png',
+        '/placeholder.svg?height=200&width=300',
+      ],
     },
     {
       id: 3,
-      title: "Alur Tahap 3",
+      title: 'Alur Tahap 3',
       content:
-        "Pada tahap ini, pengguna akan diminta untuk mengunggah dokumen pendukung seperti transkrip nilai dan surat rekomendasi.",
+        'Pada tahap ini, pengguna akan diminta untuk mengunggah dokumen pendukung seperti transkrip nilai dan surat rekomendasi.',
       images: [],
     },
     {
       id: 4,
-      title: "Alur Tahap 4",
+      title: 'Alur Tahap 4',
       content:
-        "Pada tahap ini, pengguna akan mengisi informasi tentang riwayat pendidikan dan prestasi akademik yang pernah diraih.",
+        'Pada tahap ini, pengguna akan mengisi informasi tentang riwayat pendidikan dan prestasi akademik yang pernah diraih.',
       images: [],
     },
     {
       id: 5,
-      title: "Alur Tahap 5",
+      title: 'Alur Tahap 5',
       content:
-        "Pada tahap ini, pengguna akan mengisi informasi tentang pengalaman organisasi dan kegiatan ekstrakurikuler.",
+        'Pada tahap ini, pengguna akan mengisi informasi tentang pengalaman organisasi dan kegiatan ekstrakurikuler.',
       images: [],
     },
     {
       id: 6,
-      title: "Alur Tahap 6",
-      content: "Pada tahap ini, pengguna akan melakukan konfirmasi akhir dan mengirimkan aplikasi beasiswa.",
+      title: 'Alur Tahap 6',
+      content:
+        'Pada tahap ini, pengguna akan melakukan konfirmasi akhir dan mengirimkan aplikasi beasiswa.',
       images: [],
     },
-  ]
+  ];
 
   const toggleMobileStep = (stepId: number) => {
     if (expandedMobileStep === stepId) {
-      setExpandedMobileStep(null)
+      setExpandedMobileStep(null);
     } else {
-      setExpandedMobileStep(stepId)
+      setExpandedMobileStep(stepId);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen">
       <div className="max-w-7xl mx-auto p-4">
         {/* Header with buttons */}
-        <div className="flex justify-between mb-6">
-          <Button variant="outline" className="rounded-full bg-white hover:bg-slate-100">
-            Informasi Umum
+        <div className="flex justify-end gap-4 mb-6">
+          <Button
+            variant="outline"
+            className="rounded-full bg-white hover:bg-slate-100"
+          >
+            <Link href="/scholarships/beasiswa-internal">
+              Informasi Umum
+            </Link>
           </Button>
-          <Button className="rounded-full bg-indigo-950 hover:bg-indigo-900">Daftar Sekarang</Button>
+          <Button className="rounded-full bg-indigo-950 hover:bg-indigo-900">
+            <Link href="/scholarships/registration">
+              Daftar Sekarang
+            </Link>
+          </Button>
         </div>
 
         {/* Main content */}
@@ -82,10 +98,10 @@ export default function MultiStepPage() {
                 key={step.id}
                 onClick={() => setActiveStep(step.id)}
                 className={cn(
-                  "w-full text-left p-4 font-medium transition-colors border-b border-gray-200 last:border-b-0",
+                  'w-full text-left p-7 font-medium transition-colors border-b border-gray-200 last:border-b-0',
                   activeStep === step.id
-                    ? "bg-indigo-950 text-white"
-                    : "bg-indigo-950/90 text-white hover:bg-indigo-950",
+                    ? 'bg-[#394290] text-white'
+                    : 'bg-ungu text-white hover:bg-[#394290]'
                 )}
               >
                 {step.title}
@@ -99,13 +115,15 @@ export default function MultiStepPage() {
               <div key={step.id} className="rounded-lg overflow-hidden">
                 <button
                   onClick={() => toggleMobileStep(step.id)}
-                  className="w-full flex items-center justify-between p-4 bg-indigo-950 text-white font-medium"
+                  className="w-full flex items-center justify-between p-4 bg-ungu text-white font-medium"
                 >
                   <span>{step.title}</span>
                   <ChevronDown
                     className={cn(
-                      "h-5 w-5 transition-transform",
-                      expandedMobileStep === step.id ? "transform rotate-180" : "",
+                      'h-5 w-5 transition-transform',
+                      expandedMobileStep === step.id
+                        ? 'transform rotate-180'
+                        : ''
                     )}
                   />
                 </button>
@@ -114,9 +132,12 @@ export default function MultiStepPage() {
                     {step.images.length > 0 && (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                         {step.images.map((image, idx) => (
-                          <div key={idx} className="bg-gray-200 rounded-lg overflow-hidden">
+                          <div
+                            key={idx}
+                            className="bg-gray-200 rounded-lg overflow-hidden"
+                          >
                             <Image
-                              src={image || "/placeholder.svg"}
+                              src={image || '/placeholder.svg'}
                               alt={`Gambar optional ${idx + 1}`}
                               width={300}
                               height={200}
@@ -136,22 +157,30 @@ export default function MultiStepPage() {
           {/* Content area for desktop */}
           <div className="hidden md:block flex-1 bg-white rounded-r-xl border border-gray-200 border-l-0 overflow-hidden">
             {steps.map((step) => (
-              <div key={step.id} className={cn("p-6", activeStep === step.id ? "block" : "hidden")}>
+              <div
+                key={step.id}
+                className={cn(
+                  'p-6',
+                  activeStep === step.id ? 'block' : 'hidden'
+                )}
+              >
                 <h2 className="text-xl font-bold mb-4">{step.title}</h2>
 
                 {step.images.length > 0 && (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
                     {step.images.map((image, idx) => (
-                      <div key={idx} className="bg-gray-200 rounded-lg overflow-hidden">
+                      <div
+                        key={idx}
+                        className="bg-gray-200 rounded-lg overflow-hidden"
+                      >
                         <div className="flex items-center justify-center h-full">
                           <Image
-                            src={image || "/placeholder.svg"}
+                            src={image || '/placeholder.svg'}
                             alt={`Gambar optional ${idx + 1}`}
                             width={300}
                             height={200}
                             className="w-full h-auto"
                           />
-                          <p className="absolute text-gray-500">Gambar optional</p>
                         </div>
                       </div>
                     ))}
@@ -165,6 +194,5 @@ export default function MultiStepPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

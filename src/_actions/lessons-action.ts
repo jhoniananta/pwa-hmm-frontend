@@ -32,8 +32,8 @@ export const createLesson = actionClient
     description: z.string().optional(),
     references: z.array(z.string()).optional(),
   }), {
-    handleValidationErrorsShape: (ve) =>
-      flattenValidationErrors(ve).fieldErrors,
+    handleValidationErrorsShape: async (ve) =>
+      flattenValidationErrors(ve),
   })
   .action(async ({ parsedInput }) => {
     const { courseId, ...rest } = parsedInput;
@@ -60,7 +60,7 @@ export const updateLesson = actionClient
     description: z.string().optional(),
     references: z.array(z.string()).optional(),
   }), {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
@@ -85,11 +85,11 @@ export const deleteLesson = actionClient
     courseId: z.number(),
     lessonId: z.number(),
   }), {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput: { courseId, lessonId } }) => {
-    const res = await fetchAction<lessonAPI.DeleteLesson.Response['data']>(
+    const res = await fetchAction(
       lessonAPI.DeleteLesson.generateUrl(courseId, lessonId),
       'Failed to delete lesson',
       {

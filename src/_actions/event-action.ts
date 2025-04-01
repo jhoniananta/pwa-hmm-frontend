@@ -25,7 +25,7 @@ export const createEvent = actionClient
     actionName: 'createEvent',
   })
   .schema(addEventSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
@@ -46,7 +46,7 @@ export const updateEvent = actionClient
     actionName: 'updateEvent',
   })
   .schema(updateEventSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
@@ -68,7 +68,7 @@ export const deleteEvent = actionClient
     actionName: 'deleteEvent',
   })
   .schema(deleteEventSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput: { eventId } }) => {

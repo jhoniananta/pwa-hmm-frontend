@@ -32,7 +32,7 @@ export const getCategoryById = async (categoryId: number) =>
 export const createCategory = actionClient
   .metadata({ actionName: 'createCategory' })
   .schema(addCategorySchema, {
-    handleValidationErrorsShape: (ve) => flattenValidationErrors(ve).fieldErrors,
+    handleValidationErrorsShape: async (ve) => flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
     try {
@@ -68,7 +68,7 @@ export const createCategory = actionClient
 export const updateCategory = actionClient
   .metadata({ actionName: 'updateCategory' })
   .schema(updateCategorySchema, {
-    handleValidationErrorsShape: (ve) => flattenValidationErrors(ve).fieldErrors,
+    handleValidationErrorsShape: async (ve) => flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
     const { categoryId, ...rest } = parsedInput;
@@ -104,7 +104,7 @@ export const updateCategory = actionClient
 export const deleteCategory = actionClient
   .metadata({ actionName: 'deleteCategory' })
   .schema(deleteCategorySchema, {
-    handleValidationErrorsShape: (ve) => flattenValidationErrors(ve).fieldErrors,
+    handleValidationErrorsShape: async (ve) => flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
     try {
@@ -125,7 +125,7 @@ export const deleteCategory = actionClient
       }
 
       revalidatePath('/portal/atur-atur/categories');
-      return data as $CourseCategoryAPI.DeleteCategory.Response['data'];
+      return data;
     } catch (err) {
       if (err instanceof Error) {
         throw new PWAError(err.message);

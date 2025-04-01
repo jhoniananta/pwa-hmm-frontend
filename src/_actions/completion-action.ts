@@ -13,7 +13,7 @@ import {$CourseClassAssignmentCompletionAPI} from "lms-types";
 export const createCompletion = actionClient
   .metadata({actionName: 'createCompletion'})
   .schema(createCompletionSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({parsedInput}) => {
@@ -52,7 +52,7 @@ export const createCompletion = actionClient
 export const updateCompletion = actionClient
   .metadata({actionName: 'updateCompletion'})
   .schema(updateCompletionSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({parsedInput}) => {

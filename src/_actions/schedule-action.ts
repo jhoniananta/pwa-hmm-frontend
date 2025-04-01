@@ -130,7 +130,7 @@ export const deleteSchedule = actionClient
       revalidatePath('/courses/[id]');
       revalidateTag('schedules');
       revalidateTag(`course-${courseId}-schedules`);
-      return data as $CourseScheduleAPI.DeleteSchedule.Response['data'];
+      return data;
     } catch (err) {
       if (err instanceof Error) {
         throw new PWAError(err.message);
@@ -155,7 +155,7 @@ export const getAllUserSchedules = async () => {
       })
     );
 
-    return schedules.flat().sort((a, b) => 
+    return schedules.flat().sort((a: { date: string | number | Date; }, b: { date: string | number | Date; }) => 
       new Date(a.date).getTime() - new Date(b.date).getTime()
     );
   } catch (error) {

@@ -15,14 +15,14 @@ import {
 import {createSession, deleteSession, verifySession} from '@/lib/session';
 import {getTokenFromResponse} from '@/lib/utils';
 import {flattenValidationErrors} from 'next-safe-action';
-import {$UserAPI as userAPI} from "lms-types";
+import {$UserAPI as userAPI, $AuthenticationAPI as authAPI} from "lms-types";
 import { fetchAction } from '@/lib/fetch';
 import {z} from 'zod';
 
 export const signUp = actionClient
   .metadata({actionName: 'signUp'})
   .schema(signUpSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({parsedInput: {confirmPassword, dateOfBirth, email, ...input}}) => {
@@ -61,12 +61,12 @@ export const signUp = actionClient
 export const signIn = actionClient
   .metadata({actionName: 'signIn'})
   .schema(signInSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({parsedInput: {email, password}}) => {
     try {
-      const res = await fetch(env.API_URL + userAPI.SignIn.generateUrl(), {
+      const res = await fetch(env.API_URL + authAPI.SignIn.generateUrl(), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ export async function signOut() {
       };
     }
 
-    await fetch(env.API_URL + userAPI.SignOut.generateUrl(), {
+    await fetch(env.API_URL + authAPI.SignOut.generateUrl(), {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -155,7 +155,7 @@ export async function signOut() {
 export const editProfile = actionClient
   .metadata({ actionName: 'editProfile' })
   .schema(editProfileSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput: { dateOfBirth, email, ...input } }) => {
@@ -252,7 +252,7 @@ export const getDepartmentProgramsWithEnrollment = async (userId: string, depart
 export const updateEmail = actionClient
   .metadata({ actionName: 'updateEmail' })
   .schema(updateEmailSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput: { email } }) => {
@@ -295,7 +295,7 @@ export const updateEmail = actionClient
 export const updatePassword = actionClient
   .metadata({ actionName: 'updatePassword' })
   .schema(updatePasswordSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput: { password } }) => {
@@ -338,7 +338,7 @@ export const updatePassword = actionClient
 export const updateRole = actionClient
   .metadata({ actionName: 'updateRole' })
   .schema(updateRoleSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput: { userId, role } }) => {
@@ -381,7 +381,7 @@ export const updateRole = actionClient
 export const deleteUser = actionClient
   .metadata({ actionName: 'deleteUser' })
   .schema(deleteUserSchema, {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput: { userId } }) => {
@@ -422,7 +422,7 @@ export const deleteUser = actionClient
 export const updateAvatar = actionClient
   .metadata({ actionName: 'updateAvatar' })
   .schema(z.object({ avatar: z.string() }), {
-    handleValidationErrorsShape: (ve) =>
+    handleValidationErrorsShape: async (ve) =>
       flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput: { avatar } }) => {

@@ -13,7 +13,7 @@ import { revalidatePath, revalidateTag } from 'next/cache';
 export const createEnrollment = actionClient
   .metadata({ actionName: 'createEnrollment' })
   .schema(createEnrollmentSchema, {
-    handleValidationErrorsShape: (ve) => flattenValidationErrors(ve).fieldErrors,
+    handleValidationErrorsShape: async (ve) => flattenValidationErrors(ve).fieldErrors,
   })
   .action(async ({ parsedInput }) => {
     try {

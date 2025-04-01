@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import {
-  AssignmentCompletionStatusModel,
-  AssignmentTaskTypeModel,
-  CourseStatusModel,
+  // CompletionStatusModel,
+  // AssignmentTaskTypeModel,
+  // CourseStatusModel,
   ScholarshipFundingModel,
 } from 'lms-types';
 
@@ -109,9 +109,9 @@ export const addAssignmentSchema = z.object({
     }),
   submission: z.enum(submissionsEnum, { message: 'Invalid submission method' }),
   description: z.string().optional(),
-  taskType: z.nativeEnum(AssignmentTaskTypeModel, {
-    message: 'Invalid task type',
-  }),
+  // taskType: z.nativeEnum(AssignmentTaskTypeModel, {
+  //   message: 'Invalid task type',
+  // }),
   classId: z
     .number({ message: 'Class ID must be a number' })
     .min(1, { message: 'Class ID must be at least 1' }),
@@ -130,9 +130,9 @@ export const updateAssignmentSchema = z.object({
     .optional(),
   deadline: z.date({ message: 'Invalid date format' }).optional(),
   description: z.string().optional(),
-  taskType: z
-    .nativeEnum(AssignmentTaskTypeModel, { message: 'Invalid task type' })
-    .optional(),
+  // taskType: z
+  //   .nativeEnum(AssignmentTaskTypeModel, { message: 'Invalid task type' })
+  //   .optional(),
   courseId: z
     .number({ message: 'Course ID must be a number' })
     .min(1, { message: 'Course ID must be at least 1' }),
@@ -154,15 +154,15 @@ export const updatePersonalAssignmentSchema = z.object({
     .optional(),
   deadline: z.date({ message: 'Invalid date format' }).optional(),
   description: z.string().optional(),
-  taskType: z
-    .nativeEnum(AssignmentTaskTypeModel, { message: 'Invalid task type' })
-    .optional(),
+  // taskType: z
+  //   .nativeEnum(AssignmentTaskTypeModel, { message: 'Invalid task type' })
+  //   .optional(),
   course: z.string().optional(),
-  completionStatus: z
-    .nativeEnum(AssignmentCompletionStatusModel, {
-      message: 'Invalid completion status',
-    })
-    .optional(),
+  // completionStatus: z
+  //   .nativeEnum(AssignmentCompletionStatusModel, {
+  //     message: 'Invalid completion status',
+  //   })
+  //   .optional(),
   assignmentId: z
     .number({ message: 'Assignment ID must be a number' })
     .min(1, { message: 'Assignment ID must be at least 1' }),
@@ -189,7 +189,7 @@ export const addCourseSchema = z.object({
   ]),
   title: z.string().min(1, { message: 'Title is required' }),
   description: z.string().optional(),
-  status: z.nativeEnum(CourseStatusModel, { message: 'Invalid status' }),
+  // status: z.nativeEnum(CourseStatusModel, { message: 'Invalid status' }),
   categoryId: z.union([
     z.literal(''),
     z.number({ message: 'Category ID must be a number' }).optional(),
@@ -215,9 +215,9 @@ export const updateCompletionSchema = z.object({
   completionId: z
     .number({ message: 'Completion ID must be a number' })
     .min(1, { message: 'Completion ID must be at least 1' }),
-  completionStatus: z.nativeEnum(AssignmentCompletionStatusModel, {
-    message: 'Invalid completion status',
-  }),
+  // completionStatus: z.nativeEnum(CompletionStatusModel, {
+  //   message: 'Invalid completion status',
+  // }),
 });
 
 export const createCompletionSchema = z.object({
@@ -230,9 +230,9 @@ export const createCompletionSchema = z.object({
   assignmentId: z
     .number({ message: 'Assignment ID must be a number' })
     .min(1, { message: 'Assignment ID must be at least 1' }),
-  completionStatus: z.nativeEnum(AssignmentCompletionStatusModel, {
-    message: 'Invalid completion status',
-  }),
+  // completionStatus: z.nativeEnum(AssignmentCompletionStatusModel, {
+  //   message: 'Invalid completion status',
+  // }),
 });
 
 export const deleteCompletionSchema = z.object({
@@ -313,7 +313,7 @@ export const deleteEventSchema = z.object({
     .min(1, { message: 'Event ID must be at least 1' }),
 });
 
-import { UserRoleModel } from 'lms-types';
+import { UserRole } from 'lms-types';
 
 // Update email schema
 export const updateEmailSchema = z.object({
@@ -339,7 +339,7 @@ export const updatePasswordSchema = z
 // Update role schema
 export const updateRoleSchema = z.object({
   userId: z.string().min(1, { message: 'User ID is required' }),
-  role: z.nativeEnum(UserRoleModel, {
+  role: z.nativeEnum(UserRole, {
     message: 'Invalid role',
   }),
 });
@@ -395,14 +395,94 @@ export const beasiswaFormSchema = z.object({
 
   // For files, you can just mark them as unknown or optional,
   // then handle them separately in your endpoint
-  suratPermohonanBeasiswa: z.any().optional(),
-  suratKeteranganAktif: z.any().optional(),
-  suratKeteranganTidakMampu: z.any().optional(),
-  rincianBiayaUKT: z.any().optional(),
-  slipGaji: z.any().optional(),
-  suratCV: z.any().optional(),
-  esaiFinansial: z.any().optional(),
-  tagihanListrik: z.any().optional(),
+  suratPermohonanBeasiswa: z
+    .any()
+    .refine(
+      (files) => {
+        if (files?.length === 0) return true;
+        if (!files?.[0]) return true;
+        return files?.[0]?.type === 'application/pdf';
+      },
+      { message: 'Only PDF files are allowed' }
+    )
+    .optional(),
+  suratKeteranganAktif: z
+    .any()
+    .refine(
+      (files) => {
+        if (files?.length === 0) return true;
+        if (!files?.[0]) return true;
+        return files?.[0]?.type === 'application/pdf';
+      },
+      { message: 'Only PDF files are allowed' }
+    )
+    .optional(),
+  suratKeteranganTidakMampu: z
+    .any()
+    .refine(
+      (files) => {
+        if (files?.length === 0) return true;
+        if (!files?.[0]) return true;
+        return files?.[0]?.type === 'application/pdf';
+      },
+      { message: 'Only PDF files are allowed' }
+    )
+    .optional(),
+  rincianBiayaUKT: z
+    .any()
+    .refine(
+      (files) => {
+        if (files?.length === 0) return true;
+        if (!files?.[0]) return true;
+        return files?.[0]?.type === 'application/pdf';
+      },
+      { message: 'Only PDF files are allowed' }
+    )
+    .optional(),
+  slipGaji: z
+    .any()
+    .refine(
+      (files) => {
+        if (files?.length === 0) return true;
+        if (!files?.[0]) return true;
+        return files?.[0]?.type === 'application/pdf';
+      },
+      { message: 'Only PDF files are allowed' }
+    )
+    .optional(),
+  suratCV: z
+    .any()
+    .refine(
+      (files) => {
+        if (files?.length === 0) return true;
+        if (!files?.[0]) return true;
+        return files?.[0]?.type === 'application/pdf';
+      },
+      { message: 'Only PDF files are allowed' }
+    )
+    .optional(),
+  esaiFinansial: z
+    .any()
+    .refine(
+      (files) => {
+        if (files?.length === 0) return true;
+        if (!files?.[0]) return true;
+        return files?.[0]?.type === 'application/pdf';
+      },
+      { message: 'Only PDF files are allowed' }
+    )
+    .optional(),
+  tagihanListrik: z
+    .any()
+    .refine(
+      (files) => {
+        if (files?.length === 0) return true;
+        if (!files?.[0]) return true;
+        return files?.[0]?.type === 'application/pdf';
+      },
+      { message: 'Only PDF files are allowed' }
+    )
+    .optional(),
 });
 
 export const updateScholarshipSchema = z.object({

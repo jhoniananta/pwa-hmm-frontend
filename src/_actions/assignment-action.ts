@@ -57,7 +57,7 @@ export const createPersonalAssignment = actionClient
       const { refresh_token, access_token } = await verifySession();
       const res = await fetch(
         env.API_URL +
-          $PersonalAssignmentAPI.CreateAssignment.generateUrl(userId),
+          $PersonalAssignmentAPI.CreateAssignment.generateUrl(),
         {
           method: 'POST',
           headers: {
@@ -169,7 +169,6 @@ export const updatePersonalAssignment = actionClient
       const res = await fetch(
         env.API_URL +
           $PersonalAssignmentAPI.UpdateAssignment.generateUrl(
-            userId,
             Number(assignmentId)
           ),
         {
@@ -278,7 +277,7 @@ export const deleteAssignment = actionClient
       revalidatePath('/portal/atur-atur/assignments');
       revalidateTag('assignments');
       revalidateTag(`course-${courseId}-assignments`);
-      return data as $CourseClassAssignmentAPI.DeleteAssignment.Response['data'];
+      return data;
     } catch (err) {
       if (err instanceof Error) {
         throw new PWAError(err.message);
