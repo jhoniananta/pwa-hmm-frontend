@@ -18,6 +18,7 @@ import {flattenValidationErrors} from 'next-safe-action';
 import {$UserAPI as userAPI, $AuthenticationAPI as authAPI, $AuthenticationAPI} from "lms-types";
 import {fetchAction} from '@/lib/fetch';
 import {z} from 'zod';
+import getVerboseStatus from "@/lib/getVerboseStatus";
 
 export const signUp = actionClient
     .metadata({actionName: 'signUp'})
@@ -66,6 +67,8 @@ export const signIn = actionClient
     })
     .action(async ({parsedInput: {email, password}}) => {
         try {
+            const isVerbose = getVerboseStatus()
+
             const res = await fetch(env.API_URL + authAPI.SignIn.generateUrl(), {
                 method: 'POST',
                 headers: {
@@ -77,17 +80,17 @@ export const signIn = actionClient
                 } as $AuthenticationAPI.SignIn.Dto),
             });
 
-            console.log(res)
+            if (isVerbose) console.log('res: ', res)
 
             const {access_token, refresh_token, expire} = getTokenFromResponse(
                 res
             );
 
-            const signInRes = await res.json();
-
-            if (signInRes.error) {
-                throw new PWAError(signInRes.error.message);
-            }
+            // ToDo: Recheck. No need to call? since there's no return body
+            // const signInRes = await res.json();
+            // if (signInRes.error) {
+            //     throw new PWAError(signInRes.error.message);
+            // }
 
             const data = await fetch(env.API_URL + userAPI.GetMe.generateUrl(), {
                 headers: {
@@ -105,15 +108,17 @@ export const signIn = actionClient
                 throw new PWAError('Failed to retrieve tokens');
             }
 
-            const {id, role} = dataRt.data;
+            const {userId, role} = dataRt.data;
 
-            void createSession(id, role, access_token, refresh_token, expire ?? '0');
+            void createSession(userId, role, access_token, refresh_token, expire ?? '0');
+
             return {
                 message: 'User signed in successfully',
                 status: 'success',
                 redirect: true,
             };
         } catch (err) {
+            console.log("exception: ", err)
             if (err instanceof Error) {
                 throw new PWAError(err.message);
             }
