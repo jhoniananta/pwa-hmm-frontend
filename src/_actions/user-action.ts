@@ -77,6 +77,8 @@ export const signIn = actionClient
                 } as $AuthenticationAPI.SignIn.Dto),
             });
 
+            console.log(res)
+
             const {access_token, refresh_token, expire} = getTokenFromResponse(
                 res
             );
@@ -172,7 +174,7 @@ export const editProfile = actionClient
                 ...input,
             };
 
-            const res = await fetch(env.API_URL + userAPI.UpdateUserProfile.generateUrl, {
+            const res = await fetch(env.API_URL + userAPI.UpdateUserProfile.generateUrl(), {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -214,7 +216,7 @@ export const updateAvatar = actionClient
             }
 
             const res = await fetch(
-                env.API_URL + userAPI.UpdateUserProfile.generateUrl,
+                env.API_URL + userAPI.UpdateUserProfile.generateUrl(),
                 {
                     method: 'PATCH',
                     headers: {
