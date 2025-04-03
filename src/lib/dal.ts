@@ -6,56 +6,56 @@ import {$UserAPI} from "lms-types";
 import {cookieGenerator} from "@/lib/utils";
 
 export const getUser = cache(async () => {
-  const session = await verifySession();
-  if (!session.isAuth) return null;
+    const session = await verifySession();
+    if (!session.isAuth) return null;
 
-  try {
-    const {refresh_token, access_token, userId} = await verifySession();
+    try {
+        const {refresh_token, access_token, userId} = await verifySession();
 
-    const data = await fetch(env.API_URL + $UserAPI.GetUserById.generateUrl(session.userId),
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Cookie: cookieGenerator(access_token, refresh_token),
-        },
-      }
-    );
-    const user = await data.json();
+        const data = await fetch(env.API_URL + $UserAPI.GetMe.generateUrl(),
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Cookie: cookieGenerator(access_token, refresh_token),
+                },
+            }
+        );
+        const user = await data.json();
 
-    if (user.error) {
-      throw new Error(user.error);
+        if (user.error) {
+            throw new Error(user.error);
+        }
+
+        if (!data.ok) {
+            throw new PWAError('Error fetching user data');
+        }
+
+        return user.data as $UserAPI.GetMe.Response["data"];
+    } catch (err) {
+        throw new PWAError('Error fetching user data');
     }
-
-    if (!data.ok) {
-      throw new PWAError('Error fetching user data');
-    }
-
-    return user.data as $UserAPI.GetUserById.Response["data"];
-  } catch (err) {
-    throw new PWAError('Error fetching user data');
-  }
 });
 
 export const getFullUser = cache(async () => {
-  const {refresh_token, access_token, isAuth, userId} = await verifySession();
-  if (!isAuth) return null;
+    const {refresh_token, access_token, isAuth, userId} = await verifySession();
+    if (!isAuth) return null;
 
-  try {
-    const res = await fetch(env.API_URL + $UserAPI.GetMe.generateUrl(), {
-      headers: {
-        Cookie: cookieGenerator(access_token, refresh_token),
-      },
-    });
+    try {
+        const res = await fetch(env.API_URL + $UserAPI.GetMe.generateUrl(), {
+            headers: {
+                Cookie: cookieGenerator(access_token, refresh_token),
+            },
+        });
 
-    const {error, data} = await res.json();
-    if (!res.ok || error) {
-      return handleError(error);
+        const {error, data} = await res.json();
+        if (!res.ok || error) {
+            return handleError(error);
+        }
+
+        void updateSession(res);
+
+        return data as $UserAPI.GetMe.Response["data"];
+    } catch (err) {
+        throw new PWAError('Error fetching user data');
     }
-
-    void updateSession(res);
-
-    return data as $UserAPI.GetMe.Response["data"];
-  } catch (err) {
-    throw new PWAError('Error fetching user data');
-  }
 });

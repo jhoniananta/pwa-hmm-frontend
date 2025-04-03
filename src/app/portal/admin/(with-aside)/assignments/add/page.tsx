@@ -8,18 +8,18 @@ import {getClasses} from "@/_actions/class-action";
 export const dynamic = 'force-dynamic';
 
 export default async function Add() {
-  const courses = await getCourses();
-  const classes_ = await Promise.all(courses.flatMap(async course => {
-    const c_ = await getClasses(course.id);
-    return c_.map(c => ({...c, courseId: course.id}));
-  }));
+    const courses = await getCourses();
+    const classes_ = await Promise.all(courses.flatMap(async course => {
+        const c_ = await getClasses(course.courseId);
+        return c_.map(c => ({...c, courseId: course.courseId}));
+    }));
 
-  const classes = classes_.flat();
-  return <>
-    <AdminHeader title='Add Assignment'/>
-    <AdminBreadcrumb/>
-    <Wrapper>
-      <AddForm courses={courses} classes={classes}/>
-    </Wrapper>
-  </>
+    const classes = classes_.flat();
+    return <>
+        <AdminHeader title='Add Assignment'/>
+        <AdminBreadcrumb/>
+        <Wrapper>
+            <AddForm courses={courses} classes={classes}/>
+        </Wrapper>
+    </>
 }
