@@ -26,7 +26,7 @@ async function decrypt(session: string | undefined = '') {
 export async function middleware(request: NextRequest) {
     // Add a new header x-current-path which passes the path to downstream components
     const protectedPaths = [
-        // 'dashboard',
+        'dashboard',
         'profile',
         // 'assignments',
         // 'courses',
@@ -39,8 +39,9 @@ export async function middleware(request: NextRequest) {
     const session = await decrypt(cookie);
     const role = session?.role;
 
+
     if (
-        protectedPaths.includes(request.nextUrl.pathname.split('/')[1]) &&
+        request.nextUrl.pathname.split('/')[1] !== 'sign-in' &&
         !session?.userId
     ) {
         return NextResponse.redirect(new URL('/sign-in', request.url));
@@ -57,9 +58,9 @@ export async function middleware(request: NextRequest) {
     //   return NextResponse.redirect(new URL('/sign-in', request.url));
     // }
 
-    // if (request.nextUrl.pathname === '/sign-in' && session?.userId) {
-    //   return NextResponse.redirect(new URL('/dashboard', request.url));
-    // }
+    if (request.nextUrl.pathname === '/sign-in' && session?.userId) {
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
 }
 
 export const config = {

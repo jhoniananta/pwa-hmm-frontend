@@ -20,6 +20,7 @@ import {
 import {flattenValidationErrors} from 'next-safe-action';
 import {cookieGenerator} from '@/lib/utils';
 import {revalidatePath, revalidateTag} from 'next/cache';
+import getVerboseStatus from "@/lib/getVerboseStatus";
 
 type getUserAssignmentsRT = $PersonalAssignmentAPI.GetAssignments.Response['data'];
 
@@ -53,6 +54,8 @@ export const createPersonalAssignment = actionClient
         const bodyInput: $PersonalAssignmentAPI.CreateAssignment.Dto = {
             ...parsedInput,
         };
+
+        const isVerbose = getVerboseStatus()
         try {
             const {refresh_token, access_token} = await verifySession();
             const res = await fetch(
@@ -68,7 +71,16 @@ export const createPersonalAssignment = actionClient
                 }
             );
 
+            if (isVerbose) {
+                console.log('@createPersonalAssignment * res:', res);
+            }
+
             const {data, error} = await res.json();
+
+            if (isVerbose) {
+                console.log('@createPersonalAssignment * data:', data);
+                console.log('@createPersonalAssignment * error:', error);
+            }
 
             if (!res.ok) {
                 return handleError(error);
@@ -80,9 +92,9 @@ export const createPersonalAssignment = actionClient
             return data;
         } catch (err) {
             if (err instanceof Error) {
-                throw new PWAError(err.message);
+                throw new PWAError(err.message, err);
             }
-            throw new PWAError('Failed to create personal assignment');
+            throw new PWAError('Failed to create personal assignment', err);
         }
     });
 
@@ -136,7 +148,7 @@ export const updateAssignment = actionClient
             return data as $CourseClassAssignmentAPI.UpdateAssignment.Response['data'];
         } catch (err) {
             if (err instanceof Error) {
-                throw new PWAError(err.message);
+                throw new PWAError(err.message, err);
             }
             throw new PWAError('Failed to update assignment');
         }
@@ -149,18 +161,16 @@ export const updatePersonalAssignment = actionClient
             flattenValidationErrors(ve).fieldErrors,
     })
     .action(async ({parsedInput}) => {
-        const {userId} = await verifySession();
+        await verifySession();
         const {assignmentId, ...otherInput} = parsedInput;
-        if (!otherInput.title || !otherInput.description || !otherInput.deadline || !otherInput.submission || !otherInput.taskType) {
-            throw new PWAError('Missing required fields');
-        }
-        const bodyInput: $PersonalAssignmentAPI.CreateAssignment.Dto = {
+        const bodyInput: $PersonalAssignmentAPI.UpdateAssignment.Dto = {
             title: otherInput.title,
             description: otherInput.description,
             deadline: otherInput.deadline,
             submission: otherInput.submission,
             taskType: otherInput.taskType,
-            course: '',
+            course: otherInput.course,
+            completionStatus: otherInput.completionStatus,
         };
 
         try {
@@ -179,6 +189,10 @@ export const updatePersonalAssignment = actionClient
                     body: JSON.stringify(bodyInput),
                 }
             );
+
+            console.log('@updatePersonalAssignment * otherInput:', otherInput)
+            console.log('@updatePersonalAssignment * res:', res)
+            console.log('@updatePersonalAssignment * body:', bodyInput)
 
             const {data, error} = await res.json();
             if (!res.ok) {

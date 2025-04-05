@@ -6,7 +6,6 @@ import {cache} from 'react';
 import {NextResponse} from 'next/server';
 import {getTokenFromResponse} from './utils';
 import type {UserRole} from "lms-types";
-import isVerbose from "@/lib/isVerbose";
 import getVerboseStatus from "@/lib/getVerboseStatus";
 
 const key = new TextEncoder().encode(env.AUTH_SECRET);
@@ -53,8 +52,6 @@ export async function createSession(
         expires: expire,
     });
 
-    if (isVerbose) console.log('@createSession', id, role, access_token, refresh_token, expire);
-
     cookies().set('session-hmm', session, {
         httpOnly: true,
         secure: env.NODE_ENV === 'production',
@@ -99,13 +96,10 @@ export async function updateSession(res: Response) {
 }
 
 export const verifySession = cache(async () => {
+    console.log('verifying session...')
     const isVerbose = getVerboseStatus()
 
-    if (isVerbose) console.log('Verifying session...')
-
     const cookie = cookies().get('session-hmm')?.value;
-
-    if (isVerbose) console.log('Cookie:', cookie)
 
     if (!cookie) {
         return {isAuth: false, userId: '', access_token: '', refresh_token: ''};
@@ -113,13 +107,9 @@ export const verifySession = cache(async () => {
 
     const session = await decrypt(cookie);
 
-    if (isVerbose) console.log('Session:', session)
-
     if (!session?.userId) {
         return {isAuth: false, userId: '', access_token: '', refresh_token: ''};
     }
-
-    if (isVerbose) console.log('Session verified:', session)
 
     return {
         isAuth: true,

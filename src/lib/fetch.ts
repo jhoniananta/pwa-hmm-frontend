@@ -48,17 +48,16 @@ export function fetchAction<T>(
 
             let fetchUrl = url.replace(':userId', userId);
 
+            if (true) {
+                console.log('@fetchAction * fetchUrl: ', fetchUrl);
+            }
+
             if (queryParams) {
                 fetchUrl += '?';
                 for (const key in queryParams) {
                     fetchUrl += `${key}=${queryParams[key]}&`;
                 }
                 fetchUrl = fetchUrl.slice(0, -1);
-            }
-
-            if (isVerbose) {
-                console.log("@fetchAction")
-                console.log('generatedCookie', cookieGenerator(access_token, refresh_token));
             }
 
             const res = await fetch(env.API_URL + fetchUrl, {
@@ -85,7 +84,9 @@ export function fetchAction<T>(
                 logResponse && console.log(res);
             }
 
-            const {error, data} = await res.json();
+            const rawData = await res.json()
+            const {error, data} = rawData
+
             if (!res.ok || error) {
                 console.log(error);
                 return handleError(error, name);

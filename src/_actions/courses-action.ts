@@ -26,12 +26,10 @@ export const getCourses = fetchAction<courseAPI.GetCourses.Response['data']>(
     'Failed to fetch courses',
     {
         queryParams: {
-            include_category: true,
-            pageSize: 999,
-            pageNumber: 1,
+            limit: 999,
         },
         tags: ['courses'],
-        name: 'getCourses'
+        name: 'getCourses',
     }
 );
 

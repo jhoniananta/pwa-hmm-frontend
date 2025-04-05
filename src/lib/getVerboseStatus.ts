@@ -1,3 +1,3 @@
 export default function getVerboseStatus(): boolean {
-    return (process.env.NODE_ENV as string).toLowerCase() === 'development'
+    return (typeof process.env.IS_VERBOSE === 'string' && (process.env.IS_VERBOSE as string).toLowerCase() === 'true')
 }

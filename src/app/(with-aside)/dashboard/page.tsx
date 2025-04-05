@@ -31,7 +31,6 @@ export default async function Home() {
     ];
 
     const schedules = await getAllUserSchedules();
-    console.log('schedules: ', schedules)
 
     return (
         <div className="flex flex-col items-stretch flex-1 h-max gap-6 relative">

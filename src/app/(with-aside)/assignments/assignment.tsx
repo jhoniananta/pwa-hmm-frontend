@@ -1,7 +1,7 @@
 'use client';
 import React, {type BaseSyntheticEvent, useEffect, useId, useState} from 'react';
 import {AnimatePresence, motion} from 'framer-motion';
-import {ChevronRight, LayoutList, Notebook, ChevronUpIcon, ChevronDownIcon, Calendar} from 'lucide-react';
+import {ChevronDownIcon, ChevronRight, ChevronUpIcon, LayoutList, Notebook} from 'lucide-react';
 import {Separator} from '@/components/ui/separator';
 import Button from '@/components/ui/button/button';
 import {Input} from '@/components/ui/input';
@@ -16,10 +16,7 @@ import {
 } from '@/components/ui/select';
 import {useInterval} from '@/hooks/useInterval';
 import MotionFramer from '@/components/client/modal-framer';
-import {
-    $PersonalAssignmentAPI,
-    $UserAPI, AssignmentType, CourseModel,
-} from 'lms-types';
+import {$PersonalAssignmentAPI, AssignmentType, CourseModel,} from 'lms-types';
 import MotionOverlay from '@/components/client/modal-overlay';
 import {Badge} from "@/components/ui/badge";
 import {useAction} from "next-safe-action/hooks";
@@ -34,6 +31,7 @@ import {UUC2N} from "@/lib/utils";
 import Search from '@/components/client/search';
 import useDebounce from '@/hooks/useDebounce';
 import Pagination from '@/components/client/pagination';
+import {PWAError} from "@/lib/error";
 
 const Assignment = ({
                         assignments,
@@ -53,23 +51,18 @@ const Assignment = ({
         .map((assignment) => ({
             // @ts-ignore
             status: assignment.completionStatus,
-            course: assignment.course,
-            class: assignment.assignmentType,
+            course: assignment.course as string,
             name: assignment.title,
             deadline: new Date(assignment.deadline),
             submission: assignment.submission,
             taskType: assignment.taskType === "PERSONAL_TASK" ? "Personal Task" : "Group Task",
             description: assignment.description,
             id: assignment.assignmentId,
-            classId: null,
-            courseId: null,
-            completionId: null,
             type: assignment.assignmentType,
         }))
         .filter((item) =>
             item.name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-            item.course.toString().toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-            item.class.toString().toLowerCase().includes(debouncedSearch.toLowerCase())
+            item.course.toString().toLowerCase().includes(debouncedSearch.toLowerCase())
         );
     const {executeAsync, isExecuting} = useAction(createPersonalAssignment, {
         onSuccess: () => {
@@ -96,7 +89,6 @@ const Assignment = ({
             submission: '',
             description: undefined,
             taskType: 'PERSONAL_TASK',
-            completionStatus: 'NOT_STARTED',
         },
         mode: 'onChange',
     })
@@ -195,69 +187,16 @@ const Assignment = ({
             setActive(null);
         }
     })
-    const {execute: exeUC} = useAction(updateCompletion, {
-        onSuccess: () => {
-            toast.success('Assignment updated');
-        },
-        onError: ({error: {serverError, validationErrors}}) => {
-            toast.error(serverError || validationErrors?.toString() || 'Failed to update assignment');
-        },
-        onSettled: () => {
-            setActive(null);
-        }
-    })
-    const {execute: exeCC} = useAction(createCompletion, {
-        onSuccess: () => {
-            toast.success('Assignment updated');
-        },
-        onError: ({error: {serverError, validationErrors}}) => {
-            toast.error(serverError || validationErrors?.toString() || 'Failed to update assignment');
-        },
-        onSettled: () => {
-            setActive(null);
-        }
-    })
 
     function updateComp(assignment: (typeof data)[number], status: "NOT_STARTED" | "IN_PROGRESS" | "DONE") {
         if (assignment.type === AssignmentType.PERSONAL_ASSIGNMENT) {
+            console.log('@updateComp * status:', status)
             exeUPA({
                 assignmentId: Number(assignment.id),
                 completionStatus: status,
             })
         } else {
-            if (assignment.completionId) {
-                const assignmentId = Number(assignment.id);
-                const classId = Number(assignment.classId);
-                const courseId = Number(assignment.courseId);
-                const completionId = Number(assignment.completionId);
-
-                if (!isNaN(assignmentId) && !isNaN(classId) && !isNaN(courseId) && !isNaN(completionId)) {
-                    exeUC({
-                        assignmentId,
-                        classId,
-                        courseId,
-                        completionId,
-                        completionStatus: status,
-                    });
-                } else {
-                    toast.error('Invalid assignment parameters');
-                }
-            } else {
-                const assignmentId = Number(assignment.id);
-                const classId = Number(assignment.classId);
-                const courseId = Number(assignment.courseId);
-
-                if (!isNaN(assignmentId) && !isNaN(classId) && !isNaN(courseId)) {
-                    exeCC({
-                        assignmentId,
-                        classId,
-                        courseId,
-                        completionStatus: status,
-                    });
-                } else {
-                    toast.error('Invalid assignment parameters');
-                }
-            }
+            throw new PWAError('Assignment type is not personal assignment');
         }
     }
 
@@ -495,18 +434,18 @@ const Assignment = ({
             <AnimatePresence>
                 {active && typeof active === 'object' && (
                     <MotionFramer
-                        id={`card-${active.name + active.class + active.course}-${id}`}
+                        id={`card-${active.name + active.course}-${id}`}
                     >
                         <div className='flex flex-col gap-3'>
                             <div className='flex items-center justify-between'>
                                 <div className='flex items-center gap-4 text-navy'>
                                     <motion.div
-                                        layoutId={`notebook-${active.name + active.class + active.course}-${id}`}
+                                        layoutId={`notebook-${active.name + active.course}-${id}`}
                                     >
                                         <Notebook size={32}/>
                                     </motion.div>
                                     <motion.h2
-                                        layoutId={`name-${active.name + active.class + active.course}-${id}`}
+                                        layoutId={`name-${active.name + active.course}-${id}`}
                                         className='font-medium text-lg'
                                     >
                                         {active.name}
@@ -522,7 +461,7 @@ const Assignment = ({
                                     <td className='text-sm text-muted-foreground'>Course</td>
                                     <td className='text-sm'>:</td>
                                     <motion.p
-                                        layoutId={`course-${active.name + active.class + active.course
+                                        layoutId={`course-${active.name + active.course
                                         }-${id}`}
                                         className='text-sm'
                                     >
@@ -533,7 +472,7 @@ const Assignment = ({
                                     <td className='text-sm text-muted-foreground'>Deadline</td>
                                     <td className='text-sm'>:</td>
                                     <motion.p
-                                        layoutId={`deadline-${active.name + active.class + active.course
+                                        layoutId={`deadline-${active.name + active.course
                                         }-${id}`}
                                         className='text-sm'
                                     >
@@ -546,7 +485,7 @@ const Assignment = ({
                                     </td>
                                     <td className='text-sm pr-2'>:</td>
                                     <motion.p
-                                        layoutId={`submission-${active.name + active.class + active.course
+                                        layoutId={`submission-${active.name + active.course
                                         }-${id}`}
                                         className='text-sm'
                                     >
@@ -557,7 +496,7 @@ const Assignment = ({
                                     <td className='text-sm text-muted-foreground'>Type</td>
                                     <td className='text-sm'>:</td>
                                     <motion.p
-                                        layoutId={`class-${active.name + active.class + active.course
+                                        layoutId={`class-${active.name + active.course
                                         }-${id}`}
                                         className='text-sm'
                                     >
@@ -608,8 +547,8 @@ const Assignment = ({
                         {paginatedData.map((card, i) => (
                             <>
                                 <motion.li
-                                    layoutId={`card-${card.name + card.class + card.course}-${id}`}
-                                    key={`${card.name + card.class}-${id + i}`}
+                                    layoutId={`card-${card.name + card.course}-${id}`}
+                                    key={`${card.name}-${id + i}`}
                                     onClick={() => setActive(card)}
                                     className='py-3 px-6 md:px-8 flex w-full relative cursor-pointer justify-between items-center gap-4 hover:bg-gray-500/20 transition-[background-color] rounded-lg'
                                 >
@@ -618,7 +557,7 @@ const Assignment = ({
                                     ></div>
                                     <div className='flex gap-4 md:gap-6 items-center w-full'>
                                         <motion.div
-                                            layoutId={`notebook-${card.name + card.class + card.course}-${id}`}
+                                            layoutId={`notebook-${card.name + card.course}-${id}`}
                                             className='text-navy'
                                         >
                                             <LayoutList className='w-7 h-7 md:w-10 md:h-10'/>
@@ -626,7 +565,7 @@ const Assignment = ({
                                         <div className="flex flex-col md:flex-row items-center flex-1">
                                             <div className='md:w-1/2 overflow-hidden'>
                                                 <motion.h2
-                                                    layoutId={`name-${card.name + card.class + card.course}-${id}`}
+                                                    layoutId={`name-${card.name + card.course}-${id}`}
                                                     title={card.name}
                                                     className='font-medium md:text-lg text-sm line-clamp-1'
                                                 >
@@ -634,7 +573,7 @@ const Assignment = ({
                                                 </motion.h2>
                                                 <p className='flex gap-2 items-center'>
                           <span className='text-xs md:text-sm text-muted-foreground'>
-                            {`${card.class}`}
+                            {`test`}
                           </span>
                                                     -
                                                     <span

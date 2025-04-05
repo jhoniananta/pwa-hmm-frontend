@@ -20,11 +20,6 @@ export const getTokenFromResponse = (res: Response) => {
     const refresh_token = set_cookies?.[4].split(';')[0];
     const expire = new Date(Date.now() + 1000 * 60 * 60);
 
-    if (isVerbose) {
-        console.log('access_token: ', access_token);
-        console.log('refresh_token: ', refresh_token);
-    }
-
     return {access_token, refresh_token, expire};
 };
 
