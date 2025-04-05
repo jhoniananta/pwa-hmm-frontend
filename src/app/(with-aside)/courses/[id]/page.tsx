@@ -60,24 +60,45 @@ export default async function CoursesPage({
     //     </div>
     // );
 
+
     const isExpanded = searchParams['expanded'] === 'true';
     const format = searchParams['format'] || 'video';
 
     const lessons = await getLessons(id);
     if (lessons.length === 0) return;
-    const lessonId = searchParams['lessonId'] ?? String(lessons[0].lessonId);
 
+    const lessonId = searchParams['lessonId'] ?? String(lessons[0].lessonId);
     const videos = lessonId ? await getVideos(id, lessonId) : [];
-    if (videos.length === 0) return;
+    if (videos.length === 0) {
+        return (<div className='flex gap-6'>
+            <FormatSelector format={format}/>
+            {lessonId && <Lesson
+                lessonId={lessonId}
+                params={`?expanded=${isExpanded}`}
+                lessons={lessons}
+            />}
+        </div>)
+    }
 
     const materials = await Promise.all(
-        videos.map(async ({videoId, youtubeLink}) => {
-            const {title, thumbnail_url, author_name} = await getVideoData(youtubeLink);
-            return {videoId, youtubeLink, title, thumbnail_url, author_name};
+        videos.map(async ({videoId, youtubeLink, title}) => {
+            try {
+                const {thumbnail_url, author_name} = await getVideoData(youtubeLink);
+                return {videoId, youtubeLink, title, thumbnail_url, author_name};
+            } catch (exception) {
+                return {
+                    title,
+                    videoId,
+                    youtubeLink,
+                    thumbnail_url: 'https://static.vecteezy.com/system/resources/thumbnails/057/181/018/small_2x/error-404-message-with-shake-noise-effect-error-404-notification-free-video.jpg',
+                    author_name: 'Unknown Author'
+                };
+            }
+
         })
     );
 
-    const query = searchParams['q'] || materials[1].youtubeLink;
+    const query = searchParams['q'] || materials[0].youtubeLink;
     const title = materials.find(({youtubeLink}) => youtubeLink === query)?.title;
     const author = materials.find(
         ({youtubeLink}) => youtubeLink === query
