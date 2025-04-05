@@ -36,7 +36,7 @@ export function fetchAction<T>(
             method = bodyObject ? 'POST' : 'GET',
             revalidatePath,
             revalidateTag,
-            cache = 'force-cache',
+            cache = 'no-cache',
             revalidate,
             tags,
             name,
@@ -75,9 +75,8 @@ export function fetchAction<T>(
             });
 
             if (isVerbose) {
-                console.log("@fetchAction")
-                console.log('res', res);
-                console.log('body', bodyObject);
+                console.log('@fetchAction * res', res);
+                console.log('@fetchAction * body', bodyObject);
             }
 
             {
@@ -86,6 +85,10 @@ export function fetchAction<T>(
 
             const rawData = await res.json()
             const {error, data} = rawData
+
+            if (isVerbose) {
+                console.log('@fetchAction * data:', data)
+            }
 
             if (!res.ok || error) {
                 console.log(error);

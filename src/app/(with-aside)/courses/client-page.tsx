@@ -31,9 +31,10 @@ const ClientPage = ({courses, isAllCourse}: ClientPageProps) => {
         '/images/printer.png',
     ];
 
-    const filteredCourses = courses.filter((course) =>
-        course.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    // const filteredCourses = courses.filter((course) =>
+    //     course.title.toLowerCase().includes(searchQuery.toLowerCase())
+    // );
+    const filteredCourses = courses;
 
     return (
         <>

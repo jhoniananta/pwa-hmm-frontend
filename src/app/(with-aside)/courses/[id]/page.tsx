@@ -29,68 +29,58 @@ export default async function CoursesPage({
 }) {
     const course = await getCourseById(id);
 
-    return (
-        <div className="w-full">
-            <ScrollArea
-                className='w-full bg-white shadow-md rounded-xl md:relative border-t-0 md:h-[calc(100vh-4rem)]'>
-                <div className="p-6 space-y-6">
-                    <div className="relative rounded-xl overflow-hidden
-                          w-full md:w-[600px] lg:w-[800px]
-                          h-[200px] md:h-[300px] lg:h-[400px]
-                          mx-auto">
-                        <Image
-                            src={course.image || '/images/mesin.png'}
-                            alt={course.title}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 100vw,
-                       (max-width: 1024px) 600px,
-                       800px"
-                        />
-                    </div>
-                    <div className="space-y-4">
-                        <h2 className="text-2xl font-semibold">{course.title}</h2>
-                        <p className="text-gray-600">{course.description}</p>
-                        <EnrollmentModal courseId={Number(id)} courseTitle={course.title}/>
-                    </div>
-                </div>
-            </ScrollArea>
-        </div>
-    );
+    const isEnrolled = true;
+
+    // return (
+    //     <div className="w-full">
+    //         <ScrollArea
+    //             className='w-full bg-white shadow-md rounded-xl md:relative border-t-0 md:h-[calc(100vh-4rem)]'>
+    //             <div className="p-6 space-y-6">
+    //                 <div className="relative rounded-xl overflow-hidden
+    //                       w-full md:w-[600px] lg:w-[800px]
+    //                       h-[200px] md:h-[300px] lg:h-[400px]
+    //                       mx-auto">
+    //                     <Image
+    //                         src={course.image || '/images/mesin.png'}
+    //                         alt={course.title}
+    //                         fill
+    //                         className="object-cover"
+    //                         sizes="(max-width: 768px) 100vw,
+    //                    (max-width: 1024px) 600px,
+    //                    800px"
+    //                     />
+    //                 </div>
+    //                 <div className="space-y-4">
+    //                     <h2 className="text-2xl font-semibold">{course.title}</h2>
+    //                     <p className="text-gray-600">{course.description}</p>
+    //                     <EnrollmentModal courseId={Number(id)} courseTitle={course.title}/>
+    //                 </div>
+    //             </div>
+    //         </ScrollArea>
+    //     </div>
+    // );
 
     const isExpanded = searchParams['expanded'] === 'true';
+    const format = searchParams['format'] || 'video';
+
     const lessons = await getLessons(id);
-    const lessonId = searchParams['lessonId'] ?? lessons[0].lessonId;
-    const videos = await getVideos(id, lessonId);
-    const youtubeLinks = [
-        "https://youtu.be/zcZZxzkLwOc?si=6hOD1tuEH-tg6X4Z",
-        "https://youtu.be/0YDh5cpz_os?si=cs8srW_978VQy4-H",
-        "https://youtu.be/6-shbSFc48E?si=-gNxSL-IxMrQr-yL",
-        "https://youtu.be/wwSzpaTHyS8?si=juXUNc_KKxRa15CH",
-        "https://youtu.be/_5ehRI8epI0?si=mtTji0iWv0XB6Mtw",
-        "https://youtu.be/Sqr-PdVYhY4?si=qTO1QjoSZEnS0_9B",
-        "https://youtu.be/mSoEjBpJUJ0?si=dHtgMwNOQFVKRAFt",
-        "https://youtu.be/MIz-4WTeDnw?si=KiLnwfyVICXwRRBQ",
-        "https://youtu.be/Gojd8mTl3Do?si=JCVXwtg0-3xq72vj",
-        "https://youtu.be/rP5aJEq0k7s?si=NWUj9Qgz4Cj7pYO4",
-        "https://youtu.be/cPuOGUxVnX4?si=WkSuBSgg1CNS4RBk",
-        "https://youtu.be/8wMKw4m6-Rc?si=4VImG4-AzqAhQt8p",
-        "https://youtu.be/88XxC0_zs74?si=-xU4ATrwTV5Nw2TC",
-        "https://youtu.be/6W8FCW2rWNQ?si=Fv_yVm_7AswGC2jX"];
-    const videoIds = videos.map((_, index) => youtubeLinks[index % youtubeLinks.length].split('.be/')[1].split('?')[0]);
+    if (lessons.length === 0) return;
+    const lessonId = searchParams['lessonId'] ?? String(lessons[0].lessonId);
+
+    const videos = lessonId ? await getVideos(id, lessonId) : [];
+    if (videos.length === 0) return;
 
     const materials = await Promise.all(
-        videoIds.map(async (videoId) => {
-            const {title, thumbnail_url, author_name} = await getVideoData(videoId);
-            return {videoId, title, thumbnail_url, author_name};
+        videos.map(async ({videoId, youtubeLink}) => {
+            const {title, thumbnail_url, author_name} = await getVideoData(youtubeLink);
+            return {videoId, youtubeLink, title, thumbnail_url, author_name};
         })
     );
 
-    const query = searchParams['q'] || materials[0].videoId;
-    const format = searchParams['format'] || 'video';
-    const title = materials.find(({videoId}) => videoId === query)?.title;
+    const query = searchParams['q'] || materials[1].youtubeLink;
+    const title = materials.find(({youtubeLink}) => youtubeLink === query)?.title;
     const author = materials.find(
-        ({videoId}) => videoId === query
+        ({youtubeLink}) => youtubeLink === query
     )?.author_name;
     const params = `?expanded=${isExpanded}`;
 
@@ -109,7 +99,7 @@ export default async function CoursesPage({
             <div className='text-justify'>
                 <h4 className='text-sm md:text-base'>Summary:</h4>
                 <p className='text-xs md:text-sm'>
-                    {videos.find(({youtubeLink}) => youtubeLink.split('v=')[1].split('&')[0] === query)?.description}
+                    {videos.find(({youtubeLink}) => youtubeLink === query)?.description}
                 </p>
             </div>
         </div>
@@ -148,11 +138,11 @@ export default async function CoursesPage({
     return (
         <div className='flex gap-6'>
             <FormatSelector format={format}/>
-            <Lesson
+            {lessonId && <Lesson
                 lessonId={lessonId}
                 params={params}
                 lessons={lessons}
-            />
+            />}
             <ScrollArea className='w-full bg-white shadow-md rounded-xl md:relative border-t-0 md:h-[calc(100vh-4rem)]'>
                 {isEnrolled ? (
                     <>
@@ -205,7 +195,7 @@ export default async function CoursesPage({
                                     </AccordionContent>
                                 </AccordionItem>
                             </Accordion>
-                            {format === 'video' && (
+                            {format === 'video' && lessonId && (
                                 <VideoList
                                     materials={materials}
                                     isExpanded={isExpanded}
@@ -213,7 +203,7 @@ export default async function CoursesPage({
                                     lessonId={lessonId}
                                 />
                             )}
-                            {format === 'pdf' && (
+                            {format === 'pdf' && lessonId && (
                                 <PdfList
                                     materials={pdfMaterials}
                                     isExpanded={isExpanded}
@@ -221,7 +211,7 @@ export default async function CoursesPage({
                                     lessonId={lessonId}
                                 />
                             )}
-                            {format === 'link' && (
+                            {format === 'link' && lessonId && (
                                 <LinkList
                                     materials={linkMaterials}
                                     isExpanded={isExpanded}
@@ -258,7 +248,7 @@ export default async function CoursesPage({
                     </div>
                 )}
             </ScrollArea>
-            {isEnrolled && (
+            {isEnrolled && lessonId && (
                 <ScrollArea className='hidden md:block w-[450px] relative h-[calc(100vh-4rem)]'>
                     <p className='pb-4 sticky top-0 z-[2] bg-background'>All Videos</p>
                     {format === 'video' && (

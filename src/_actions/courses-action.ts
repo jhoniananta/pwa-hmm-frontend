@@ -18,7 +18,8 @@ export const getEnrolledCourses = fetchAction<
     CourseModel[]
 >(
     '/users/enrolled-courses',
-    'Failed to fetch courses'
+    'Failed to fetch courses',
+    {cache: 'no-cache'}
 );
 
 export const getCourses = fetchAction<courseAPI.GetCourses.Response['data']>(
@@ -30,6 +31,7 @@ export const getCourses = fetchAction<courseAPI.GetCourses.Response['data']>(
         },
         tags: ['courses'],
         name: 'getCourses',
+        cache: 'no-cache'
     }
 );
 
