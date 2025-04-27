@@ -30,9 +30,11 @@ export const signUp = actionClient
         try {
             const bodyInput: userAPI.CreateUser.Dto = {
                 dateOfBirth: new Date(dateOfBirth),
-                NIM: email.split('@')[0],
+                // NIM: email.split('@')[0],
                 email,
                 ...input,
+                avatar: '',
+                enrolledStudentUnits: []
             }
             const res = await fetch(env.API_URL + userAPI.CreateUser.generateUrl(), {
                 method: 'POST',
@@ -175,7 +177,7 @@ export const editProfile = actionClient
 
             const bodyInput: userAPI.UpdateUserProfile.Dto = {
                 dateOfBirth: new Date(dateOfBirth),
-                email,
+                // email,
                 ...input,
             };
 

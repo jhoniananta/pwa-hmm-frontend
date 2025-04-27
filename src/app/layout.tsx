@@ -4,7 +4,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from '@/components/ui/sonner';
-import { type ReactNode } from 'react';
+import QueryProvider from '@/components/QueryClientProvider';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -16,10 +16,10 @@ const poltawski = Poltawski_Nowy({
   weight: ['400', '500', '600', '700'],
 });
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
-  children: ReactNode;
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
@@ -37,8 +37,11 @@ export default async function RootLayout({
           'md:flex [--font-poppins:${poppins.style.fontFamily}] [--font-poltawski:${poltawski.style.fontFamily}]'
         )}
       >
-        <TooltipProvider>{children}</TooltipProvider>
-        <Toaster richColors />
+        {/* Wrap children with QueryProvider */}
+        <QueryProvider>
+          <TooltipProvider>{children}</TooltipProvider>
+          <Toaster richColors />
+        </QueryProvider>
       </body>
     </html>
   );
