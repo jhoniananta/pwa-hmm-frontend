@@ -21,7 +21,7 @@ export type LessonResponse = {
 
 
 export const getLessons = async (courseId: string) =>
-    await fetchAction<LessonResponse>(
+    await fetchAction<LessonResponse[]>(
         `/courses/${courseId}/lessons`,
         'Failed to fetch lessons',
         {
