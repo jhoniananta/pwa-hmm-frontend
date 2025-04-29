@@ -10,17 +10,29 @@ import {addClassSchema, updateClassSchema, deleteClassSchema} from "@/lib/schema
 import {flattenValidationErrors} from "next-safe-action";
 import {cookieGenerator} from "@/lib/utils";
 import {revalidatePath, revalidateTag} from "next/cache";
+import {LessonResponse} from "@/_actions/lessons-action";
+
+
+export type ClassResponse = {
+    classId: number;
+    courseId: number;
+    title: string;
+    numberOfInstructors: number;
+    numberOfAssignments: number;
+    createdAt: Date;
+    updatedAt: Date;
+}
 
 export const getClasses = async (courseId: number) =>
-    await fetchAction<$CourseClassAPI.GetClasses.Response['data']>(
-        $CourseClassAPI.GetClasses.generateUrl(courseId),
+    await fetchAction<ClassResponse[]>(
+        `/courses/${courseId}/classes`,
         'Failed to fetch classes',
         {tags: ['classes', `course-${courseId}-classes`]}
     )();
 
 export const getClassById = async (courseId: number, classId: number) =>
-    await fetchAction<$CourseClassAPI.GetClassById.Response['data']>(
-        $CourseClassAPI.GetClassById.generateUrl(courseId, classId),
+    await fetchAction<ClassResponse>(
+        `/courses/${courseId}/classes/${classId}`,
         'Failed to fetch class',
         {tags: ['classes', `class-${classId}`]}
     )();
@@ -32,34 +44,17 @@ export const createClass = actionClient
             flattenValidationErrors(ve).fieldErrors,
     })
     .action(async ({parsedInput}) => {
-        const {courseId, ...classData} = parsedInput;
-        try {
-            const {refresh_token, access_token} = await verifySession();
-            const res = await fetch(
-                env.API_URL + $CourseClassAPI.CreateClass.generateUrl(courseId),
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Cookie: cookieGenerator(access_token, refresh_token),
-                    },
-                    body: JSON.stringify(classData),
-                }
-            );
-
-            const {data, error} = await res.json();
-            if (!res.ok) {
-                return handleError(error);
+        const {courseId, ...rest} = parsedInput;
+        const res = await fetchAction<ClassResponse>(
+            `/courses/${courseId}/classes`,
+            'Failed to create class',
+            {
+                method: 'POST',
+                bodyObject: rest,
+                revalidateTag: `course-${courseId}-classes`
             }
-
-            revalidateTag('classes');
-            return data;
-        } catch (err) {
-            if (err instanceof Error) {
-                throw new PWAError(err.message, err);
-            }
-            throw new PWAError('Failed to create class', err);
-        }
+        )();
+        return res;
     });
 
 export const updateClass = actionClient
@@ -69,38 +64,23 @@ export const updateClass = actionClient
             flattenValidationErrors(ve).fieldErrors,
     })
     .action(async ({parsedInput}) => {
-        const {courseId, classId, ...updateData} = parsedInput;
-        try {
-            const {refresh_token, access_token} = await verifySession();
-            const res = await fetch(
-                env.API_URL +
-                $CourseClassAPI.UpdateClass.generateUrl(courseId, classId),
-                {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Cookie: cookieGenerator(access_token, refresh_token),
-                    },
-                    body: JSON.stringify(updateData),
-                }
-            );
-
-            const {data, error} = await res.json();
-            if (!res.ok) {
-                return handleError(error);
+        const {courseId, classId, ...rest} = parsedInput;
+        const res = await fetchAction<Partial<ClassResponse>>(
+            `/courses/${courseId}/classes/${classId}`,
+            'Failed to update class',
+            {
+                method: 'PATCH',
+                bodyObject: rest,
+                revalidateTag: `course-${courseId}-classes`
             }
+        )();
+        return res;
 
-            revalidatePath('/classes');
-            revalidateTag('classes');
-            revalidateTag(`course-${courseId}-classes`);
-            revalidateTag(`class-${classId}`);
-            return data;
-        } catch (err) {
-            if (err instanceof Error) {
-                throw new PWAError(err.message, err);
-            }
-            throw new PWAError('Failed to update class', err);
-        }
+        // revalidatePath('/classes');
+        // revalidateTag('classes');
+        // revalidateTag(`course-${courseId}-classes`);
+        // revalidateTag(`class-${classId}`);
+
     });
 
 export const deleteClass = actionClient
@@ -109,34 +89,20 @@ export const deleteClass = actionClient
         handleValidationErrorsShape: async (ve) =>
             flattenValidationErrors(ve).fieldErrors,
     })
-    .action(async ({parsedInput}) => {
-        const {courseId, classId} = parsedInput;
-        try {
-            const {refresh_token, access_token} = await verifySession();
-            const res = await fetch(
-                env.API_URL +
-                $CourseClassAPI.DeleteClass.generateUrl(courseId, classId),
-                {
-                    method: 'DELETE',
-                    headers: {
-                        Cookie: cookieGenerator(access_token, refresh_token),
-                    },
-                }
-            );
-
-            const {data, error} = await res.json();
-            if (!res.ok) {
-                return handleError(error);
+    .action(async ({parsedInput: {courseId, classId}}) => {
+        const res = await fetchAction(
+            `/courses/${courseId}/classes/${classId}`,
+            'Failed to delete class',
+            {
+                method: 'DELETE',
+                revalidateTag: `course-${courseId}-classes`,
+                setContentType: false
             }
+        )();
+        return res;
+        //
+        // revalidatePath('/classes');
+        // revalidateTag('classes');
+        // revalidateTag(`course-${courseId}-classes`);
 
-            revalidatePath('/classes');
-            revalidateTag('classes');
-            revalidateTag(`course-${courseId}-classes`);
-            return data;
-        } catch (err) {
-            if (err instanceof Error) {
-                throw new PWAError(err.message, err);
-            }
-            throw new PWAError('Failed to delete class', err);
-        }
     });

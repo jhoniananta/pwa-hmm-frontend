@@ -11,11 +11,6 @@ export const actionClient = createSafeActionClient({
     handleServerErrorLog(e) {
         console.log("@handleServerErrorLog * e:", e)
         throw e;
-        if (e.message.includes('PWAError')) {
-            console.error(e.message.replace('(PWAError)', ''));
-        } else {
-            console.error(DEFAULT_SERVER_ERROR_MESSAGE);
-        }
     },
     defineMetadataSchema() {
         return z.object({

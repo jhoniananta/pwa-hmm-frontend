@@ -96,14 +96,15 @@ export async function updateSession(res: Response) {
 }
 
 export const verifySession = cache(async () => {
-    console.log('verifying session...');
+    // console.log('verifying session...');
     const cookie = cookies().get('session-hmm')?.value;
-    console.log('raw cookie:', cookie); // <— cek value cookie
+    // console.log('raw cookie:', cookie); // <— cek value cookie
     if (!cookie)
         return {isAuth: false, userId: '', access_token: '', refresh_token: ''};
 
     const session = await decrypt(cookie);
-    console.log('decrypted session @' + new Date().toISOString(), session); // <— cek hasil decrypt
+    console.log(`decrypted session @ ${new Date().toISOString()}`)
+    // console.log('decrypted session @' + new Date().toISOString(), session); // <— cek hasil decrypt
 
     if (!session?.userId)
         return {isAuth: false, userId: '', access_token: '', refresh_token: ''};

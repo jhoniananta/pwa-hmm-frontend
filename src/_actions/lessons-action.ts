@@ -4,11 +4,25 @@ import {fetchAction} from '@/lib/fetch';
 import {actionClient} from '@/lib/action-client';
 import {flattenValidationErrors} from 'next-safe-action';
 import {z} from 'zod';
-import {$CourseLessonAPI as lessonAPI} from 'lms-types';
+
+export type LessonResponse = {
+    lessonId: number;
+    courseId: number;
+    title: string;
+    description?: string;
+    numberOfVideos: number;
+    numberOfDurations: number;
+    numberOfAttachments: number;
+    position: number;
+    createdAt: Date;
+    updatedAt: Date;
+    videoPositionVersion: number;
+};
+
 
 export const getLessons = async (courseId: string) =>
-    await fetchAction<lessonAPI.GetLessons.Response['data']>(
-        lessonAPI.GetLessons.generateUrl(Number(courseId)),
+    await fetchAction<LessonResponse>(
+        `/courses/${courseId}/lessons`,
         'Failed to fetch lessons',
         {
             tags: ['lessons', `course-${courseId}-lessons`],
@@ -18,8 +32,8 @@ export const getLessons = async (courseId: string) =>
     )();
 
 export const getLessonById = async (courseId: string, lessonId: string) =>
-    await fetchAction<lessonAPI.GetLessonById.Response['data']>(
-        lessonAPI.GetLessonById.generateUrl(Number(courseId), Number(lessonId)),
+    await fetchAction<LessonResponse>(
+        `/courses/${courseId}/lessons/${lessonId}`,
         'Failed to fetch lesson'
     )();
 
@@ -38,8 +52,8 @@ export const createLesson = actionClient
     })
     .action(async ({parsedInput}) => {
         const {courseId, ...rest} = parsedInput;
-        const res = await fetchAction<lessonAPI.CreateLesson.Response['data']>(
-            lessonAPI.CreateLesson.generateUrl(courseId),
+        const res = await fetchAction<LessonResponse>(
+            `/courses/${courseId}/lessons`,
             'Failed to create lesson',
             {
                 method: 'POST',
@@ -66,8 +80,8 @@ export const updateLesson = actionClient
     })
     .action(async ({parsedInput}) => {
         const {courseId, lessonId, ...rest} = parsedInput;
-        const res = await fetchAction<lessonAPI.UpdateLesson.Response['data']>(
-            lessonAPI.UpdateLesson.generateUrl(courseId, lessonId),
+        const res = await fetchAction<Partial<LessonResponse>>(
+            `/courses/${courseId}/lessons/${lessonId}`,
             'Failed to update lesson',
             {
                 method: 'PATCH',
@@ -91,7 +105,7 @@ export const deleteLesson = actionClient
     })
     .action(async ({parsedInput: {courseId, lessonId}}) => {
         const res = await fetchAction(
-            lessonAPI.DeleteLesson.generateUrl(courseId, lessonId),
+            `/courses/${courseId}/lessons/${lessonId}`,
             'Failed to delete lesson',
             {
                 method: 'DELETE',
