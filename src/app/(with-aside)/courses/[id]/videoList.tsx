@@ -8,7 +8,7 @@ export default function VideoList({
                                       query,
                                       lessonId,
                                   }: {
-    materials: { videoId: string; youtubeLink: string; title: string; thumbnail_url: string }[];
+    materials: { videoId: number; youtubeLink: string; title: string; thumbnail_url: string }[];
     isExpanded?: boolean;
     query: string;
     lessonId: string;

@@ -35,7 +35,7 @@ export default async function Home() {
     return (
         <div className="flex flex-col items-stretch flex-1 h-max gap-6 relative">
             <div className="flex flex-col md:flex-row gap-6">
-                <UpcomingSchedule schedules={schedules}/>
+                <UpcomingSchedule schedules={schedules as any}/>
                 <Assignments/>
             </div>
             <div className="flex flex-col md:flex-row w-full gap-6 items-center">

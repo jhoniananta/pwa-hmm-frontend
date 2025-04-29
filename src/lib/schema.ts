@@ -128,9 +128,9 @@ export const updateAssignmentSchema = z.object({
         .optional(),
     deadline: z.date({message: 'Invalid date format'}).optional(),
     description: z.string().optional(),
-    // taskType: z
-    //   .nativeEnum(AssignmentTaskTypeModel, { message: 'Invalid task type' })
-    //   .optional(),
+    taskType: z
+        .nativeEnum(AssignmentTaskType, {message: 'Invalid task type'})
+        .optional(),
     courseId: z
         .number({message: 'Course ID must be a number'})
         .min(1, {message: 'Course ID must be at least 1'}),
@@ -303,6 +303,7 @@ export const deleteEventSchema = z.object({
 
 import {UserRole} from 'lms-types';
 import {maxFileUploadTypeSize} from './zod-helper';
+import {AssignmentTaskType} from "@/_actions/enum/action-enum";
 
 // Update email schema
 export const updateEmailSchema = z.object({

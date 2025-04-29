@@ -84,7 +84,13 @@ export default async function CoursesPage({
         videos.map(async ({videoId, youtubeLink, title}) => {
             try {
                 const {thumbnail_url, author_name} = await getVideoData(youtubeLink);
-                return {videoId, youtubeLink, title, thumbnail_url, author_name};
+                return {
+                    videoId,
+                    youtubeLink,
+                    title,
+                    thumbnail_url: thumbnail_url as string,
+                    author_name: author_name as string
+                };
             } catch (exception) {
                 return {
                     title,
@@ -173,7 +179,7 @@ export default async function CoursesPage({
                             {format === 'video' ? (
                                 <YoutubeEmbed
                                     embedId={query}
-                                    title={title}
+                                    title={title || ''}
                                     className='rounded-t-xl rounded-b-sm md:rounded-xl'
                                 />
                             ) : format === 'pdf' ? (
