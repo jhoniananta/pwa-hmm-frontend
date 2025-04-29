@@ -5,7 +5,6 @@ import TagTable from './table';
 import Search from '@/components/client/search';
 import {useState} from 'react';
 import useDebounce from '@/hooks/useDebounce';
-import {ScholarshipResponse} from '@/_actions/scholarship-action';
 import {TagResponse} from "@/_actions/tag-action";
 
 export default function TagSection({

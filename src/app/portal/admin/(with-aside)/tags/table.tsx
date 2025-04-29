@@ -18,20 +18,16 @@ import {Ellipsis} from 'lucide-react';
 import Pagination from '@/components/client/pagination';
 import Wrapper from '@/app/portal/admin/wrapper';
 import {useAction} from 'next-safe-action/hooks';
-import {
-    deleteScholarship,
-    ScholarshipResponse,
-} from '@/_actions/scholarship-action';
 import {toast} from 'sonner';
 import Link from 'next/link';
-import {TagResponse} from "@/_actions/tag-action";
+import {deleteTag, TagResponse} from "@/_actions/tag-action";
 
 function TagTable({data}: { data: TagResponse[] }) {
     const [page, setPage] = useState(1);
     const itemsPerPage = 6;
     const totalPage = Math.ceil(data.length / itemsPerPage);
 
-    const {execute: executeDelete} = useAction(deleteScholarship, {
+    const {execute: executeDelete} = useAction(deleteTag, {
         onSuccess: () => {
             toast.success('Tag deleted successfully');
         },
