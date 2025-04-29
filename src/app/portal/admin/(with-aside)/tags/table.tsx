@@ -24,18 +24,19 @@ import {
 } from '@/_actions/scholarship-action';
 import {toast} from 'sonner';
 import Link from 'next/link';
+import {TagResponse} from "@/_actions/tag-action";
 
-function ScholarshipTable({data}: { data: ScholarshipResponse[] }) {
+function TagTable({data}: { data: TagResponse[] }) {
     const [page, setPage] = useState(1);
     const itemsPerPage = 6;
     const totalPage = Math.ceil(data.length / itemsPerPage);
 
     const {execute: executeDelete} = useAction(deleteScholarship, {
         onSuccess: () => {
-            toast.success('Scholarship deleted successfully');
+            toast.success('Tag deleted successfully');
         },
         onError: (error) => {
-            toast.error(error.error.serverError || 'Failed to delete scholarship');
+            toast.error(error.error.serverError || 'Failed to delete tag');
         },
     });
 
@@ -46,22 +47,18 @@ function ScholarshipTable({data}: { data: ScholarshipResponse[] }) {
                 <TableHeader>
                     <TableRow>
                         <TableHead>Title</TableHead>
-                        <TableHead>Provider</TableHead>
-                        <TableHead>Deadline</TableHead>
-                        <TableHead>Funding</TableHead>
-                        <TableHead>Scope</TableHead>
                         <TableHead>
                             <span className='sr-only'>Actions</span>
                         </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {data.map((scholarship, index) => {
+                    {data.map((tag, index) => {
                         let param = `?test=ok`
-                        for (const key in scholarship) {
-                            if (scholarship.hasOwnProperty(key)) {
+                        for (const key in tag) {
+                            if (tag.hasOwnProperty(key)) {
                                 // @ts-ignore
-                                param += `&${key}=${scholarship[key] || ''}`;
+                                param += `&${key}=${tag[key] || ''}`;
                             }
                         }
 
@@ -73,16 +70,10 @@ function ScholarshipTable({data}: { data: ScholarshipResponse[] }) {
 
                         return (
                             <TableRow
-                                key={scholarship.scholarshipId}
+                                key={tag.tagId}
                                 className='even:bg-navy/5 odd:bg-transparent'
                             >
-                                <TableCell>{scholarship.title || ''}</TableCell>
-                                <TableCell>{scholarship.provider}</TableCell>
-                                <TableCell>
-                                    {new Date(scholarship.deadline).toLocaleDateString()}
-                                </TableCell>
-                                <TableCell>{'FUNDING TYPE'}</TableCell>
-                                <TableCell>{'SCOPE'}</TableCell>
+                                <TableCell>{tag.title || ''}</TableCell>
                                 <TableCell>
                                     <Popover>
                                         <PopoverTrigger>
@@ -96,7 +87,7 @@ function ScholarshipTable({data}: { data: ScholarshipResponse[] }) {
                                                 <h3 className='font-bold text-sm p-2'>Action</h3>
                                                 <Link
                                                     href={
-                                                        `/portal/admin/scholarships/edit/${scholarship.scholarshipId}/${param}`
+                                                        `/portal/admin/tags/edit/${tag.tagId}/${param}`
                                                     }
                                                     className='hover:bg-navy/40 p-2 rounded-md transition'
                                                 >
@@ -105,7 +96,7 @@ function ScholarshipTable({data}: { data: ScholarshipResponse[] }) {
                                                 <button
                                                     onClick={() =>
                                                         executeDelete({
-                                                            scholarshipId: scholarship.scholarshipId,
+                                                            tagId: tag.tagId,
                                                         })
                                                     }
                                                     className='hover:bg-navy/40 p-2 rounded-md transition text-left'
@@ -126,4 +117,4 @@ function ScholarshipTable({data}: { data: ScholarshipResponse[] }) {
     );
 }
 
-export default ScholarshipTable;
+export default TagTable;

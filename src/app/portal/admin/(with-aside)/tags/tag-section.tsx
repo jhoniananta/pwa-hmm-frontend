@@ -1,22 +1,23 @@
 'use client';
 
 import CustomLink from '@/components/admin/custom-link';
-import ScholarshipTable from './table';
+import TagTable from './table';
 import Search from '@/components/client/search';
 import {useState} from 'react';
 import useDebounce from '@/hooks/useDebounce';
 import {ScholarshipResponse} from '@/_actions/scholarship-action';
+import {TagResponse} from "@/_actions/tag-action";
 
-export default function ScholarshipSection({
-                                               data,
-                                           }: {
-    data: ScholarshipResponse[];
+export default function TagSection({
+                                       data,
+                                   }: {
+    data: TagResponse[];
 }) {
     const [searchQuery, setSearchQuery] = useState('');
     const debouncedSearch = useDebounce(searchQuery);
 
     const filteredData = data.filter(
-        (scholarship) =>
+        (tag) =>
             // scholarship.title.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
             // scholarship.provider.toLowerCase().includes(debouncedSearch.toLowerCase())
             true
@@ -32,25 +33,19 @@ export default function ScholarshipSection({
                 />
                 <div className='flex flex-col md:flex-row gap-2 md:gap-4 justify-end'>
                     <CustomLink
-                        href={'scholarships/internal-scholarship'}
+                        href={'tags/add'}
                         className='self-end md:self-auto'
                     >
-                        Internal Scholarship Response
-                    </CustomLink>
-                    <CustomLink
-                        href={'scholarships/add'}
-                        className='self-end md:self-auto'
-                    >
-                        Add Scholarship
+                        Add Tag
                     </CustomLink>
                 </div>
             </div>
             {filteredData.length === 0 ? (
                 <div className='text-center text-muted-foreground mt-8'>
-                    No scholarships found
+                    No tag found
                 </div>
             ) : (
-                <ScholarshipTable data={filteredData}/>
+                <TagTable data={filteredData}/>
             )}
         </>
     );
