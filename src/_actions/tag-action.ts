@@ -9,7 +9,7 @@ import {env} from "@/env";
 import {cookieGenerator} from "@/lib/utils";
 import {handleError, PWAError} from "@/lib/error";
 import {revalidatePath, revalidateTag} from "next/cache";
-import {addTagSchema, deleteTagSchema} from "@/_actions/schema/tag-schema";
+import {addTagSchema, deleteTagSchema, updateTagSchema} from "@/_actions/schema/tag-schema";
 
 export type TagResponse = {
     tagId: number,
@@ -57,7 +57,49 @@ export const createTag = actionClient
             return data as TagResponse;
         } catch (err) {
             if (err instanceof PWAError) {
-                console.log('@createTag * err to be thrown:', err)
+                return {
+                    isError: true,
+                    isPWAError: true,
+                    message: err.message,
+                }
+            }
+            throw {
+                isError: true,
+                isPWAError: false,
+                message: (err as any).message
+            }
+        }
+    });
+
+export const updateTag = actionClient
+    .metadata({actionName: 'updateTag'})
+    .schema(updateTagSchema, {
+        handleValidationErrorsShape: async (ve) =>
+            (flattenValidationErrors(ve)).fieldErrors,
+    })
+    .action(async ({parsedInput}) => {
+        const {tagId, ...rest} = parsedInput;
+        try {
+            const {refresh_token, access_token} = await verifySession();
+            const res = await fetch(env.API_URL + `/tags/${tagId}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Cookie: cookieGenerator(access_token, refresh_token),
+                },
+                body: JSON.stringify(rest),
+            });
+
+            const {data, error} = await res.json();
+            if (!res.ok) {
+                return handleError(error);
+            }
+
+            revalidatePath('/portal/atur-atur/tags');
+            revalidateTag('tags');
+            return data as Partial<TagResponse>;
+        } catch (err) {
+            if (err instanceof PWAError) {
                 return {
                     isError: true,
                     isPWAError: true,
