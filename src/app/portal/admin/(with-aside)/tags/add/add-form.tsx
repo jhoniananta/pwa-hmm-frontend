@@ -31,16 +31,11 @@ function AddForm() {
 
     const {execute, status} = useAction(createTag, {
         onSuccess: (result) => {
-            const data: any = result.data
-            if (data && data?.isError) {
-                toast.error(data?.message)
-                return;
-            }
             toast.success('Tag created!')
             router.push('/portal/admin/tags');
         },
-        onError: () => {
-            toast.error('Failed to add tag!')
+        onError: (error) => {
+            toast.error(error.error.fetchError || 'Failed to add tag!')
         },
     });
 

@@ -10,6 +10,7 @@ import {redirect} from 'next/navigation';
 export const actionClient = createSafeActionClient({
     handleServerErrorLog(e) {
         console.log("@handleServerErrorLog * e:", e)
+        throw e;
         if (e.message.includes('PWAError')) {
             console.error(e.message.replace('(PWAError)', ''));
         } else {
@@ -27,26 +28,9 @@ export const actionClient = createSafeActionClient({
         console.log('@Logging Middleware');
         const result = await next({ctx: {}});
 
-        const data = result.data;
-        if (!data) {
-            console.log('Result ->', result);
-            console.log('Client input ->', clientInput);
-            console.log('Metadata ->', metadata);
-            return result;
-        }
-
-        const copiedResult = JSON.parse(JSON.stringify(result))
-        if (data.isError) {
-            copiedResult.success = false;
-        }
-
-        console.log('Result ->', copiedResult);
+        console.log('Result ->', result);
         console.log('Client input ->', clientInput);
         console.log('Metadata ->', metadata);
-
-        if (data.isError && !data.isPWAError) {
-            throw new Error(data.message)
-        }
 
         return result;
     });

@@ -57,17 +57,9 @@ export const createTag = actionClient
             return data as TagResponse;
         } catch (err) {
             if (err instanceof PWAError) {
-                return {
-                    isError: true,
-                    isPWAError: true,
-                    message: err.message,
-                }
+                throw err;
             }
-            throw {
-                isError: true,
-                isPWAError: false,
-                message: (err as any).message
-            }
+            throw new PWAError('Internal Server Exception!')
         }
     });
 
