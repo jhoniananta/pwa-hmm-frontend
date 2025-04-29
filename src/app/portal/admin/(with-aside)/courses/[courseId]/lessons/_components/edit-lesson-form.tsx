@@ -20,7 +20,6 @@ export default function EditLessonForm({lesson, courseId}: EditLessonFormProps) 
     const router = useRouter();
     const [title, setTitle] = useState(lesson.title);
     const [description, setDescription] = useState(lesson.description || '');
-    const [references, setReferences] = useState('');
 
     const {execute: executeUpdate, status} = useAction(updateLesson, {
         onSuccess: () => {
@@ -45,7 +44,6 @@ export default function EditLessonForm({lesson, courseId}: EditLessonFormProps) 
             lessonId: lesson.lessonId,
             title,
             description,
-            references: references.split(',').map(ref => ref.trim()).filter(Boolean),
         });
     };
 
@@ -73,18 +71,6 @@ export default function EditLessonForm({lesson, courseId}: EditLessonFormProps) 
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder='Enter lesson description'
                     rows={5}
-                />
-            </div>
-
-            <div className='space-y-2'>
-                <label htmlFor='references' className='text-sm font-medium'>
-                    References
-                </label>
-                <Input
-                    id='references'
-                    value={references}
-                    onChange={(e) => setReferences(e.target.value)}
-                    placeholder='Enter references (comma separated)'
                 />
             </div>
 
