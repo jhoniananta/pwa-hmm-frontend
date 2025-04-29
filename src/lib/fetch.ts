@@ -25,6 +25,7 @@ export function fetchAction<T>(
         revalidate?: boolean | number;
         tags?: string[];
         name?: string;
+        setContentType?: boolean
     }
 ): () => Promise<T> {
     return (async () => {
@@ -40,6 +41,7 @@ export function fetchAction<T>(
             revalidate,
             tags,
             name,
+            setContentType
         } = options ?? {};
         try {
             const isVerbose = getVerboseStatus();
@@ -47,10 +49,6 @@ export function fetchAction<T>(
             const {refresh_token, access_token, userId} = await verifySession();
 
             let fetchUrl = url.replace(':userId', userId);
-
-            if (true) {
-                console.log('@fetchAction * fetchUrl: ', fetchUrl);
-            }
 
             if (queryParams) {
                 fetchUrl += '?';
@@ -63,7 +61,7 @@ export function fetchAction<T>(
             const res = await fetch(env.API_URL + fetchUrl, {
                 method,
                 headers: {
-                    'Content-Type': 'application/json',
+                    ...(setContentType === undefined || setContentType === true ? {'Content-Type': 'application/json',} : {}),
                     Cookie: cookieGenerator(access_token, refresh_token),
                 },
                 body: bodyObject ? JSON.stringify(bodyObject) : undefined,
@@ -74,32 +72,20 @@ export function fetchAction<T>(
                 },
             });
 
-            if (isVerbose) {
-                console.log('@fetchAction * res', res);
-                console.log('@fetchAction * body', bodyObject);
+
+            let error: any;
+            let data: any;
+            if (res.body) {
+                const parsedBody = await res.json();
+                error = parsedBody.error;
+                data = parsedBody.data;
             }
 
-            {
-                logResponse && console.log(res);
-            }
-
-            const rawData = await res.json()
-            const {error, data} = rawData
-
-            if (isVerbose) {
-                console.log('@fetchAction * data:', data)
-            }
-
-            if (!res.ok || error) {
-                console.log(error);
-                return handleError(error, name);
+            if (!res.ok) {
+                return handleError(error || new PWAError(), name);
             }
 
             void updateSession(res); // update session in case the token is refreshed
-
-            {
-                logData && console.log(data);
-            }
 
             if (revalidatePath) {
                 rPath(revalidatePath);

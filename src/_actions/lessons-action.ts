@@ -95,7 +95,8 @@ export const deleteLesson = actionClient
             'Failed to delete lesson',
             {
                 method: 'DELETE',
-                revalidateTag: `course-${courseId}-lessons`
+                revalidateTag: `course-${courseId}-lessons`,
+                setContentType: false
             }
         )();
         return res;

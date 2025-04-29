@@ -36,7 +36,7 @@ export default function LessonSection({data, courseId}: LessonSectionProps) {
             toast.success('Lesson deleted successfully');
         },
         onError: (err) => {
-            toast.error(err.error.serverError || 'Failed to delete lesson');
+            toast.error(err.error.fetchError || 'Failed to delete lesson');
         },
     });
 

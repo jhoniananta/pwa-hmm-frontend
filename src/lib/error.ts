@@ -1,7 +1,7 @@
 import {redirect} from 'next/navigation';
 
 export class PWAError extends Error {
-    constructor(message: string, cause?: any) {
+    constructor(message: string = 'Internal Server Exception!', cause?: any) {
         console.log('@PWAError * cause:', cause)
 
         super(message.includes('(PWAError)') ? message : message + ' (PWAError)');
