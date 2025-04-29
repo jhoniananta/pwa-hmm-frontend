@@ -49,17 +49,26 @@ export const createTag = actionClient
 
             const {data, error} = await res.json();
             if (!res.ok) {
-                return handleError(error);
+                handleError(error);
             }
 
             revalidatePath('/portal/atur-atur/tags');
             revalidateTag('tags');
             return data as TagResponse;
         } catch (err) {
-            if (err instanceof Error) {
-                throw new PWAError(err.message);
+            if (err instanceof PWAError) {
+                console.log('@createTag * err to be thrown:', err)
+                return {
+                    isError: true,
+                    isPWAError: true,
+                    message: err.message,
+                }
             }
-            throw new PWAError('Failed to create tag');
+            throw {
+                isError: true,
+                isPWAError: false,
+                message: (err as any).message
+            }
         }
     });
 

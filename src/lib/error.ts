@@ -4,17 +4,14 @@ export class PWAError extends Error {
     constructor(message: string, cause?: any) {
         console.log('@PWAError * cause:', cause)
 
-        super(message.includes('(PWAError)') ? message : message + '(PWAError)');
-        this.name = "PWAError";
+        super(message.includes('(PWAError)') ? message : message + ' (PWAError)');
     }
 }
 
-export async function handleError(err: { message: string, errorCode: string } | any, name?: string) {
+export function handleError(err: { message: string, errorCode: string } | any, name?: string) {
     if (Number(err.errorCode) === 401) {
         return redirect('/sign-out');
     }
-
-    console.log({code: err.errorCode, message: err.message, name});
 
     throw new PWAError(err.message);
 }

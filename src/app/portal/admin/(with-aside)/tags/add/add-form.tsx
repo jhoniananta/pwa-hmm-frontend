@@ -12,6 +12,8 @@ import {z} from 'zod';
 import {useRouter} from 'next/navigation';
 import {createTag} from "@/_actions/tag-action";
 import {addTagSchema} from "@/_actions/schema/tag-schema";
+import {PWAError} from "@/lib/error";
+import {createSafeActionClient} from "next-safe-action";
 
 function AddForm() {
     const router = useRouter();
@@ -28,12 +30,17 @@ function AddForm() {
     });
 
     const {execute, status} = useAction(createTag, {
-        onSuccess: () => {
-            toast.success('Tag added successfully');
+        onSuccess: (result) => {
+            const data: any = result.data
+            if (data && data?.isError) {
+                toast.error(data?.message)
+                return;
+            }
+            toast.success('Tag created!')
             router.push('/portal/admin/tags');
         },
-        onError: (error) => {
-            toast.error(error.error?.serverError || 'Failed to add tag');
+        onError: () => {
+            toast.error('Failed to add tag!')
         },
     });
 
