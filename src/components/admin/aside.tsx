@@ -13,6 +13,7 @@ import {EllipsisVertical} from 'lucide-react';
 const links = [
     {title: 'Assignments', path: 'assignments'},
     {title: 'Courses', path: 'courses'},
+    {title: 'Categories (Course)', path: 'categories'},
     // { title: 'HMM-Store', path: 'hmm-store' },
     // { title: 'MyHMM', path: "myhmm" },
     // { title: 'MyCareer', path: 'mycareer' },
