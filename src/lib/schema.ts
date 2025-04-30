@@ -1,11 +1,7 @@
 import {z} from 'zod';
-import {
-    CompletionStatus,
-    // CompletionStatusModel,
-    // AssignmentTaskTypeModel,
-    // CourseStatusModel,
-    ScholarshipFundingModel,
-} from 'lms-types';
+import {CompletionStatus, UserRole,} from 'lms-types';
+import {maxFileUploadTypeSize} from './zod-helper';
+import {AssignmentTaskType} from "@/_actions/enum/action-enum";
 
 // enum
 export const submissionsEnum: [string, ...string[]] = [
@@ -301,10 +297,6 @@ export const deleteEventSchema = z.object({
         .min(1, {message: 'Event ID must be at least 1'}),
 });
 
-import {UserRole} from 'lms-types';
-import {maxFileUploadTypeSize} from './zod-helper';
-import {AssignmentTaskType} from "@/_actions/enum/action-enum";
-
 // Update email schema
 export const updateEmailSchema = z.object({
     email: z
@@ -462,15 +454,13 @@ export const createEnrollmentSchema = z.object({
     classId: z.number().min(1, {message: 'Class ID is required'}),
 });
 
-// Add these with other schemas
 export const createScheduleSchema = z.object({
     courseId: z.number().min(1, {message: 'Course ID is required'}),
     title: z.string().min(1, {message: 'Title is required'}),
     description: z.string().optional(),
-    date: z.date({
-        required_error: 'Date is required',
-        invalid_type_error: 'Invalid date format',
-    }),
+    location: z.string(),
+    startDate: z.string().datetime({message: 'Invalid date time'}),
+    endDate: z.string().datetime({message: 'Invalid date time'}),
 });
 
 export const updateScheduleSchema = z.object({
@@ -478,7 +468,9 @@ export const updateScheduleSchema = z.object({
     scheduleId: z.number().min(1, {message: 'Schedule ID is required'}),
     title: z.string().min(1, {message: 'Title is required'}).optional(),
     description: z.string().optional(),
-    date: z.date().optional(),
+    location: z.string().optional(),
+    startDate: z.string().datetime({message: 'Invalid date time'}).optional(),
+    endDate: z.string().datetime({message: 'Invalid date time'}).optional(),
 });
 
 export const deleteScheduleSchema = z.object({
