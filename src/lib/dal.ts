@@ -37,7 +37,7 @@ export const getUser = cache(async () => {
 });
 
 export const getFullUser = cache(async () => {
-    const {refresh_token, access_token, isAuth, userId} = await verifySession();
+    const {refresh_token, access_token, isAuth} = await verifySession();
     if (!isAuth) return null;
 
     try {

@@ -190,7 +190,6 @@ const Assignment = ({
 
     function updateComp(assignment: (typeof data)[number], status: "NOT_STARTED" | "IN_PROGRESS" | "DONE") {
         if (assignment.type === AssignmentType.PERSONAL_ASSIGNMENT) {
-            console.log('@updateComp * status:', status)
             exeUPA({
                 assignmentId: Number(assignment.id),
                 completionStatus: status,

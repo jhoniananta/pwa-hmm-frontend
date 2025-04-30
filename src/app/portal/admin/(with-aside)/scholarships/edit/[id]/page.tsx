@@ -2,7 +2,7 @@
 import React from 'react';
 import AdminBreadcrumb from '@/components/admin/breadcrumb';
 import AdminHeader from '@/components/admin/header';
-import {useParams, useSearchParams} from 'next/navigation';
+import {useParams, useRouter, useSearchParams} from 'next/navigation';
 import Wrapper from '../../../../wrapper';
 import {Label} from '@/components/ui/label';
 import {Input} from '@/components/ui/input';
@@ -12,24 +12,15 @@ import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {updateScholarshipSchema} from '@/lib/schema';
 import {z} from 'zod';
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue,} from '@/components/ui/select';
 import {ScholarshipFundingModel} from 'lms-types';
 import {useAction} from 'next-safe-action/hooks';
-import {getScholarshipById, getScholarships, updateScholarship} from '@/_actions/scholarship-action';
+import {updateScholarship} from '@/_actions/scholarship-action';
 import {toast} from 'sonner';
-import {useRouter} from 'next/navigation';
 
 export default async function Page() {
     const {id} = useParams();
 
-    console.log("the id: ", id)
     const router = useRouter();
     const searchParams = useSearchParams();
 

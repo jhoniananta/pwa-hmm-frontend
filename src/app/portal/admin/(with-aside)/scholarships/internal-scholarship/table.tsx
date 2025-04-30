@@ -1,14 +1,7 @@
 'use client';
 
 import React, {useState} from 'react'; // Removed useMemo
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from '@/components/ui/table';
 import Pagination from '@/components/client/pagination';
 import Wrapper from '@/app/portal/admin/wrapper';
 import Link from 'next/link';
@@ -24,7 +17,6 @@ export default function InternalScholarshipTable({
 }) {
     const [page, setPage] = useState(1);
     const itemsPerPage = 10;
-    console.log('Data:', data); // Debugging line to check data structure
 
     // Ensure data is an array, default to empty array if not
     const validData = Array.isArray(data) ? data : [];

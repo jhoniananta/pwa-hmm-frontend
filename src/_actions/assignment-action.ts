@@ -1,11 +1,7 @@
 'use server';
 
 import {fetchAction} from '@/lib/fetch';
-import {
-    $CourseClassAssignmentAPI,
-    $PersonalAssignmentAPI,
-    $UserAPI as userAPI,
-} from 'lms-types';
+import {$CourseClassAssignmentAPI, $PersonalAssignmentAPI,} from 'lms-types';
 import {actionClient} from '@/lib/action-client';
 import {handleError, PWAError} from '@/lib/error';
 import {env} from '@/env';
@@ -71,16 +67,7 @@ export const createPersonalAssignment = actionClient
                 }
             );
 
-            if (isVerbose) {
-                console.log('@createPersonalAssignment * res:', res);
-            }
-
             const {data, error} = await res.json();
-
-            if (isVerbose) {
-                console.log('@createPersonalAssignment * data:', data);
-                console.log('@createPersonalAssignment * error:', error);
-            }
 
             if (!res.ok) {
                 return handleError(error);
@@ -189,10 +176,6 @@ export const updatePersonalAssignment = actionClient
                     body: JSON.stringify(bodyInput),
                 }
             );
-
-            console.log('@updatePersonalAssignment * otherInput:', otherInput)
-            console.log('@updatePersonalAssignment * res:', res)
-            console.log('@updatePersonalAssignment * body:', bodyInput)
 
             const {data, error} = await res.json();
             if (!res.ok) {

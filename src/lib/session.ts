@@ -1,5 +1,6 @@
 import 'server-only';
-import {type JWTPayload, SignJWT, jwtVerify} from 'jose';
+
+import {type JWTPayload, jwtVerify, SignJWT} from 'jose';
 import {cookies} from 'next/headers';
 import {env} from '@/env';
 import {cache} from 'react';

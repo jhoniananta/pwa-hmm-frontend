@@ -10,7 +10,6 @@ export const dynamic = 'force-dynamic';
 
 const Scholarships = async () => {
     const data = await getScholarships();
-    console.log(data)
     const pageId = 'scholarships';
 
     // ToDo: extract funding and scope from tags

@@ -1,7 +1,4 @@
-import {
-    getEnrolledCourses as courses_action,
-    getCourses,
-} from '@/_actions/courses-action';
+import {getCourses, getEnrolledCourses as courses_action,} from '@/_actions/courses-action';
 
 import ClientPage from './client-page';
 import getVerboseStatus from "@/lib/getVerboseStatus";
@@ -22,11 +19,6 @@ const CoursesPage = async ({
         courses = await getCourses();
     } else {
         courses = await courses_action();
-    }
-
-    if (isVerbose) {
-        console.log('@CoursesPage * isAllCourse: ', isAllCourse)
-        console.log('@CoursePage * courses', courses);
     }
 
     return (

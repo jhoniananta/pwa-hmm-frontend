@@ -3,20 +3,11 @@
 import {env} from '@/env';
 import {actionClient} from '@/lib/action-client';
 import {handleError, PWAError} from '@/lib/error';
-import {
-    signInSchema,
-    signUpSchema,
-    editProfileSchema,
-    updateEmailSchema,
-    updatePasswordSchema,
-    updateRoleSchema,
-    deleteUserSchema,
-} from '@/lib/schema';
+import {editProfileSchema, signInSchema, signUpSchema,} from '@/lib/schema';
 import {createSession, deleteSession, verifySession} from '@/lib/session';
 import {getTokenFromResponse} from '@/lib/utils';
 import {flattenValidationErrors} from 'next-safe-action';
-import {$UserAPI as userAPI, $AuthenticationAPI as authAPI, $AuthenticationAPI} from "lms-types";
-import {fetchAction} from '@/lib/fetch';
+import {$AuthenticationAPI as authAPI, $AuthenticationAPI, $UserAPI as userAPI} from "lms-types";
 import {z} from 'zod';
 import getVerboseStatus from "@/lib/getVerboseStatus";
 
@@ -82,7 +73,6 @@ export const signIn = actionClient
                 } as $AuthenticationAPI.SignIn.Dto),
             });
 
-            if (isVerbose) console.log('res: ', res)
 
             const {access_token, refresh_token, expire} = getTokenFromResponse(
                 res
@@ -120,7 +110,6 @@ export const signIn = actionClient
                 redirect: true,
             };
         } catch (err) {
-            console.log("exception: ", err)
             if (err instanceof Error) {
                 throw new PWAError(err.message);
             }

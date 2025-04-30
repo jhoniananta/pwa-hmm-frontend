@@ -1,16 +1,15 @@
 'use server';
 
 import {fetchAction} from '@/lib/fetch';
-import {$CourseScheduleAPI, $UserAPI} from 'lms-types';
+import {$CourseScheduleAPI} from 'lms-types';
 import {actionClient} from '@/lib/action-client';
-import {createScheduleSchema, updateScheduleSchema, deleteScheduleSchema} from '@/lib/schema';
+import {createScheduleSchema, deleteScheduleSchema, updateScheduleSchema} from '@/lib/schema';
 import {flattenValidationErrors} from 'next-safe-action';
 import {verifySession} from '@/lib/session';
 import {env} from '@/env';
 import {handleError, PWAError} from '@/lib/error';
 import {cookieGenerator} from '@/lib/utils';
 import {revalidatePath, revalidateTag} from 'next/cache';
-import {getEnrolledCourses} from './courses-action';
 import getVerboseStatus from "@/lib/getVerboseStatus";
 
 
@@ -169,7 +168,6 @@ export const deleteSchedule = actionClient
 export const getAllUserSchedules = async () => {
     try {
         const isVerbose = getVerboseStatus();
-        if (isVerbose) console.log('Getting all user schedules...');
 
         const userSchedules = await getUserSchedules();
 

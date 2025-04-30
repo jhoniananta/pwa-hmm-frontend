@@ -44,8 +44,6 @@ export function fetchAction<T>(
             setContentType
         } = options ?? {};
         try {
-            const isVerbose = getVerboseStatus();
-
             const {refresh_token, access_token, userId} = await verifySession();
 
             let fetchUrl = url.replace(':userId', userId);

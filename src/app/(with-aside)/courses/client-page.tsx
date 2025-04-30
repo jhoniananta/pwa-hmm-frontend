@@ -5,7 +5,7 @@ import CoursesItem from '@/app/(with-aside)/courses/item';
 import Link from 'next/link';
 import CourseDialog from './dialog';
 import {useState} from 'react';
-import type {$CourseAPI as courseAPI, $UserAPI as userAPI, CourseModel} from 'lms-types';
+import type {$CourseAPI as courseAPI, CourseModel} from 'lms-types';
 import getVerboseStatus from "@/lib/getVerboseStatus";
 
 type Course = courseAPI.GetCourses.Response['data'][number] | CourseModel[][number];
@@ -19,10 +19,6 @@ const ClientPage = ({courses, isAllCourse}: ClientPageProps) => {
     const [searchQuery, setSearchQuery] = useState('');
 
     const isVerbose = getVerboseStatus();
-
-    if (isVerbose) {
-        console.log('@ClientPage courses: ', courses);
-    }
 
     const images = [
         '/images/mesin.png',

@@ -2,9 +2,8 @@ import Icon from '@/components/ui/button/icon';
 import {IoLocationOutline, IoMailOutline} from 'react-icons/io5';
 import {BsTelephone} from 'react-icons/bs';
 import {getFullUser} from '@/lib/dal';
-import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar';
-import EditProfile from './edit-profile-button';
 import AvatarUpload from '@/components/client/avatar-upload';
+import {getS3SignedUrl} from "@/_actions/utils/utils";
 
 const ProfilePage = async () => {
     const user = await getFullUser();
@@ -29,11 +28,13 @@ const ProfilePage = async () => {
         about,
     } = user;
 
+    const currentAvatar = await getS3SignedUrl(avatar)
+
     return (
         <main className='flex flex-col items-stretch w-full h-max gap-6 relative'>
             <div className='rounded-xl flex flex-col flex-1 bg-white'>
                 <AvatarUpload
-                    currentAvatar={avatar}
+                    currentAvatar={currentAvatar}
                     name={name}
                 />
                 <div className='flex gap-6 md:gap-8 flex-col md:px-16 px-8 md:py-8 py-8 shadow-md'>
