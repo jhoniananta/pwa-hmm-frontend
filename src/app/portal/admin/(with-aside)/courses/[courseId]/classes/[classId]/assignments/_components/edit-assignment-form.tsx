@@ -8,68 +8,55 @@ import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
 import {cn} from '@/lib/utils';
 import React, {useState} from 'react';
-import {createClassAssignment} from "@/_actions/class-assignment-action";
+import {ClassAssignmentResponse, updateClassAssignment} from "@/_actions/class-assignment-action";
+import {dateToMinutePrecisionString, fromGMT7ToUTC, fromUTCToGMT7} from "@/_actions/utils/utils";
 import {Label} from "@/components/ui/label";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {AssignmentTaskType} from "@/_actions/enum/action-enum";
 import validationErrorToString from "@/lib/validationErrorToString";
-import {dateToMinutePrecisionString, fromGMT7ToUTC, fromUTCToGMT7} from "@/_actions/utils/utils";
 
-interface AddAssignmentFormProps {
+interface EditClassAssignmentFormProps {
+    assignment: ClassAssignmentResponse;
     courseId: string;
     classId: string;
+    assignmentId: string;
 }
 
-export default function AddAssignmentForm({courseId, classId}: AddAssignmentFormProps) {
+export default function EditAssignmentForm({
+                                               assignment,
+                                               courseId,
+                                               classId,
+                                               assignmentId
+                                           }: EditClassAssignmentFormProps) {
     const router = useRouter();
-    const [title, setTitle] = useState('');
-    const [submission, setSubmission] = useState('');
-    const [deadline, setDeadline] = useState(new Date().toISOString());
-    const [description, setDescription] = useState('');
-    const [taskType, setTaskType] = useState(AssignmentTaskType.PERSONAL_TASK);
+    const [title, setTitle] = useState(assignment.title);
+    const [submission, setSubmission] = useState(assignment.submission);
+    const [deadline, setDeadline] = useState(new Date(assignment.deadline).toISOString());
+    const [description, setDescription] = useState(assignment.description);
+    const [taskType, setTaskType] = useState(assignment.taskType);
 
-    const {execute: executeCreate, status} = useAction(createClassAssignment, {
+    const {execute: executeUpdate, status} = useAction(updateClassAssignment, {
         onSuccess: () => {
-            toast.success('Assignment created successfully');
+            toast.success('Assignment updated successfully');
             router.push(`/portal/admin/courses/${courseId}/classes/${classId}/assignments`);
             router.refresh();
         },
         onError: ({error: {fetchError, validationErrors}}) => {
-            toast.error(fetchError || validationErrorToString(validationErrors) || 'Failed to create class assignment');
+            toast.error(fetchError || validationErrorToString(validationErrors) || 'Failed to update assignment');
         },
     });
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!title) {
-            toast.error('Title is required');
-            return;
-        }
-        if (!submission) {
-            toast.error('Submission is required');
-            return;
-        }
-        if (!deadline) {
-            toast.error('Deadline is required');
-            return;
-        }
-        if (!description) {
-            toast.error('Description is required');
-            return;
-        }
-        if (!taskType) {
-            toast.error('Task type is required');
-            return;
-        }
-
-        executeCreate({
+        executeUpdate({
             courseId: Number(courseId),
             classId: Number(classId),
+            assignmentId: Number(assignmentId),
             title,
             submission,
             deadline,
             description,
-            taskType
+            taskType,
         });
     };
 
@@ -131,7 +118,7 @@ export default function AddAssignmentForm({courseId, classId}: AddAssignmentForm
                 <Label>Task type</Label>
                 <Select
                     onValueChange={(value) => setTaskType(value as AssignmentTaskType)}
-                    defaultValue={AssignmentTaskType.PERSONAL_TASK}
+                    defaultValue={assignment.taskType}
                 >
                     <SelectTrigger>
                         <SelectValue placeholder="Select task type"/>
@@ -151,7 +138,7 @@ export default function AddAssignmentForm({courseId, classId}: AddAssignmentForm
                     status === 'executing' && 'opacity-50 cursor-not-allowed'
                 )}
             >
-                Create
+                Update
             </Button>
         </form>
     );

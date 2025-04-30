@@ -84,7 +84,7 @@ export default function ClassAssignmentSection({data, courseId, classId}: ClassA
                                             <div className='flex flex-col text-sm *:text-left *:font-medium'>
                                                 <h3 className='font-bold text-sm p-2'>Action</h3>
                                                 <Link
-                                                    href={`/portal/admin/courses/${courseId}/classses/${classId}/assignments/edit/${assignment.assignmentId}`}
+                                                    href={`/portal/admin/courses/${courseId}/classes/${classId}/assignments/edit/${assignment.assignmentId}`}
                                                     className='hover:bg-navy/40 p-2 rounded-md transition'
                                                 >
                                                     Edit
