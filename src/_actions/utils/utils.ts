@@ -1,5 +1,6 @@
 import {GetObjectCommand, S3Client} from "@aws-sdk/client-s3";
 import {getSignedUrl} from "@aws-sdk/s3-request-presigner";
+import {PWAError} from "@/lib/error";
 
 export async function getS3SignedUrl(key: string): Promise<string> {
     const s3Client = new S3Client({
@@ -28,3 +29,13 @@ export function fromUTCToGMT7(date: Date): Date {
 export function dateToMinutePrecisionString(date: Date): string {
     return new Date(date).toISOString().split(':').slice(0, 2).join(':')
 }
+
+export const getVideoId = (youtubeLink: string) => {
+    const match = youtubeLink.match(/[?&]v=([^&]+)/);
+
+    if (!match) {
+        throw new PWAError('Invalid YouTube link, the link must contains "?v="');
+    }
+
+    return match[1];
+};

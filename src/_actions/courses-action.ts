@@ -2,16 +2,12 @@
 
 import {cache} from 'react';
 import {fetchAction} from '@/lib/fetch';
-import {
-    $UserAPI as userAPI,
-    $CourseAPI as courseAPI,
-    $CourseLessonVideoAPI as videoAPI, CourseModel,
-} from 'lms-types';
+import {$CourseAPI as courseAPI, $UserAPI as userAPI, CourseModel,} from 'lms-types';
 import {actionClient} from '@/lib/action-client';
 import {addCourseSchema, deleteCourseSchema, updateCourseSchema} from '@/lib/schema';
 import {flattenValidationErrors} from 'next-safe-action';
-import {z} from 'zod';
-import {getLessons as getLessonsAction} from './lessons-action';
+import {PWAError} from "@/lib/error";
+import {env} from "@/env";
 
 
 export const getEnrolledCourses = fetchAction<
@@ -41,16 +37,6 @@ export const getCourseById = async (courseId: string) =>
         'Failed to fetch course'
     )();
 
-export const getLessons = getLessonsAction;
-
-export const getVideos = async (
-    courseId: string | number,
-    lessonId: string | number
-) =>
-    await fetchAction<videoAPI.GetVideos.Response['data']>(
-        videoAPI.GetVideos.generateUrl(Number(courseId), Number(lessonId)),
-        'Failed to fetch videos'
-    )();
 
 export const getVideoData = cache(async (videoId: string) => {
     const res = await fetch(
@@ -59,10 +45,35 @@ export const getVideoData = cache(async (videoId: string) => {
     );
 
     if (!res.ok) {
-        throw new Error('Failed to fetch video data');
+        throw new PWAError('YouTube video not found!');
     }
 
     return res.json();
+});
+
+export const getVideoDuration = cache(async (videoId: string) => {
+    const res = await fetch(
+        `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoId}&key=${env.YOUTUBE_API_SECRET_KEY}`,
+        {cache: 'force-cache'}
+    );
+
+    if (!res.ok) {
+        throw new PWAError('YouTube video not found!');
+    }
+
+    const body = await res.json();
+
+    if (body.items.length === 0) {
+        throw new PWAError('YouTube video not found!');
+    }
+
+    const durationString = body.items[0].contentDetails.duration;
+
+    const hour = durationString.match(/PT(\d+)H/) ? Number(durationString.match(/PT(\d+)H/)?.[1]) : 0;
+    const minute = durationString.match(/(\d+)M/) ? Number(durationString.match(/(\d+)M/)?.[1]) : 0;
+    const second = durationString.match(/(\d+)S/) ? Number(durationString.match(/(\d+)S/)?.[1]) : 0;
+
+    return hour * 3600 + minute * 60 + second
 });
 
 
