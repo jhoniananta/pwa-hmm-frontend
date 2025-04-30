@@ -10,6 +10,25 @@ import {flattenValidationErrors} from 'next-safe-action';
 import {$AuthenticationAPI as authAPI, $AuthenticationAPI, $UserAPI as userAPI} from "lms-types";
 import {z} from 'zod';
 import getVerboseStatus from "@/lib/getVerboseStatus";
+import {fetchAction} from "@/lib/fetch";
+
+export type PublicUserResponse = {
+    userId: number;
+    avatar: string;
+    email: string;
+    name: string;
+}
+
+export const getPublicUsers = async () =>
+    await fetchAction<PublicUserResponse[]>(
+        `/users/public`,
+        'Failed to fetch public users',
+        {
+            tags: ['public-users'],
+            name: 'getPublicUsers',
+            cache: 'no-cache'
+        }
+    )();
 
 export const signUp = actionClient
     .metadata({actionName: 'signUp'})

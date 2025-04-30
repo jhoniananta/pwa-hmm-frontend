@@ -1,23 +1,18 @@
 'use client';
-import React, {useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import AdminBreadcrumb from '@/components/admin/breadcrumb';
 import AdminHeader from '@/components/admin/header';
-import {useParams, useSearchParams} from 'next/navigation';
+import {useParams, useRouter, useSearchParams} from 'next/navigation';
 import {Label} from '@/components/ui/label';
 import {Input} from '@/components/ui/input';
-import {Textarea} from '@/components/ui/textarea';
-import {Button} from '@/components/ui/button';
 import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {updateClassSchema} from '@/lib/schema';
 import {z} from 'zod';
 import {useAction} from 'next-safe-action/hooks';
 import {toast} from 'sonner';
-import {useRouter} from 'next/navigation';
-import Image from 'next/image';
 import ManageTable from '@/app/portal/admin/manage-table';
-import {TableCell} from '@/components/ui/table';
-import {TableRow} from '@/components/ui/table';
+import {TableCell, TableRow} from '@/components/ui/table';
 import Link from 'next/link';
 import {Pencil} from 'lucide-react';
 import {updateClass} from "@/_actions/class-action";
@@ -82,7 +77,7 @@ export default function Page() {
             <Wrapper>
                 <h2 className='text-lg font-semibold mb-4'>Manage Class</h2>
                 <ManageTable>
-                    {["assignments"].map((item, i) => (
+                    {["assignments", "instructors"].map((item, i) => (
                         <TableRow key={item + "-edit-course-admin-page"} className='even:bg-abu-1 odd:bg-white'>
                             <TableCell className='capitalize font-semibold '>{item}</TableCell>
                             <TableCell className='flex justify-end'>

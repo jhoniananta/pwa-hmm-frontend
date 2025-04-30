@@ -13,4 +13,4 @@ export default function AddClassAssignment({params}: { params: { courseId: strin
             </Wrapper>
         </>
     );
-} 
+}

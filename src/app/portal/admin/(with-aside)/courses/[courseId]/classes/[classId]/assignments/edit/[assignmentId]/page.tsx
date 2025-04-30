@@ -13,7 +13,7 @@ export default async function EditClassAssignment({
 
     return (
         <>
-            <AdminHeader title='Edit Lesson'/>
+            <AdminHeader title='Edit Assignment'/>
             <AdminBreadcrumb/>
             <Wrapper>
                 <EditAssignmentForm assignment={assignment as any} courseId={params.courseId} classId={params.classId}
