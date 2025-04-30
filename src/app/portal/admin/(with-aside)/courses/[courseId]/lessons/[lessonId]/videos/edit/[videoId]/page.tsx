@@ -1,23 +1,23 @@
 import AdminHeader from '@/components/admin/header';
 import AdminBreadcrumb from '@/components/admin/breadcrumb';
-import EditAssignmentForm from '../../_components/edit-assignment-form';
+import EditVideoForm from '../../_components/edit-video-form';
 import Wrapper from '@/app/portal/admin/wrapper';
-import {getClassAssignmentById} from "@/_actions/class-assignment-action";
+import {getVideoById} from "@/_actions/videos-action";
 
-export default async function EditClassAssignment({
+export default async function EditVideoAssignment({
                                                       params
                                                   }: {
-    params: { courseId: string; classId: string, assignmentId: string }
+    params: { courseId: string; lessonId: string, videoId: string }
 }) {
-    const assignment = await getClassAssignmentById(params.courseId, params.classId, params.assignmentId);
+    const video = await getVideoById(params.courseId, params.lessonId, params.videoId);
 
     return (
         <>
-            <AdminHeader title='Edit Assignment'/>
+            <AdminHeader title='Edit Video'/>
             <AdminBreadcrumb/>
             <Wrapper>
-                <EditAssignmentForm assignment={assignment as any} courseId={params.courseId} classId={params.classId}
-                                    assignmentId={params.assignmentId}/>
+                <EditVideoForm video={video} courseId={params.courseId} lessonId={params.lessonId}
+                               videoId={params.videoId}/>
             </Wrapper>
         </>
     );
