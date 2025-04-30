@@ -1,12 +1,12 @@
 // middleware.ts
-import {jwtVerify, type JWTPayload} from 'jose';
-import {NextResponse} from 'next/server';
+import {type JWTPayload, jwtVerify} from 'jose';
 import type {NextRequest} from 'next/server';
+import {NextResponse} from 'next/server';
 import {UserRole} from 'lms-types';
 
 const key = new TextEncoder().encode(process.env.AUTH_SECRET!); // ✅ gunakan process.env langsung
 
-console.log('process.env.AUTH_SECRET in middleware:', process.env.AUTH_SECRET);
+// console.log('process.env.AUTH_SECRET in middleware:', process.env.AUTH_SECRET);
 
 async function decrypt(session: string | undefined = '') {
     try {
@@ -20,7 +20,7 @@ async function decrypt(session: string | undefined = '') {
             role: UserRole;
         };
     } catch (err) {
-        console.log('Error decrypting session @ middleware');
+        // console.log('Error decrypting session @ middleware');
         return null;
     }
 }

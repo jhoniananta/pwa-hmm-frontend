@@ -31,7 +31,7 @@ export default function AddVideoForm({courseId, lessonId}: AddVideoFormProps) {
             router.refresh();
         },
         onError: ({error: {fetchError, validationErrors}}) => {
-            toast.error(fetchError || validationErrorToString(validationErrors) || 'Failed to create class video');
+            toast.error(fetchError || validationErrorToString(validationErrors) || 'Failed to create video');
         },
     });
 

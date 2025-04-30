@@ -104,7 +104,7 @@ export const verifySession = cache(async () => {
         return {isAuth: false, userId: '', access_token: '', refresh_token: ''};
 
     const session = await decrypt(cookie);
-    console.log(`decrypted session @ ${new Date().toISOString()}`)
+    // console.log(`decrypted session @ ${new Date().toISOString()}`)
     // console.log('decrypted session @' + new Date().toISOString(), session); // <— cek hasil decrypt
 
     if (!session?.userId)
