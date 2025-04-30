@@ -45,10 +45,8 @@ export default function AttachmentSection({data, courseId, lessonId}: Attachment
             <Table className='table-admin'>
                 <TableHeader>
                     <TableRow>
-                        <TableHead>Title</TableHead>
+                        <TableHead>Name</TableHead>
                         <TableHead>Description</TableHead>
-                        <TableHead>Duration</TableHead>
-                        <TableHead>YouTube Link</TableHead>
                         <TableHead>Created At</TableHead>
                         <TableHead>Updated At</TableHead>
                         <TableHead>
