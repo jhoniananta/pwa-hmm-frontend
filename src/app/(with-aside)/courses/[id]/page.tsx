@@ -2,23 +2,19 @@ import {Skeleton} from '@/components/ui/skeleton';
 import YoutubeEmbed from '@/components/client/youtubeEmbed';
 import Link from 'next/link';
 import {Suspense} from 'react';
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from '@/components/ui/accordion';
+import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from '@/components/ui/accordion';
 import VideoList from '@/app/(with-aside)/courses/[id]/videoList';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import Lesson from './lesson';
-import {getLessons, getVideoData, getVideos, getCourseById} from '@/_actions/courses-action';
+import {getCourseById, getVideoData} from '@/_actions/courses-action';
 import FormatSelector from './formatSelector';
 import PdfList from './pdfList';
 import LinkList from './linkList';
 import PdfViewer from '@/components/client/PdfViewer';
 import LinkViewer from '@/components/client/LinkViewer';
 import Image from 'next/image';
-import EnrollmentModal from './enrollment-modal';
+import {getLessons} from "@/_actions/lessons-action";
+import {getVideos} from "@/_actions/videos-action";
 
 export default async function CoursesPage({
                                               searchParams,
