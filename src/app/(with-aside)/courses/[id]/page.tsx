@@ -15,6 +15,7 @@ import LinkViewer from '@/components/client/LinkViewer';
 import Image from 'next/image';
 import {getLessons} from "@/_actions/lessons-action";
 import {getVideos} from "@/_actions/videos-action";
+import {getAttachments} from "@/_actions/attachments-action";
 
 export default async function CoursesPage({
                                               searchParams,
@@ -128,6 +129,8 @@ export default async function CoursesPage({
         </div>
     );
 
+    const attachments = await getAttachments(id, lessonId)
+
     const pdfMaterials = [
         {
             title: "JavaScript Basics Guide",
@@ -142,6 +145,7 @@ export default async function CoursesPage({
             url: "https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/examples/learning/helloworld.pdf"
         }
     ];
+
 
     const linkMaterials = [
         {
@@ -228,7 +232,7 @@ export default async function CoursesPage({
                             )}
                             {format === 'pdf' && lessonId && (
                                 <PdfList
-                                    materials={pdfMaterials}
+                                    attachments={attachments}
                                     isExpanded={isExpanded}
                                     query={query}
                                     lessonId={lessonId}
@@ -284,7 +288,7 @@ export default async function CoursesPage({
                     )}
                     {format === 'pdf' && (
                         <PdfList
-                            materials={pdfMaterials}
+                            attachments={attachments}
                             isExpanded={true}
                             query={query}
                             lessonId={lessonId}
