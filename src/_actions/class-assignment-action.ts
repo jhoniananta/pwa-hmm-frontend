@@ -46,7 +46,7 @@ export const createClassAssignment = actionClient
         classId: z.number(),
         title: z.string().max(128, {message: 'The title must be at most 128 characters!'}),
         submission: z.string(),
-        deadline: z.date({message: 'Invalid date format'}),
+        deadline: z.string().datetime({message: 'Invalid date format'}),
         description: z.string().max(2048, {message: 'The description must be at most 2048 characters!'}),
         taskType: z.enum([AssignmentTaskType.PERSONAL_TASK, AssignmentTaskType.GROUP_TASK], {message: 'Invalid task type'}),
     }), {

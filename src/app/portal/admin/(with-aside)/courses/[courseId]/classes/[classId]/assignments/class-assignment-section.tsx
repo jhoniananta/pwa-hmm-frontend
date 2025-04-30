@@ -1,14 +1,7 @@
 'use client';
 
 import React, {useState} from 'react';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from '@/components/ui/table';
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Ellipsis} from 'lucide-react';
 import Link from 'next/link';
@@ -67,19 +60,20 @@ export default function ClassAssignmentSection({data, courseId, classId}: ClassA
                 <TableBody>
                     {data.map((assignment, index) => {
                         if (index < (page - 1) * assignmentsPerPage || index >= page * assignmentsPerPage) return null;
+                        const updatedAtLocaleString = new Date(assignment.updatedAt).toLocaleString()
 
                         return (
                             <TableRow key={assignment.assignmentId}>
                                 <TableCell>{assignment.title}</TableCell>
                                 <TableCell>{assignment.submission}</TableCell>
-                                <TableCell>{assignment.deadline.toISOString()}</TableCell>
+                                <TableCell>{new Date(assignment.deadline).toLocaleString()}</TableCell>
                                 <TableCell>{assignment.description}</TableCell>
                                 <TableCell>{assignment.taskType}</TableCell>
                                 <TableCell className='whitespace-nowrap text-nowrap'>
-                                    {new Date(assignment.createdAt).toDateString()}
+                                    {new Date(assignment.createdAt).toLocaleString()}
                                 </TableCell>
                                 <TableCell className='whitespace-nowrap text-nowrap'>
-                                    {new Date(assignment.updatedAt).toDateString()}
+                                    {updatedAtLocaleString === 'Invalid Date' ? '-' : updatedAtLocaleString}
                                 </TableCell>
                                 <TableCell>
                                     <Popover>

@@ -1,5 +1,3 @@
-import {ErrorBar} from "recharts";
-
 export default function validationErrorToString(validationError: object | undefined): string | undefined {
     if (!validationError) return undefined;
 
@@ -9,6 +7,8 @@ export default function validationErrorToString(validationError: object | undefi
         const errorMessage = validationError[key];
         if (Array.isArray(errorMessage)) {
             error += errorMessage.join(', ')
+        } else if (typeof errorMessage === 'object') {
+            error += validationErrorToString(errorMessage);
         } else {
             error += errorMessage
         }

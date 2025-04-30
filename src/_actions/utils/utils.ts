@@ -12,3 +12,19 @@ export async function getS3SignedUrl(key: string): Promise<string> {
     });
     return await getSignedUrl(s3Client, command, {expiresIn: 10});
 }
+
+export function fromGMT7ToUTC(date: Date): Date {
+    const utcDate = new Date(date);
+    utcDate.setHours(utcDate.getHours() - 7);
+    return utcDate;
+}
+
+export function fromUTCToGMT7(date: Date): Date {
+    const gmt7Date = new Date(date);
+    gmt7Date.setHours(gmt7Date.getHours() + 7);
+    return gmt7Date;
+}
+
+export function dateToMinutePrecisionString(date: Date): string {
+    return new Date(date).toISOString().split(':').slice(0, 2).join(':')
+}

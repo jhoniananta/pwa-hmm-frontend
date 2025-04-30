@@ -2,14 +2,18 @@
 
 import {useRouter} from 'next/navigation';
 import {useAction} from 'next-safe-action/hooks';
-import {createLesson} from '@/_actions/lessons-action';
 import {toast} from 'sonner';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
 import {cn} from '@/lib/utils';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {createClassAssignment} from "@/_actions/class-assignment-action";
+import {Label} from "@/components/ui/label";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {AssignmentTaskType} from "@/_actions/enum/action-enum";
+import validationErrorToString from "@/lib/validationErrorToString";
+import {dateToMinutePrecisionString, fromGMT7ToUTC, fromUTCToGMT7} from "@/_actions/utils/utils";
 
 interface AddAssignmentFormProps {
     courseId: string;
@@ -20,9 +24,9 @@ export default function AddAssignmentForm({courseId, classId}: AddAssignmentForm
     const router = useRouter();
     const [title, setTitle] = useState('');
     const [submission, setSubmission] = useState('');
-    const [deadline, setDeadline] = useState('');
+    const [deadline, setDeadline] = useState(new Date().toISOString());
     const [description, setDescription] = useState('');
-    const [taskType, setTaskType] = useState('');
+    const [taskType, setTaskType] = useState(AssignmentTaskType.PERSONAL_TASK);
 
     const {execute: executeCreate, status} = useAction(createClassAssignment, {
         onSuccess: () => {
@@ -30,8 +34,8 @@ export default function AddAssignmentForm({courseId, classId}: AddAssignmentForm
             router.push(`/portal/admin/courses/${courseId}/classes/${classId}/assignments`);
             router.refresh();
         },
-        onError: (error) => {
-            toast.error(error.error.fetchError || 'Failed to create class assignment');
+        onError: ({error: {fetchError, validationErrors}}) => {
+            toast.error(fetchError || validationErrorToString(validationErrors) || 'Failed to create class assignment');
         },
     });
 
@@ -85,13 +89,13 @@ export default function AddAssignmentForm({courseId, classId}: AddAssignmentForm
 
             <div className='space-y-2'>
                 <label htmlFor='submission' className='text-sm font-medium'>
-                    Title
+                    Submission
                 </label>
                 <Input
                     id='submission'
                     value={submission}
                     onChange={(e) => setSubmission(e.target.value)}
-                    placeholder='Enter assignment submission'
+                    placeholder='Enter assignment submission (e.g: MS Team / Edunex)'
                 />
             </div>
 
@@ -101,8 +105,11 @@ export default function AddAssignmentForm({courseId, classId}: AddAssignmentForm
                 </label>
                 <Input
                     id='deadline'
-                    value={deadline}
-                    onChange={(e) => setDeadline(e.target.value)}
+                    type='datetime-local'
+                    value={dateToMinutePrecisionString(fromUTCToGMT7(deadline))}
+                    onChange={(e) => {
+                        return setDeadline(fromGMT7ToUTC(new Date(e.target.value)).toISOString());
+                    }}
                     placeholder='Enter assignment deadline'
                 />
             </div>
@@ -120,17 +127,20 @@ export default function AddAssignmentForm({courseId, classId}: AddAssignmentForm
                 />
             </div>
 
-            <div className='space-y-2'>
-                <label htmlFor='description' className='text-sm font-medium'>
-                    Task type
-                </label>
-                <Textarea
-                    id='taskType'
-                    value={description}
-                    onChange={(e) => setTaskType(e.target.value)}
-                    placeholder='Enter assignment task type'
-                    rows={5}
-                />
+            <div>
+                <Label>Task type</Label>
+                <Select
+                    onValueChange={(value) => setTaskType(value as AssignmentTaskType)}
+                    defaultValue={AssignmentTaskType.PERSONAL_TASK}
+                >
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select task type"/>
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value={AssignmentTaskType.PERSONAL_TASK}>Personal Task</SelectItem>
+                        <SelectItem value={AssignmentTaskType.GROUP_TASK}>Group Task</SelectItem>
+                    </SelectContent>
+                </Select>
             </div>
 
             <Button
