@@ -75,7 +75,7 @@ jobs:
 
       - name: Copy build folder and necessary files to EC2
         run: |
-          scp -r \
+          scp -r -P \
             -i ~/.ssh_myhmm_client/id_rsa_myhmm_client \
             -o StrictHostKeyChecking=no \
             .next/ public/ \
