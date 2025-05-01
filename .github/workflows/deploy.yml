@@ -51,7 +51,7 @@ jobs:
         run: |
           ssh -i ~/.ssh_myhmm_client/id_rsa_myhmm_client \
               -o StrictHostKeyChecking=no \
-              ec2-user@${{ secrets.EC2_PUBLIC_IP }} <<'EOF'
+              ec2-user@108.136.219.65 <<'EOF'
           
             APP_DIR="/home/ec2-user/pwa-hmm-frontend"
             cd "$APP_DIR"
