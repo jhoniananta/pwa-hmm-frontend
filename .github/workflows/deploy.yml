@@ -30,7 +30,6 @@ jobs:
       - name: Connect using SSH
         run: ssh -i ~/.ssh_myhmm_client/id_rsa_myhmm_client -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} <<EOF
 
-
       - name: Deploy to EC2
         run: |
           APP_DIR="$HOME/pwa-hmm-frontend"
@@ -43,8 +42,17 @@ jobs:
           fi
           
           cd "$APP_DIR"
-          git reset --hard
+          
+          if [ ! -d ".git" ]; then
+            git clone https://github.com/jhoniananta/pwa-hmm-frontend.git .
+          else
+            git reset --hard
+            git fetch
+          fi
+          
+          git checkout staging
           git pull origin staging
+          
           npm install --production
           npm run build
           export AUTH_SECRET=${{ secrets.AUTH_SECRET }}
