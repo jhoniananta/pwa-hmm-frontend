@@ -2,12 +2,12 @@ import 'server-only';
 
 import {type JWTPayload, jwtVerify, SignJWT} from 'jose';
 import {cookies} from 'next/headers';
-import {env} from '@/env';
 import {cache} from 'react';
 import {NextResponse} from 'next/server';
 import {getTokenFromResponse} from './utils';
 import type {UserRole} from 'lms-types';
 import getVerboseStatus from '@/lib/getVerboseStatus';
+import {env} from "@/env";
 
 const key = new TextEncoder().encode(process.env.AUTH_SECRET);
 
@@ -53,6 +53,9 @@ export async function createSession(
         expires: expire,
     });
 
+    console.log('setting cookie...')
+    console.log('session:', session)
+
     cookies().set('session-hmm', session, {
         httpOnly: true,
         secure: env.NODE_ENV === 'production',
@@ -60,6 +63,8 @@ export async function createSession(
         sameSite: 'lax',
         path: '/',
     });
+
+    console.log('added cookie')
 }
 
 export async function updateSession(res: Response) {
