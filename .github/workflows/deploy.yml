@@ -22,50 +22,53 @@ jobs:
         run: mkdir -p ~/.ssh_myhmm_client
 
       - name: Save secret SSH key
-        run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh_myhmm_client/id_rsa_myhmm_client
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh_myhmm_client/id_rsa_myhmm_client
 
       - name: Set permissions for SSH key
         run: chmod 600 ~/.ssh_myhmm_client/id_rsa_myhmm_client
 
-      - name: Connect using SSH
-        run: ssh -i ~/.ssh_myhmm_client/id_rsa_myhmm_client -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} <<EOF
-
-      - name: Deploy to EC2
+      - name: Deploy to EC2 (via SSH as ec2-user)
         run: |
-          APP_DIR="$HOME/pwa-hmm-frontend"
-          
-          if [ ! -d "$APP_DIR" ]; then
-            mkdir -p "$APP_DIR"
-            echo "Directory created: $APP_DIR"
-          else
-            echo "Directory already exists: $APP_DIR"
-          fi
-          
-          cd "$APP_DIR"
-          
-          if [ ! -d ".git" ]; then
-            git clone https://github.com/jhoniananta/pwa-hmm-frontend.git .
-          else
-            git reset --hard
-            git fetch
-          fi
-          
-          git checkout staging
-          git pull origin staging
-          
-          cat <<EOL > .env.local
-          AUTH_SECRET=${{ secrets.AUTH_SECRET }}
-          SESSION_MAX_AGE=${{ secrets.SESSION_MAX_AGE }}
-          API_URL=${{ secrets.API_URL }}
-          BLOB_READ_WRITE_TOKEN=${{ secrets.BLOB_READ_WRITE_TOKEN }}
-          YOUTUBE_API_SECRET_KEY=${{ secrets.YOUTUBE_API_SECRET_KEY }}
-          AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          EOL
-          
-          npm install --production
-          npm run build
-          pm2 stop myhmm_client
-          pm2 delete myhmm_client
-          pm2 restart ecosystem.config.js
-          EOF
+          ssh -i ~/.ssh_myhmm_client/id_rsa_myhmm_client \
+              -o StrictHostKeyChecking=no \
+              ec2-user@${{ secrets.EC2_PUBLIC_IP }} <<'EOF'
+
+            APP_DIR="/home/ec2-user/pwa-hmm-frontend"
+
+            if [ ! -d "$APP_DIR" ]; then
+              mkdir -p "$APP_DIR"
+              echo "Directory created: $APP_DIR"
+            else
+              echo "Directory already exists: $APP_DIR"
+            fi
+
+            cd "$APP_DIR"
+
+            if [ ! -d ".git" ]; then
+              git clone https://github.com/jhoniananta/pwa-hmm-frontend.git .
+            else
+              git reset --hard
+              git fetch
+            fi
+
+            git checkout staging
+            git pull origin staging
+
+            cat <<EOL > .env.local
+            AUTH_SECRET=${{ secrets.AUTH_SECRET }}
+            SESSION_MAX_AGE=${{ secrets.SESSION_MAX_AGE }}
+            API_URL=${{ secrets.API_URL }}
+            BLOB_READ_WRITE_TOKEN=${{ secrets.BLOB_READ_WRITE_TOKEN }}
+            YOUTUBE_API_SECRET_KEY=${{ secrets.YOUTUBE_API_SECRET_KEY }}
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            EOL
+
+            npm install --production
+            npm run build
+
+            pm2 stop myhmm_client
+            pm2 delete myhmm_client
+            pm2 restart ecosystem.config.js
+  EOF
