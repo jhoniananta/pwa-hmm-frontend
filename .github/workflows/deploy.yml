@@ -85,7 +85,7 @@ jobs:
 
       - name: Upload to S3
         run: |
-          aws s3 cp build.tar.gz s3://myhmm-bucket/deploy/build.tar.gz --acl public-read
+          aws s3 cp build.tar.gz s3://myhmm-bucket/deploy/build.tar.gz
 
       - name: SSH into EC2 and download from S3
         run: |
