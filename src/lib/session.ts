@@ -7,7 +7,6 @@ import {NextResponse} from 'next/server';
 import {getTokenFromResponse} from './utils';
 import type {UserRole} from 'lms-types';
 import getVerboseStatus from '@/lib/getVerboseStatus';
-import {env} from "@/env";
 
 const key = new TextEncoder().encode(process.env.AUTH_SECRET);
 
@@ -58,7 +57,8 @@ export async function createSession(
 
     cookies().set('session-hmm', session, {
         httpOnly: true,
-        secure: env.NODE_ENV === 'production',
+        // secure: env.NODE_ENV === 'production',
+        secure: false,
         expires: expire,
         sameSite: 'lax',
         path: '/',
@@ -94,7 +94,8 @@ export async function updateSession(res: Response) {
             refresh_token,
         }),
         httpOnly: true,
-        secure: env.NODE_ENV === 'production',
+        // secure: env.NODE_ENV === 'production',
+        secure: false,
         expires: expire,
         sameSite: 'lax',
     });
