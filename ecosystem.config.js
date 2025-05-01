@@ -2,7 +2,7 @@ module.exports = {
     apps: [
         {
             name: 'myhmm_client',
-            script: 'node_modules/next/dist/bin/next',
+            script: 'npm',
             args: 'start',
             interpreter: 'node',
             instances: 1,
