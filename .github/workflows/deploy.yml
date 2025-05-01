@@ -33,16 +33,16 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          DIR="~/pwa-hmm-frontend"
+          APP_DIR="$HOME/pwa-hmm-frontend"
           
-          if [ ! -d "$DIR" ]; then
-            mkdir -p "$DIR"
-            echo "Directory created: $DIR"
+          if [ ! -d "$APP_DIR" ]; then
+            mkdir -p "$APP_DIR"
+            echo "Directory created: $APP_DIR"
           else
-            echo "Directory already exists: $DIR"
+            echo "Directory already exists: $APP_DIR"
           fi
           
-          cd /home/ec2-user/pwa-hmm-frontend
+          cd "$APP_DIR"
           git reset --hard
           git pull origin main
           npm install --production
