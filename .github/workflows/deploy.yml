@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-deploy:
-    environment: staging
+    environment: Production
     runs-on: ubuntu-latest
 
     steps:
