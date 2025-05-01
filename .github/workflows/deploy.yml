@@ -33,7 +33,7 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          DIR="/home/ec2-user/pwa-hmm-frontend"
+          DIR="~/pwa-hmm-frontend"
           
           if [ ! -d "$DIR" ]; then
             mkdir -p "$DIR"
@@ -42,7 +42,7 @@ jobs:
             echo "Directory already exists: $DIR"
           fi
           
-          cd "$DIR"
+          cd /home/ec2-user/pwa-hmm-frontend
           git reset --hard
           git pull origin main
           npm install --production
