@@ -89,7 +89,7 @@ jobs:
 
       - name: SSH into EC2 and download from S3
         run: |
-          ssh -i ~/.ssh/id_rsa ec2-user@108.136.179.201 <<'EOF'
+          ssh -i ~/.ssh_myhmm_client/id_rsa_myhmm_client ec2-user@108.136.179.201 <<'EOF'
             cd /home/ec2-user/pwa-hmm-frontend
             aws s3 cp s3://myhmm-bucket/deploy/build.tar.gz .
             tar -xzf build.tar.gz
