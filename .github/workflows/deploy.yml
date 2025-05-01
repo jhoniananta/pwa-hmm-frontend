@@ -73,13 +73,33 @@ jobs:
       - name: Build application
         run: npm run build
 
-      - name: Copy build folder and necessary files to EC2
+      - name: Install AWS CLI
         run: |
-          scp -r -P \
-            -i ~/.ssh_myhmm_client/id_rsa_myhmm_client \
-            -o StrictHostKeyChecking=no \
-            .next/ public/ \
-            ec2-user@108.136.179.201:/home/ec2-user/pwa-hmm-frontend/
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+
+      - name: Configure AWS Credentials
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region ap-southeast-3
+
+      - name: Create tar.gz of build folder
+        run: |
+          tar -czf build.tar.gz .next public next.config.js
+
+      - name: Upload to S3
+        run: |
+          aws s3 cp build.tar.gz s3://myhmm-bucket/deploy/build.tar.gz --acl public-read
+
+      - name: SSH into EC2 and download from S3
+        run: |
+          ssh -i ~/.ssh/id_rsa ec2-user@108.136.179.201 <<'EOF'
+            cd /home/ec2-user/pwa-hmm-frontend
+            aws s3 cp s3://myhmm-bucket/deploy/build.tar.gz .
+            tar -xzf build.tar.gz
+          EOF
 
       - name: Deploy to EC2 (via SSH as ec2-user)
         run: |
