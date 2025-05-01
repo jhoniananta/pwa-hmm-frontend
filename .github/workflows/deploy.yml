@@ -55,7 +55,7 @@ jobs:
             git checkout staging
             git pull origin staging
 
-            cat <<EOL > .env.local
+            cat > .env.local <<EOF2
             AUTH_SECRET=${{ secrets.AUTH_SECRET }}
             SESSION_MAX_AGE=${{ secrets.SESSION_MAX_AGE }}
             API_URL=${{ secrets.API_URL }}
@@ -63,7 +63,7 @@ jobs:
             YOUTUBE_API_SECRET_KEY=${{ secrets.YOUTUBE_API_SECRET_KEY }}
             AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
             AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            EOL
+            EOF2
 
             npm install --production
             npm run build
