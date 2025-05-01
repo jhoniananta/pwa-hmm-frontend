@@ -1,13 +1,7 @@
 import {cn} from '@/lib/utils';
 import {type HTMLAttributes} from 'react';
 import Image from 'next/image';
-import {
-    Drawer,
-    DrawerContent,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
-} from '../ui/drawer';
+import {Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger,} from '../ui/drawer';
 import BurgerX from './burger-x';
 import NavLinks from './nav-links';
 import PathTitle from './path-title';
@@ -28,7 +22,8 @@ async function Sidebar({className, children, ...props}: SidebarProps) {
         >
             <div className='flex mb-6 items-center gap-3'>
                 <Image
-                    src='/images/logo.png'
+                    unoptimized={true}
+                    src='/assets/images/logo.png'
                     width={40}
                     height={40}
                     alt='logo'

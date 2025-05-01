@@ -38,6 +38,7 @@ export default async function CoursesPage({
     //                       h-[200px] md:h-[300px] lg:h-[400px]
     //                       mx-auto">
     //                     <Image
+    //                      unoptimized={true}
     //                         src={course.image || '/images/mesin.png'}
     //                         alt={course.title}
     //                         fill
@@ -258,12 +259,12 @@ export default async function CoursesPage({
                           w-full md:w-[600px] lg:w-[800px]
                           h-[200px] md:h-[300px] lg:h-[400px]
                           mx-auto">
-                            <Image
-                                src={course.image || '/images/mesin.png'}
-                                alt={course.title}
-                                fill
-                                className="object-cover"
-                                sizes="(max-width: 768px) 100vw,
+                            <Image unoptimized={true}
+                                   src={course.image || '/assets/images/mesin.png'}
+                                   alt={course.title}
+                                   fill
+                                   className="object-cover"
+                                   sizes="(max-width: 768px) 100vw,
                        (max-width: 1024px) 600px,
                        800px"
                             />

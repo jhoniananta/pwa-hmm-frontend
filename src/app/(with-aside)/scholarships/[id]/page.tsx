@@ -73,7 +73,7 @@ export default async function Scholarship({params}: { params: { id: string } }) 
         <div className='bg-white rounded-xl p-2 md:p-6 md:py-8 flex gap-12 items-center'>
             <div className='hidden md:block'>
                 <Poster
-                    src='/beasiswa.jpg'
+                    src='/assets/beasiswa.jpg'
                     alt={data.title}
                     mode='desktop'
                     className='w-full max-w-96'
@@ -82,7 +82,7 @@ export default async function Scholarship({params}: { params: { id: string } }) 
             <div className='space-y-4 md:space-y-8 flex-1 md:py-2'>
                 <div className='flex gap-6 items-center'>
                     <Poster
-                        src='/beasiswa.jpg'
+                        src='/assets/beasiswa.jpg'
                         alt={data.title}
                         mode='mobile'
                     />

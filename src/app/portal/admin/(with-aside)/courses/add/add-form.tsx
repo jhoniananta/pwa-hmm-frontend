@@ -13,13 +13,7 @@ import {z} from 'zod';
 import ErrorText from '../../../error-text';
 import {addCourseSchema} from '@/lib/schema';
 import {createCourse} from '@/_actions/courses-action';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from '@/components/ui/select';
 import {CourseCategoryModel} from 'lms-types';
 import {useRef, useState} from 'react';
 import {uploadCourseImage} from '@/_actions/upload-image-action';
@@ -121,6 +115,7 @@ function AddForm({initialCategories}: AddFormProps) {
                     {previewUrl && (
                         <div className="relative w-40 h-40">
                             <Image
+                                unoptimized={true}
                                 src={previewUrl}
                                 alt="Preview"
                                 fill

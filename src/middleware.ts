@@ -1,7 +1,6 @@
 // middleware.ts
 import {type JWTPayload, jwtVerify} from 'jose';
-import type {NextRequest} from 'next/server';
-import {NextResponse} from 'next/server';
+import {NextRequest, NextResponse} from 'next/server';
 import {UserRole} from 'lms-types';
 
 const key = new TextEncoder().encode(process.env.AUTH_SECRET!); // ✅ gunakan process.env langsung
@@ -52,5 +51,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+    matcher: ['/((?!api|_next/static|_next/image|favicon.ico|assets).*)'],
 };

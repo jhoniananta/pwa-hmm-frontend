@@ -1,5 +1,5 @@
 import type {Metadata} from 'next';
-import {Poppins, Poltawski_Nowy} from 'next/font/google';
+import {Poltawski_Nowy, Poppins} from 'next/font/google';
 import './globals.css';
 import {cn} from '@/lib/utils';
 import {TooltipProvider} from '@/components/ui/tooltip';
@@ -62,9 +62,9 @@ export const metadata: Metadata = {
     // },
     icons: {
         icon: [
-            {url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png'},
-            {url: '/icons/icon-512x512.png', sizes: '512x512', type: 'image/png'},
+            {url: '/assets/icons/icon-192x192.png', sizes: '192x192', type: 'image/png'},
+            {url: '/assets/icons/icon-512x512.png', sizes: '512x512', type: 'image/png'},
         ],
-        apple: [{url: '/icons/icon-192x192.png'}],
+        apple: [{url: '/assets/icons/icon-192x192.png'}],
     },
 };

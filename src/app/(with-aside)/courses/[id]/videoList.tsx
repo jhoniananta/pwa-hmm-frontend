@@ -25,12 +25,12 @@ export default function VideoList({
                             href={`?q=${youtubeLink}&expanded=${isExpanded}&lessonId=${lessonId}`}
                             className='px-2 py-2.5 flex gap-4 items-center text-sm'
                         >
-                            <Image
-                                src={thumbnail_url}
-                                alt={title}
-                                width={160}
-                                height={120}
-                                className='aspect-[4/3] rounded-md max-h-[calc(80*3/4px)] max-w-20'
+                            <Image unoptimized={true}
+                                   src={thumbnail_url}
+                                   alt={title}
+                                   width={160}
+                                   height={120}
+                                   className='aspect-[4/3] rounded-md max-h-[calc(80*3/4px)] max-w-20'
                             />
                             <div className=''>{title}</div>
                         </Link>

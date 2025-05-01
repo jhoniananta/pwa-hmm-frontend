@@ -49,14 +49,16 @@ export default function SignIn() {
         <div className='relative w-full min-h-dvh flex items-center justify-center'>
             {/* Add images for background */}
             <Image
-                src='/hmm-vstock/bp-black-transparent.png'
+                unoptimized={true}
+                src='/assets/hmm-vstock/bp-black-transparent.png'
                 className=' opacity-20 absolute left-0 bottom-0 w-2/5 md:w-1/6'
                 alt='bp-black-transparent'
                 width={2000}
                 height={2000}
             />
             <Image
-                src='/hmm-vstock/bp-black-transparent.png'
+                unoptimized={true}
+                src='/assets/hmm-vstock/bp-black-transparent.png'
                 className=' opacity-20 absolute right-0 top-0 w-1/3 md:w-1/6'
                 alt='bp-black-transparent'
                 width={2000}

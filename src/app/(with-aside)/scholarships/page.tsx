@@ -32,7 +32,8 @@ const Scholarships = async () => {
                             className='flex gap-4 md:gap-8 hover:bg-gray-300 transition-all items-center py-1 md:pr-6 pr-4'
                         >
                             <Image
-                                src='/beasiswa.jpg' // Default scholarship image
+                                unoptimized={true}
+                                src='/assets/beasiswa.jpg' // Default scholarship image
                                 alt={title}
                                 width={100}
                                 height={100}

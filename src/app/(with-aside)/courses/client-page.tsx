@@ -21,10 +21,10 @@ const ClientPage = ({courses, isAllCourse}: ClientPageProps) => {
     const isVerbose = getVerboseStatus();
 
     const images = [
-        '/images/mesin.png',
-        '/images/pengukuran.png',
-        '/images/pipe_system.png',
-        '/images/printer.png',
+        '/assets/images/mesin.png',
+        '/assets/images/pengukuran.png',
+        '/assets/images/pipe_system.png',
+        '/assets/images/printer.png',
     ];
 
     // const filteredCourses = courses.filter((course) =>

@@ -117,6 +117,7 @@ export default function Page() {
                             {previewUrl && (
                                 <div className="relative w-40 h-40">
                                     <Image
+                                        unoptimized={true}
                                         src={previewUrl}
                                         alt="Preview"
                                         fill
