@@ -72,6 +72,7 @@ export async function updateSession(res: Response) {
         !res.headers.get('set-cookie')?.includes('accessToken') ||
         !res.headers.get('set-cookie')?.includes('refreshToken')
     ) {
+        console.log('@updateSessions: no accessToken or refreshToken * res.headers.set-cookie:', res.headers.get('set-cookie'));
         return;
     }
 
