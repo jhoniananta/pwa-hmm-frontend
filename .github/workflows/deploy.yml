@@ -81,7 +81,7 @@ jobs:
 
       - name: Create tar.gz of build folder
         run: |
-          tar -czf build.tar.gz .next public next.config.js
+          tar -czf build.tar.gz .next public 
 
       - name: Upload to S3
         run: |
