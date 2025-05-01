@@ -30,9 +30,19 @@ jobs:
       - name: Connect using SSH
         run: ssh -i ~/.ssh_myhmm_client/id_rsa_myhmm_client -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} <<EOF
 
+
       - name: Deploy to EC2
         run: |
-          cd /home/ec2-user/pwa-hmm-frontend
+          DIR="/home/ec2-user/pwa-hmm-frontend"
+          
+          if [ ! -d "$DIR" ]; then
+            mkdir -p "$DIR"
+            echo "Directory created: $DIR"
+          else
+            echo "Directory already exists: $DIR"
+          fi
+          
+          cd "$DIR"
           git reset --hard
           git pull origin main
           npm install --production
