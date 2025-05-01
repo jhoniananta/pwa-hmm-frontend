@@ -439,6 +439,7 @@ export const updateScholarshipSchema = z.object({
         })
         .optional(),
     scope: z.string().min(1, {message: 'Scope is required'}).optional(),
+    tags: z.array(z.number()).optional(),
 });
 
 export const deleteScholarshipSchema = z.object({

@@ -24,6 +24,7 @@ export type ScholarshipResponse = {
     provider: string,
     deadline: Date,
     reference: string,
+    tags: {tagId: number, title: string}[],
     categories: string[]
 }
 
