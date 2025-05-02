@@ -36,7 +36,6 @@ async function subscribe(onSubscribe: (subs: PushSubscription | null) => void): 
             });
         })
         .then((subscription: PushSubscription) => {
-            console.info('Created subscription Object: ', subscription.toJSON());
             submitSubscription(subscription).then(_ => {
                 onSubscribe(subscription);
             });
@@ -56,16 +55,13 @@ async function submitSubscription(subscription: PushSubscription): Promise<void>
         body: JSON.stringify({subscription}),
     });
     const result = await res.json();
-    console.log(result);
 }
 
 export async function registerAndSubscribe(
     onSubscribe: (subs: PushSubscription | null) => void,
 ): Promise<void> {
     try {
-        console.log('waiting...')
         await navigator.serviceWorker.register(SERVICE_WORKER_FILE_PATH);
-        console.log('registered service worker');
         await subscribe(onSubscribe);
     } catch (e) {
         console.error('Failed to register service-worker: ', e);
@@ -75,11 +71,11 @@ export async function registerAndSubscribe(
 export async function sendWebPush(message: string | null): Promise<void> {
     const endPointUrl = '/api/notification/send';
     const pushBody = {
-        title: 'Test Push',
+        title: 'New Assignment!',
         body: message ?? 'This is a test push message',
-        image: '/next.png',
+        image: 'https://myhmm-bucket.s3.ap-southeast-3.amazonaws.com/public/logo.png',
         icon: 'nextjs.png',
-        url: 'https://google.com',
+        url: '/assignments',
     };
     const res = await fetch(endPointUrl, {
         method: 'POST',
@@ -89,5 +85,4 @@ export async function sendWebPush(message: string | null): Promise<void> {
         body: JSON.stringify(pushBody),
     });
     const result = await res.json();
-    console.log(result);
 }

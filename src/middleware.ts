@@ -5,8 +5,6 @@ import {UserRole} from 'lms-types';
 
 const key = new TextEncoder().encode(process.env.AUTH_SECRET!); // ✅ gunakan process.env langsung
 
-// console.log('process.env.AUTH_SECRET in middleware:', process.env.AUTH_SECRET);
-
 async function decrypt(session: string | undefined = '') {
     try {
 

@@ -68,7 +68,7 @@ export default function Home() {
             </Button>
             <Button
                 className='bg-navy rounded-full font-semibold py-1.5 text-white hover:bg-navy/80 transition px-6 text-sm md:text-base'
-                onClick={() => sendWebPush('Notif bro!')}
+                onClick={() => sendWebPush('Submit the task on time!')}
             >
                 Test Push Notification
             </Button>
