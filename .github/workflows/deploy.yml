@@ -34,7 +34,7 @@ jobs:
           cat > .env.local <<EOL
           AUTH_SECRET=${{ secrets.AUTH_SECRET }}
           SESSION_MAX_AGE=${{ secrets.SESSION_MAX_AGE }}
-          API_URL=http://108.136.179.201:2212/api/v1
+          API_URL=https://myhmm.tech/api/v1
           BLOB_READ_WRITE_TOKEN=${{ secrets.BLOB_READ_WRITE_TOKEN }}
           YOUTUBE_API_SECRET_KEY=${{ secrets.YOUTUBE_API_SECRET_KEY }}
           AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -47,13 +47,13 @@ jobs:
         run: |
           scp -i ~/.ssh_myhmm_client/id_rsa_myhmm_client \
               -o StrictHostKeyChecking=no \
-              .env.local ec2-user@108.136.179.201:/home/ec2-user/pwa-hmm-frontend/.env.local
+              .env.local ec2-user@108.137.47.170:/home/ec2-user/pwa-hmm-frontend/.env.local
 
       - name: Pull repository
         run: |
           ssh -i ~/.ssh_myhmm_client/id_rsa_myhmm_client \
               -o StrictHostKeyChecking=no \
-              ec2-user@108.136.179.201 <<'EOF'
+              ec2-user@108.137.47.170 <<'EOF'
           
             APP_DIR="/home/ec2-user/pwa-hmm-frontend"
             cd "$APP_DIR"
@@ -91,7 +91,7 @@ jobs:
 
       - name: SSH into EC2 and download from S3
         run: |
-          ssh -i ~/.ssh_myhmm_client/id_rsa_myhmm_client ec2-user@108.136.179.201 <<'EOF'
+          ssh -i ~/.ssh_myhmm_client/id_rsa_myhmm_client ec2-user@108.137.47.170 <<'EOF'
             cd /home/ec2-user/pwa-hmm-frontend
             aws s3 cp s3://myhmm-bucket/deploy/build.tar.gz .
             tar -xzf build.tar.gz
@@ -101,7 +101,7 @@ jobs:
         run: |
           ssh -i ~/.ssh_myhmm_client/id_rsa_myhmm_client \
               -o StrictHostKeyChecking=no \
-              ec2-user@108.136.179.201 <<'EOF'
+              ec2-user@108.137.47.170 <<'EOF'
           
             cd /home/ec2-user/pwa-hmm-frontend
           
