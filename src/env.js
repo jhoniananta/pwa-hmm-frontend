@@ -11,7 +11,9 @@ export const env = createEnv({
         ),
         API_URL: z.string(),
         BLOB_READ_WRITE_TOKEN: z.string(),
-        YOUTUBE_API_SECRET_KEY: z.string()
+        YOUTUBE_API_SECRET_KEY: z.string(),
+        NEXT_PUBLIC_VAPID_PUBLIC_KEY: z.string(),
+        NEXT_PUBLIC_VAPID_PRIVATE_KEY: z.string()
     },
     runtimeEnv: {
         NODE_ENV: process.env.NODE_ENV,
@@ -19,7 +21,9 @@ export const env = createEnv({
         SESSION_MAX_AGE: process.env.SESSION_MAX_AGE,
         API_URL: process.env.API_URL,
         BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
-        YOUTUBE_API_SECRET_KEY: process.env.YOUTUBE_API_SECRET_KEY
+        YOUTUBE_API_SECRET_KEY: process.env.YOUTUBE_API_SECRET_KEY,
+        NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+        NEXT_PUBLIC_VAPID_PRIVATE_KEY: process.env.NEXT_PUBLIC_VAPID_PRIVATE_KEY,
     },
     emptyStringAsUndefined: true,
 })

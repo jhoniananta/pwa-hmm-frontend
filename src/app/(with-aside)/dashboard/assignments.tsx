@@ -1,8 +1,7 @@
 import Button from '@/components/ui/button/button';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import Link from 'next/link';
-import {getUserAssignment} from "@/_actions/assignment-action";
-import {AssignmentType} from "lms-types";
+import {AssignmentType, UserAssignmentModel} from "lms-types";
 
 export const beforeColors = [
     'before:bg-oren',
@@ -13,8 +12,13 @@ export const beforeColors = [
 
 export const colors = ['bg-oren', 'bg-navy', 'bg-hijau', 'bg-kuning'];
 
-export default async function Assignments() {
-    const assignmentsData = await getUserAssignment();
+type AssignmentsProp = {
+    assignments: UserAssignmentModel[];
+}
+
+export default function Assignments({assignments}: AssignmentsProp) {
+    // const assignmentsData = await getUserAssignment();
+    const assignmentsData = assignments;
     const today = new Date();
     const todayAssignments = assignmentsData.filter((assignment) => {
         const deadlineDate = new Date(assignment.deadline);

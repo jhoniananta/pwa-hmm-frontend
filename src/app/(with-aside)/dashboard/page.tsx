@@ -1,18 +1,41 @@
-import Assignments from './assignments';
+'use client'
+
 import Calendar, {type EventMap} from './calendar-x';
 import UpcomingSchedule from './upcomingSched';
-import Berita from './berita';
-import {getAllUserSchedules} from '@/_actions/schedule-action';
-import getVerboseStatus from "@/lib/getVerboseStatus";
+import News from './news';
+import {useEffect, useState} from "react";
+import {getAllUserSchedules} from "@/_actions/schedule-action";
+import Assignments from "@/app/(with-aside)/dashboard/assignments";
+import {getUserAssignment} from "@/_actions/assignment-action";
+import {Button} from "@/components/ui/button";
+import {checkPermissionStateAndAct, notificationUnsupported, registerAndSubscribe, sendWebPush} from "@/app/Push";
 
 export const dynamic = 'force-dynamic';
 
-export default async function Home() {
-    // Add these console logs before the Home component
-    console.log('Assignments:', Assignments);
-    console.log('Calendar:', Calendar);
-    console.log('UpcomingSchedule:', UpcomingSchedule);
-    console.log('Berita:', Berita);
+export default function Home() {
+    const [unsupported, setUnsupported] = useState<boolean>(false);
+    const [subscription, setSubscription] = useState<PushSubscription | null>(null);
+    const [assignments, setAssignments] = useState<any>([]);
+    const [calendar, setCalendar] = useState<any>(null);
+    const [schedules, setSchedules] = useState<any>([]);
+
+    useEffect(() => {
+        const isUnsupported = notificationUnsupported();
+        setUnsupported(isUnsupported);
+        if (isUnsupported) {
+            return;
+        }
+        checkPermissionStateAndAct(setSubscription);
+
+        const fetchData = async () => {
+            const assignmentsResponse = await getUserAssignment();
+            setAssignments(assignmentsResponse);
+            const schedulesResponse = await getAllUserSchedules();
+            setSchedules(schedulesResponse);
+        };
+        fetchData()
+    }, []);
+
     const events: EventMap[] = [
         {
             '2024-07-28': [
@@ -30,17 +53,33 @@ export default async function Home() {
         {'2024-07-31': [{title: 'Pre-Machining'}, {title: 'FRS'}]},
     ];
 
-    const schedules = await getAllUserSchedules();
-
     return (
         <div className="flex flex-col items-stretch flex-1 h-max gap-6 relative">
+            <Button
+                className='bg-navy rounded-full font-semibold py-1.5 text-white hover:bg-navy/80 transition px-6 text-sm md:text-base'
+                disabled={unsupported}
+                onClick={() => registerAndSubscribe(setSubscription)}
+            >
+                {unsupported
+                    ? 'Notification Unsupported'
+                    : subscription
+                        ? 'Notification allowed'
+                        : 'Allow notification'}
+            </Button>
+            <Button
+                className='bg-navy rounded-full font-semibold py-1.5 text-white hover:bg-navy/80 transition px-6 text-sm md:text-base'
+                onClick={() => sendWebPush('Notif bro!')}
+            >
+                Test Push Notification
+            </Button>
+
             <div className="flex flex-col md:flex-row gap-6">
                 <UpcomingSchedule schedules={schedules as any}/>
-                <Assignments/>
+                <Assignments assignments={assignments}/>
             </div>
             <div className="flex flex-col md:flex-row w-full gap-6 items-center">
                 <Calendar events={events}/>
-                <Berita/>
+                <News/>
             </div>
             <div className="relative bg-white w-full rounded-xl shadow-md py-2">
                 <div className="text-7xl font-bold text-abu-1 px-4">#QOTD</div>
@@ -53,7 +92,7 @@ export default async function Home() {
         </div>
     );
 }
-
-export const metadata = {
-    title: 'Dashboard',
-};
+//
+// export const metadata = {
+//     title: 'Dashboard',
+// };

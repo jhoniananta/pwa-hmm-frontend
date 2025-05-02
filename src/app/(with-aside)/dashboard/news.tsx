@@ -20,7 +20,7 @@ function Dot({
     );
 }
 
-export default function Berita() {
+export default function News() {
     const images = ['berita.png', 'logo.png', 'store.png'];
     const ref = useRef(<div/>) as unknown as RefObject<HTMLDivElement>;
     const [desc, setDesc] = useState('This is image 1');

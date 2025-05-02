@@ -9,7 +9,6 @@ const key = new TextEncoder().encode(process.env.AUTH_SECRET!); // ✅ gunakan p
 
 async function decrypt(session: string | undefined = '') {
     try {
-        console.log('decrypting session:', session); // slice for brevity
 
         const {payload} = await jwtVerify(session, key, {
             algorithms: ['HS256'],
@@ -21,19 +20,15 @@ async function decrypt(session: string | undefined = '') {
             role: UserRole;
         };
     } catch (err) {
-        console.log('Error decrypting session @ middleware');
         return null;
     }
 }
 
 export async function middleware(request: NextRequest) {
     const cookie = request.cookies.get('session-hmm')?.value;
-    console.log('incoming cookie:', cookie); // slice for brevity
 
     const session = await decrypt(cookie);
     const role = session?.role;
-
-    // console.log('incoming cookie to decrypt:', cookie?.slice(0, 40)); // slice for brevity
 
     if (
         request.nextUrl.pathname.split('/')[1] !== 'sign-in' &&
@@ -55,5 +50,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/((?!api|_next/static|_next/image|favicon.ico|assets).*)'],
+    matcher: ['/((?!api|_next/static|_next/image|favicon.ico|assets|api/notification|sw.js).*)'],
 };

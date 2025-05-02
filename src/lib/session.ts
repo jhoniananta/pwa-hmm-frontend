@@ -30,7 +30,6 @@ export async function decrypt(session: string | undefined = '') {
             refresh_token: string;
         };
     } catch (err) {
-        console.log('Error decrypting session');
         return null;
     }
 }
@@ -52,9 +51,6 @@ export async function createSession(
         expires: expire,
     });
 
-    console.log('setting cookie...')
-    console.log('session:', session)
-
     cookies().set('session-hmm', session, {
         httpOnly: true,
         // secure: env.NODE_ENV === 'production',
@@ -63,8 +59,6 @@ export async function createSession(
         sameSite: 'lax',
         path: '/',
     });
-
-    console.log('added cookie')
 }
 
 export async function updateSession(res: Response) {
@@ -72,7 +66,6 @@ export async function updateSession(res: Response) {
         !res.headers.get('set-cookie')?.includes('accessToken') ||
         !res.headers.get('set-cookie')?.includes('refreshToken')
     ) {
-        console.log('@updateSessions: no accessToken or refreshToken * res.headers.set-cookie:', res.headers.get('set-cookie'));
         return;
     }
 
