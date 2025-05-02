@@ -74,7 +74,7 @@ export async function sendWebPush(message: string | null): Promise<void> {
         title: 'New Assignment!',
         body: message ?? 'This is a test push message',
         image: 'https://myhmm-bucket.s3.ap-southeast-3.amazonaws.com/public/logo.png',
-        icon: 'nextjs.png',
+        icon: 'https://myhmm-bucket.s3.ap-southeast-3.amazonaws.com/public/logo.png',
         url: '/assignments',
     };
     const res = await fetch(endPointUrl, {
