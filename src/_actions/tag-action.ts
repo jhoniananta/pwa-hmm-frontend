@@ -191,7 +191,7 @@ export const addTagscholarship = actionClient
     } catch (err) {
       if (err instanceof Error) throw new PWAError(err.message);
       throw new PWAError('Failed to add tag to scholarship');
-    }
+    } 
   });
 
 export const deleteTagscholarship = actionClient

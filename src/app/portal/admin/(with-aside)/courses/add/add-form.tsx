@@ -13,11 +13,11 @@ import {z} from 'zod';
 import ErrorText from '../../../error-text';
 import {addCourseSchema} from '@/lib/schema';
 import {createCourse} from '@/_actions/courses-action';
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from '@/components/ui/select';
 import {CourseCategoryModel} from 'lms-types';
 import {useRef, useState} from 'react';
 import {uploadCourseImage} from '@/_actions/upload-image-action';
 import Image from 'next/image';
+import { MinusSquare, PlusSquare } from 'lucide-react';
 
 type FormData = z.infer<typeof addCourseSchema>;
 
@@ -33,13 +33,15 @@ function AddForm({initialCategories}: AddFormProps) {
         handleSubmit,
         formState: {errors},
         setValue,
+        watch,
         getValues
     } = useForm<FormData>({
         resolver: zodResolver(addCourseSchema),
         defaultValues: {
-            categoryId: "",
+            code: '',
+            image: '',
+            title: '',
             description: '',
-            image: "",
         },
     });
 
@@ -52,6 +54,30 @@ function AddForm({initialCategories}: AddFormProps) {
             toast.error(error.error?.serverError || 'Failed to add course');
         },
     });
+
+    const selectedCategories: CourseCategoryModel[] = (watch('categories') || []).map(
+        (categoryId: number) => initialCategories.find((categories) => categories.categoryId === categoryId) as CourseCategoryModel
+    );
+
+    // Add categories to form
+    const addCategories = (categories: CourseCategoryModel) => {
+        const updatedCategories = selectedCategories.filter(
+            (selectedCategories) => selectedCategories.categoryId !== categories.categoryId
+        );
+        setValue('categories', updatedCategories.map((category) => category.categoryId));
+        toast.success('Category added successfully');
+    };
+
+    const removeCategories = (categories: CourseCategoryModel) => {
+        const updatedCategories = selectedCategories.filter(
+          (selectedCategories) => selectedCategories.categoryId !== categories.categoryId
+        );
+        setValue(
+          'categories',
+          updatedCategories.map((category) => category.categoryId)
+        );
+        toast.success(`Tag "${categories.title}" removed`);
+      };
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -73,7 +99,10 @@ function AddForm({initialCategories}: AddFormProps) {
         // Convert categoryId to number if it exists
         const formData = {
             ...data,
-            categoryId: data.categoryId ? Number(data.categoryId) : undefined
+            categories: selectedCategories.map((category) => ({
+                categoryId: category.categoryId,
+                title: category.title,
+              })),
         };
         executeAddCourse(formData);
     });
@@ -151,7 +180,7 @@ function AddForm({initialCategories}: AddFormProps) {
                 {errors.title && <ErrorText>{errors.title.message}</ErrorText>}
             </div>
 
-            <div>
+            {/* <div>
                 <Label>Category</Label>
                 <Select
                     onValueChange={(value) => setValue('categoryId', Number(value))}
@@ -169,7 +198,7 @@ function AddForm({initialCategories}: AddFormProps) {
                     </SelectContent>
                 </Select>
                 {errors.categoryId && <ErrorText>{errors.categoryId.message}</ErrorText>}
-            </div>
+            </div> */}
 
             <div>
                 <Label>Description</Label>
@@ -182,6 +211,48 @@ function AddForm({initialCategories}: AddFormProps) {
                     <ErrorText>{errors.description.message}</ErrorText>
                 )}
             </div>
+
+            <div>
+          <Label>Available Tags</Label>
+          <div className='mt-2 space-y-2 border p-4 rounded-md'>
+            {initialCategories.length > 0 ? (
+              initialCategories.map((categories: CourseCategoryModel, index) => {
+                const isSelected = selectedCategories.some(
+                  (selectedCategories) => selectedCategories.categoryId === categories.categoryId
+                );
+                return (
+                  <div
+                    key={`${categories.categoryId}-${index}`} // Ensure uniqueness by appending the index
+                    className='flex justify-between items-center'
+                  >
+                    <span>{categories.title}</span>
+                    <Button
+                      type='button'
+                      variant='ghost'
+                      size='sm'
+                      onClick={() => {
+                        isSelected ? removeCategories(categories) : addCategories(categories);
+                      }}
+                      aria-label={
+                        isSelected ? `Remove ${categories.title}` : `Add ${categories.title}`
+                      }
+                    >
+                      {isSelected ? (
+                        <MinusSquare className='h-5 w-5 text-red-500' />
+                      ) : (
+                        <PlusSquare className='h-5 w-5 text-green-500' />
+                      )}
+                    </Button>
+                  </div>
+                );
+              })
+            ) : (
+              <p className='text-sm text-muted-foreground'>
+                No categories available.
+              </p>
+            )}
+          </div>
+        </div>
 
             <Button
                 type='submit'

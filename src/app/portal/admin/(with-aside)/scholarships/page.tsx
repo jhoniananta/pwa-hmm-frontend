@@ -8,6 +8,7 @@ export const dynamic = 'force-dynamic';
 export default async function Scholarships() {
   const scholarships = await getScholarships();
   
+  console.log('Scholarships data:', scholarships); // Debugging line to check the data
   return (
     <>
       <AdminHeader title='Scholarships' />

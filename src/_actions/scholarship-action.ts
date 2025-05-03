@@ -89,7 +89,7 @@ export const updateScholarship = actionClient
             (await flattenValidationErrors(ve)).fieldErrors,
     })
     .action(async ({parsedInput}) => {
-        const {scholarshipId, ...rest} = parsedInput;
+        const {scholarshipId, tags, ...rest} = parsedInput;
         try {
             const {refresh_token, access_token} = await verifySession();
             const res = await fetch(env.API_URL + `/scholarships/${scholarshipId}`, {

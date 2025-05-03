@@ -1,6 +1,5 @@
 'use client'; // This component handles client-side logic
 
-import { addTagToScholarshipSchema } from '@/_actions/schema/tag-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAction } from 'next-safe-action/hooks';
 import { useRouter } from 'next/navigation';
@@ -21,6 +20,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { updateScholarshipSchema } from '@/lib/schema';
 import Wrapper from '../../../../wrapper';
 import { MinusSquare, PlusSquare } from 'lucide-react';
+import { extractMessage } from '@/lib/utils';
 
 // Define props including the fetched tags and initial values
 type EditScholarshipFormProps = {
@@ -52,13 +52,8 @@ export default function EditScholarshipForm({
         toast.success('Scholarship updated successfully');
         router.push('/portal/admin/scholarships');
       },
-      onError: ({ error: { serverError, validationErrors, fetchError } }) => {
-        toast.error(
-          serverError ||
-            fetchError ||
-            validationErrors?.toString() ||
-            'Failed to update scholarship'
-        );
+      onError: ({ error }) => {
+        toast.error(extractMessage(error.serverError || error.fetchError));
       },
     }
   );
@@ -69,7 +64,6 @@ export default function EditScholarshipForm({
     {
       onSuccess: () => {
         toast.success('Tag added successfully!');
-        router.refresh(); // misal, refresh page agar daftar tag terbaru muncul
       },
       onError: ({ error }) => {
         toast.error(
@@ -85,7 +79,6 @@ export default function EditScholarshipForm({
     {
       onSuccess: () => {
         toast.success('Tag deleted successfully!');
-        router.refresh();
       },
       onError: ({ error }) => {
         toast.error(
@@ -98,6 +91,7 @@ export default function EditScholarshipForm({
   );
 
   const onSubmit = handleSubmit((data) => {
+    console.log('Form data:', data);
     executeUpdateScholarship(data);
   });
 

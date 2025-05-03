@@ -184,11 +184,19 @@ export const addCourseSchema = z.object({
     title: z.string().min(1, {message: 'Title is required'}),
     description: z.string().optional(),
     // status: z.nativeEnum(CourseStatusModel, { message: 'Invalid status' }),
-    categoryId: z.union([
-        z.literal(''),
-        z.number({message: 'Category ID must be a number'}).optional(),
-    ]),
+    // categoryId: z.union([
+    //     z.literal(''),
+    //     z.number({message: 'Category ID must be a number'}).optional(),
+    // ]),
+    categories: z.array(z.number()).optional(),
 });
+
+// add category course schema
+export const addCategoryCourseSchema = z.object({
+    courseId: z.number().min(1, {message: 'Course ID is required'}),
+    categoryId: z.number().min(1, {message: 'Category ID is required'}),
+})
+
 export const deleteCourseSchema = z.object({
     courseId: z
         .number({message: 'Course ID must be a number'})
@@ -341,10 +349,11 @@ export const addScholarshipSchema = z.object({
         invalid_type_error: 'Invalid date format',
     }),
     reference: z.string().url({message: 'Must be a valid URL'}),
-    funding: z.enum(['PARTIALLY_FUNDED', 'FULLY_FUNDED'] as const, {
-        message: 'Invalid funding type',
-    }),
-    scope: z.string().min(1, {message: 'Scope is required'}),
+    // funding: z.enum(['PARTIALLY_FUNDED', 'FULLY_FUNDED'] as const, {
+    //     message: 'Invalid funding type',
+    // }),
+    // scope: z.string().min(1, {message: 'Scope is required'}),
+    tags: z.array(z.number()).optional(),
 });
 
 export const beasiswaFormSchema = z.object({
@@ -505,6 +514,7 @@ export const updateCourseSchema = z.object({
     title: z.string().min(1, 'Title is required'),
     description: z.string().optional(),
     categoryId: z.number().optional(),
+    categories: z.array(z.number()).optional(),
 });
 
 // Lesson schemas
