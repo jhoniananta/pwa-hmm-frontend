@@ -43,7 +43,7 @@ export default function AdminBreadcrumb({
                             </BreadcrumbLink>
                         </BreadcrumbItem>
                         {index !== array.length - 1 && (
-                            <BreadcrumbSeparator key={path + index + "SC"}/>
+                            <BreadcrumbSeparator key={path + index}/>
                         )}
                     </>
                 ))}
