@@ -14,14 +14,8 @@ import ErrorText from '../../../error-text';
 import {addCourseSchema} from '@/lib/schema';
 import {createCourse} from '@/_actions/courses-action';
 
-type FormData = z.infer<typeof addCourseSchema>;
-
-interface AddFormProps {
-}
-
-function AddForm({}: AddFormProps) {
+function AddForm() {
     const router = useRouter();
-
     const {
         register,
         handleSubmit,
@@ -29,7 +23,7 @@ function AddForm({}: AddFormProps) {
         setValue,
         watch,
         getValues
-    } = useForm<FormData>({
+    } = useForm<z.infer<typeof addCourseSchema>>({
         resolver: zodResolver(addCourseSchema),
         defaultValues: {
             code: '',
@@ -42,7 +36,7 @@ function AddForm({}: AddFormProps) {
     const {execute: executeAddCourse, status} = useAction(createCourse, {
         onSuccess: (response) => {
             toast.success('Course added successfully');
-            router.push(`/portal/admin/courses/edit/${response.data?.courseId}`);
+            router.push(`/portal/admin/courses/edit/${response?.data?.courseId ?? ''}`);
         },
         onError: (error) => {
             toast.error(error.error?.serverError || 'Failed to add course');
@@ -50,6 +44,8 @@ function AddForm({}: AddFormProps) {
     });
 
     const onSubmit = handleSubmit((data) => {
+        router.push(`/portal/admin/courses/edit`);
+
         data.image = `courses/${crypto.randomUUID()}`
         executeAddCourse(data);
     });

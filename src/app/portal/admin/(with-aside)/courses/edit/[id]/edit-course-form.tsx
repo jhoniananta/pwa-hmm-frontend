@@ -38,7 +38,7 @@ export default function EditCourseForm({
     const searchParams = useSearchParams();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(
-        searchParams.get('image')
+        defaultValues?.image ?? ''
     );
 
     const {

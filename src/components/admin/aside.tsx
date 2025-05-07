@@ -1,13 +1,7 @@
 import {cn} from '@/lib/utils';
 import * as NextLink from 'next/link';
 import type {HTMLAttributes} from 'react';
-import {
-    DrawerContent,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
-    Drawer as ShadDrawer,
-} from '@/components/ui/drawer';
+import {Drawer as ShadDrawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger,} from '@/components/ui/drawer';
 import {EllipsisVertical} from 'lucide-react';
 
 const links = [
@@ -17,8 +11,6 @@ const links = [
     // { title: 'HMM-Store', path: 'hmm-store' },
     // { title: 'MyHMM', path: "myhmm" },
     // { title: 'MyCareer', path: 'mycareer' },
-    {title: 'Users', path: 'users'},
-    {title: 'Events', path: 'events'},
     {title: 'Scholarships', path: 'scholarships'},
     {title: 'Tags (Scholarship)', path: 'tags'},
     {title: 'Sign Out', path: 'sign-out'},
