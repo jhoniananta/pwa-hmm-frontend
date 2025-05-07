@@ -3,6 +3,7 @@ import EditCourseForm from './edit-course-form';
 import {getCategories} from '@/_actions/category-action';
 import {updateCourseSchema} from '@/lib/schema';
 import {getCourseById} from '@/_actions/courses-action';
+import {env} from "@/env";
 
 export default async function Page({params}: { params: { id: string } }) {
     const idNum = Number(params.id);
@@ -23,6 +24,7 @@ export default async function Page({params}: { params: { id: string } }) {
             <EditCourseForm
                 categories={categoriesAll}
                 defaultValues={defaultValues}
+                publicBucketUrl={env.PUBLIC_BUCKET_URL}
             />
         </>
     );

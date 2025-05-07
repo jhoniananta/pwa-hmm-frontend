@@ -3,7 +3,7 @@ import React, {useRef, useState} from 'react';
 
 import AdminBreadcrumb from '@/components/admin/breadcrumb';
 import AdminHeader from '@/components/admin/header';
-import {useParams, useRouter, useSearchParams} from 'next/navigation';
+import {useParams, useRouter} from 'next/navigation';
 import Wrapper from '../../../../wrapper';
 import {Label} from '@/components/ui/label';
 import {Input} from '@/components/ui/input';
@@ -27,18 +27,19 @@ import {CategoryResponse} from '@/_actions/category-action';
 type EditCourseFormProps = {
     categories: CategoryResponse[];
     defaultValues?: z.infer<typeof updateCourseSchema>;
+    publicBucketUrl: string;
 };
 
 export default function EditCourseForm({
                                            categories,
                                            defaultValues,
+                                           publicBucketUrl
                                        }: EditCourseFormProps) {
     const {id} = useParams();
     const router = useRouter();
-    const searchParams = useSearchParams();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(
-        defaultValues?.image ?? ''
+        `${publicBucketUrl}/${defaultValues?.image}`
     );
 
     const {
@@ -56,8 +57,8 @@ export default function EditCourseForm({
         {
             onSuccess: (result) => {
                 if (result?.data) {
-                    setValue('image', result.data);
-                    setPreviewUrl(result.data);
+                    // setValue('image', result.data);
+                    // setPreviewUrl(`${publicBucketUrl}/${result.data}`);
                     toast.success('Image uploaded successfully');
                 }
             },
@@ -85,7 +86,6 @@ export default function EditCourseForm({
         }
     );
 
-    // Add useAction for adding categories
     const {execute: executeAddCategory, isExecuting: isAddingCategories} =
         useAction(addCategoryCourse, {
             onSuccess: () => {
@@ -100,7 +100,6 @@ export default function EditCourseForm({
             },
         });
 
-    // Add useAction for deleting categories
     const {execute: executeDeleteCategory, isExecuting: isDeletingCategories} =
         useAction(deleteCategoryCourse, {
             onSuccess: () => {
@@ -146,7 +145,7 @@ export default function EditCourseForm({
         formData.append('file', file);
         executeUpload({
             file: formData,
-            oldImageUrl: defaultValues?.image ?? null,
+            path: defaultValues?.image,
         });
     };
 

@@ -80,30 +80,48 @@ export const uploadCourseImage = actionClient
     })
     .schema(z.object({
         file: z.instanceof(FormData),
-        oldImageUrl: z.string().nullable().optional(),
+        path: z.string().nullable().optional(),
     }), {
         handleValidationErrorsShape: async (ve) =>
             Promise.resolve(flattenValidationErrors(ve).fieldErrors),
     })
     .action(async ({parsedInput}) => {
         try {
+            const {path} = parsedInput;
+
             const file = parsedInput.file.get('file') as File;
             if (!file) {
                 throw new Error('No file provided');
             }
 
-            // First upload the new file
-            const pathname = `courses/${Date.now()}-${file.name}`;
-            const {url} = await put(pathname, file, {
-                access: 'public',
+            const s3Client = new S3Client({
+                region: "auto",
+                endpoint: `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+                credentials: {
+                    accessKeyId: env.R2_ACCESS_KEY_ID,
+                    secretAccessKey: env.R2_SECRET_ACCESS_KEY,
+                }
+            });
+            const command = new PutObjectCommand({
+                Bucket: env.PUBLIC_BUCKET_NAME,
+                Key: path,
+                ContentType: file.type,
             });
 
-            // Only delete the old file if new upload succeeded
-            if (parsedInput.oldImageUrl) {
-                await deleteOldFile(parsedInput.oldImageUrl);
-            }
+            const uploadUrl = await getSignedUrl(s3Client, command, {expiresIn: 10});
 
-            return url;
+            await axios.put(uploadUrl, file, {
+                headers: {
+                    'Content-Type': file.type,
+                },
+            });
+
+            // const pathname = `courses/${Date.now()}-${file.name}`;
+            // const {url} = await put(pathname, file, {
+            //     access: 'public',
+            // });
+
+            return path;
         } catch (error) {
             handleError(error);
         }

@@ -1,7 +1,6 @@
 import {GetObjectCommand, S3Client} from "@aws-sdk/client-s3";
 import {getSignedUrl} from "@aws-sdk/s3-request-presigner";
 import {PWAError} from "@/lib/error";
-import {env} from "@/env";
 
 export async function getS3SignedUrl(key: string): Promise<string> {
     const s3Client = new S3Client({
@@ -16,7 +15,8 @@ export async function getS3SignedUrl(key: string): Promise<string> {
 }
 
 export function getPublicUrl(path: string): string {
-    return `${env.PUBLIC_BUCKET_URL}/${path}`
+    console.log(`${process.env.PUBLIC_BUCKET_URL}/${path}`)
+    return `${process.env.PUBLIC_BUCKET_URL}/${path}`
 }
 
 export function fromGMT7ToUTC(date: Date): Date {
