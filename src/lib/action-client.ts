@@ -1,7 +1,4 @@
-import {
-    createSafeActionClient,
-    DEFAULT_SERVER_ERROR_MESSAGE,
-} from 'next-safe-action';
+import {createSafeActionClient,} from 'next-safe-action';
 import {z} from 'zod';
 import {verifySession} from '@/lib/session';
 import {PWAError} from '@/lib/error';

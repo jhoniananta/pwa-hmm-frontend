@@ -177,18 +177,9 @@ export const deleteAssignmentSchema = z.object({
 // course schema
 export const addCourseSchema = z.object({
     code: z.string().min(1, {message: 'Code is required'}),
-    image: z.union([
-        z.literal(''),
-        z.string().url({message: 'Invalid image URL'}).optional(),
-    ]),
+    image: z.string(),
     title: z.string().min(1, {message: 'Title is required'}),
     description: z.string().optional(),
-    // status: z.nativeEnum(CourseStatusModel, { message: 'Invalid status' }),
-    // categoryId: z.union([
-    //     z.literal(''),
-    //     z.number({message: 'Category ID must be a number'}).optional(),
-    // ]),
-    categories: z.array(z.number()).optional(),
 });
 
 // add category course schema

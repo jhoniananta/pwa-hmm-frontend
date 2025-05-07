@@ -4,7 +4,6 @@ import {env} from '@/env';
 import {cookieGenerator} from '@/lib/utils';
 import {handleError, PWAError} from '@/lib/error';
 import {revalidatePath as rPath, revalidateTag as rTag} from 'next/cache';
-import getVerboseStatus from "@/lib/getVerboseStatus";
 
 export function fetchAction<T>(
     url: string,
@@ -69,7 +68,6 @@ export function fetchAction<T>(
                     tags,
                 },
             });
-
 
             let error: any;
             let data: any;

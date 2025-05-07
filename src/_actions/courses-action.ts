@@ -152,7 +152,7 @@ export const createCourse = actionClient
                 revalidateTag: 'courses',
             }
         )();
-        return res;
+        return res
     });
 
 export const getMe = fetchAction<userAPI.GetMe.Response['data']>(
