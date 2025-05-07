@@ -3,7 +3,7 @@ import {IoLocationOutline, IoMailOutline} from 'react-icons/io5';
 import {BsTelephone} from 'react-icons/bs';
 import {getFullUser} from '@/lib/dal';
 import AvatarUpload from '@/components/client/avatar-upload';
-import {getS3SignedUrl} from "@/_actions/utils/utils";
+import {getPublicUrl} from "@/_actions/utils/utils";
 
 const ProfilePage = async () => {
     const user = await getFullUser();
@@ -28,7 +28,9 @@ const ProfilePage = async () => {
         about,
     } = user;
 
-    const currentAvatar = await getS3SignedUrl(avatar)
+    const currentAvatar = await getPublicUrl(avatar)
+
+    console.log(currentAvatar)
 
     return (
         <main className='flex flex-col items-stretch w-full h-max gap-6 relative'>

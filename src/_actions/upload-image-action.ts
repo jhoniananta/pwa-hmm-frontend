@@ -9,6 +9,7 @@ import {PutObjectCommand, S3Client} from '@aws-sdk/client-s3';
 import axios from 'axios';
 import {verifySession} from "@/lib/session";
 import {getSignedUrl} from "@aws-sdk/s3-request-presigner";
+import {env} from "@/env";
 
 const uploadImageSchema = z.object({
     file: z.instanceof(FormData)
@@ -41,13 +42,16 @@ export const uploadProfileImage = actionClient
             const session = await verifySession();
             const key = `profiles/${session.userId}`
 
-
             const s3Client = new S3Client({
-                region: "ap-southeast-3",
-                endpoint: "https://s3.ap-southeast-3.amazonaws.com",
+                region: "auto",
+                endpoint: `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+                credentials: {
+                    accessKeyId: env.R2_ACCESS_KEY_ID,
+                    secretAccessKey: env.R2_SECRET_ACCESS_KEY,
+                }
             });
             const command = new PutObjectCommand({
-                Bucket: "myhmm-bucket",
+                Bucket: env.PUBLIC_BUCKET_NAME,
                 Key: key,
                 ContentType: file.type,
             });

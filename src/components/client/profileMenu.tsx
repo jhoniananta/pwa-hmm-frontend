@@ -17,11 +17,11 @@ import {
 } from '../ui/dropdown-menu';
 import {Bell, Settings, User} from 'lucide-react';
 import {InstallPWA} from '../install-pwa';
-import {getS3SignedUrl} from "@/_actions/utils/utils";
+import {getPublicUrl} from "@/_actions/utils/utils";
 
 const ProfileMenu = async () => {
     const user = await getUser();
-    const s3AvatarUrl = user?.avatar ? await getS3SignedUrl(user.avatar) : '';
+    const s3AvatarUrl = user?.avatar ? await getPublicUrl(user.avatar) : '';
 
     return (
         <div className='flex gap-3 items-center'>
