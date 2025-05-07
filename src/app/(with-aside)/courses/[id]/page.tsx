@@ -24,7 +24,7 @@ export default async function CoursesPage({
     searchParams: Record<string, string>;
     params: { id: string };
 }) {
-    const course = await getCourseById(id);
+    const course = await getCourseById(Number(id));
 
     const isEnrolled = true;
 
