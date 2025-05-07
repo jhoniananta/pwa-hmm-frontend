@@ -1,34 +1,30 @@
-import { z } from 'zod';
+import {z} from 'zod';
 import EditCourseForm from './edit-course-form';
-import AdminHeader from '@/components/admin/header';
-import AdminBreadcrumb from '@/components/admin/breadcrumb';
-import { getCategories, getCategoryById } from '@/_actions/category-action';
-import { updateCourseSchema } from '@/lib/schema';
-import { getCourseById } from '@/_actions/courses-action';
+import {getCategories} from '@/_actions/category-action';
+import {updateCourseSchema} from '@/lib/schema';
+import {getCourseById} from '@/_actions/courses-action';
 
-export default async function Page({ params }: { params: { id: string } }) {
-  const idNum = Number(params.id);
-  const course = await getCourseById(idNum);
-  const categoriesAll = await getCategories();
+export default async function Page({params}: { params: { id: string } }) {
+    const idNum = Number(params.id);
+    const course = await getCourseById(idNum);
+    const categoriesAll = await getCategories();
 
-  const defaultValues: z.infer<typeof updateCourseSchema> = {
-    courseId: course.courseId,
-    code: course.code,
-    title: course.title,
-    description: course.description,
-    status: course.status as 'PUBLISHED' | 'DRAFT',
-    image: course.image,
-    categories: course.categories.map((c) => c.categoryId),
-  }
+    const defaultValues: z.infer<typeof updateCourseSchema> = {
+        courseId: course.courseId,
+        code: course.code,
+        title: course.title,
+        description: course.description,
+        status: course.status as 'PUBLISHED' | 'DRAFT',
+        image: course.image,
+        categories: course.categories.map((c) => c.categoryId),
+    }
 
-  return (
-    <>
-      <AdminHeader title="Edit Scholarship" />
-      <AdminBreadcrumb />
-      <EditCourseForm
-        categories={categoriesAll}
-        defaultValues={defaultValues}
-      />
-    </>
-  );
+    return (
+        <>
+            <EditCourseForm
+                categories={categoriesAll}
+                defaultValues={defaultValues}
+            />
+        </>
+    );
 }
