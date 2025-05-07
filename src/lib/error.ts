@@ -13,5 +13,5 @@ export function handleError(err: { message: string, errorCode: string } | any, n
         return redirect('/sign-out');
     }
 
-    throw new PWAError(err.message);
+    throw new PWAError(err.message, err);
 }
