@@ -1,7 +1,7 @@
 'use client';
 
 import React, {useState} from 'react';
-import {TableBody, TableCell, TableHead, TableHeader, TableRow, Table} from "@/components/ui/table";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Ellipsis} from "lucide-react";
 import Pagination from "@/components/client/pagination";
@@ -38,8 +38,15 @@ function CoursesTable({data}: { data: $CourseAPI.GetCourses.Response["data"] }) 
                 <TableHeader>
                     <TableRow>
                         <TableHead>Title</TableHead>
-                        <TableHead>Status</TableHead>
                         <TableHead>Description</TableHead>
+                        <TableHead>Students</TableHead>
+                        <TableHead>Instructors</TableHead>
+                        <TableHead>Classes</TableHead>
+                        <TableHead>Assignments</TableHead>
+                        <TableHead>Lessons</TableHead>
+                        <TableHead>Videos</TableHead>
+                        <TableHead>Durations</TableHead>
+                        <TableHead>Created At</TableHead>
                         <TableHead>Updated At</TableHead>
                         <TableHead>
                             <span className='sr-only'>Actions</span>
@@ -48,14 +55,28 @@ function CoursesTable({data}: { data: $CourseAPI.GetCourses.Response["data"] }) 
                 </TableHeader>
                 <TableBody>
                     {data.map((course, index) => {
+                        const description = course.description ?? ''
+                        const updatedAt = course.updatedAt ? new Date(course.updatedAt).toDateString() : '-';
+
                         if (index < (page - 1) * coursesPerPage || index >= page * coursesPerPage) return null;
 
                         return (
                             <TableRow key={course.courseId} className='even:bg-navy/5 odd:bg-transparent'>
                                 <TableCell>{course.title}</TableCell>
-                                <TableCell>{course.description}</TableCell>
+                                <TableCell
+                                    className='whitespace-nowrap text-nowrap'>{description.length > 100 ? description.slice(0, 100) + "..." : description}</TableCell>
+                                <TableCell>{course.numberOfStudents}</TableCell>
+                                <TableCell>{course.numberOfInstructors}</TableCell>
+                                <TableCell>{course.numberOfClasses}</TableCell>
+                                <TableCell>{course.numberOfAssignments}</TableCell>
+                                <TableCell>{course.numberOfLessons}</TableCell>
+                                <TableCell>{course.numberOfVideos}</TableCell>
+                                <TableCell>{course.numberOfDurations}</TableCell>
                                 <TableCell className='whitespace-nowrap text-nowrap'>
-                                    {new Date(course.updatedAt).toDateString()}
+                                    {new Date(course.createdAt).toDateString()}
+                                </TableCell>
+                                <TableCell className='whitespace-nowrap text-nowrap'>
+                                    {updatedAt}
                                 </TableCell>
                                 <TableCell>
                                     <Popover>

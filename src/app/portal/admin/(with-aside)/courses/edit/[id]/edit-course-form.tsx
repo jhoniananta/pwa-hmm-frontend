@@ -13,7 +13,6 @@ import {useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {updateCourseSchema} from '@/lib/schema';
 import {z} from 'zod';
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from '@/components/ui/select';
 import {useAction} from 'next-safe-action/hooks';
 import {addCategoryCourse, deleteCategoryCourse, updateCourse} from '@/_actions/courses-action';
 import {uploadCourseImage} from '@/_actions/upload-image-action';
@@ -152,7 +151,8 @@ export default function EditCourseForm({
     };
 
     const onSubmit = handleSubmit((data) => {
-        executeUpdateCourse(data);
+        const {categories, categoryId, ...restData} = data
+        executeUpdateCourse(restData);
     });
 
     return (
@@ -210,29 +210,6 @@ export default function EditCourseForm({
                         {errors.title && (
                             <span className='text-red-500 text-sm'>
                 {errors.title.message}
-              </span>
-                        )}
-                    </div>
-
-                    <div>
-                        <Label>Status</Label>
-                        <Select
-                            onValueChange={(value) =>
-                                setValue('status', value as 'PUBLISHED' | 'DRAFT')
-                            }
-                            defaultValue={defaultValues?.status ?? ''}
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder='Select status'/>
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value='PUBLISHED'>Published</SelectItem>
-                                <SelectItem value='DRAFT'>Draft</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        {errors.status && (
-                            <span className='text-red-500 text-sm'>
-                {errors.status.message}
               </span>
                         )}
                     </div>

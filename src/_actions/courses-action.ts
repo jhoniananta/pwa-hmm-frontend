@@ -119,9 +119,13 @@ export const deleteCourse = actionClient
             flattenValidationErrors(ve).fieldErrors,
     })
     .action(async ({parsedInput: {courseId}}) => {
-        const res = await fetchAction<void>(
-            courseAPI.DeleteCourse.generateUrl(courseId),
-            'Failed to delete course'
+        const res = await fetchAction(
+            `/courses/${courseId}`,
+            'Failed to delete course',
+            {
+                method: 'DELETE',
+                setContentType: false
+            }
         )();
         return res;
     });

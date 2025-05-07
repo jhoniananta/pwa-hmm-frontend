@@ -509,7 +509,6 @@ export const deleteCategorySchema = z.object({
 export const updateCourseSchema = z.object({
     courseId: z.number(),
     code: z.string().min(1, 'Code is required'),
-    status: z.enum(['PUBLISHED', 'DRAFT']),
     image: z.string().url().optional().nullable(),
     title: z.string().min(1, 'Title is required'),
     description: z.string().optional(),

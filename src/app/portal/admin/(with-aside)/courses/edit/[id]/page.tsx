@@ -14,7 +14,6 @@ export default async function Page({params}: { params: { id: string } }) {
         code: course.code,
         title: course.title,
         description: course.description,
-        status: course.status as 'PUBLISHED' | 'DRAFT',
         image: course.image,
         categories: course.categories.map((c) => c.categoryId),
     }
