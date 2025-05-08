@@ -22,7 +22,7 @@ export default function CourseSection({
 
     return (
         <>
-            <div className="w-full flex flex-col md:flex-row justify-between gap-4 md:items-center mb-4">
+            <div className="w-full flex flex-col md:flex-row justify-between gap-4 md:items-center mb-4 overflow-x-hidden">
                 <Search
                     query={searchQuery}
                     setQuery={setSearchQuery}
