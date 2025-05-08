@@ -11,7 +11,6 @@ import React, {useState} from 'react';
 import validationErrorToString from "@/lib/validationErrorToString";
 import {createVideo} from "@/_actions/videos-action";
 import {getVideoId} from "@/_actions/utils/utils";
-import {PWAError} from "@/lib/error";
 
 interface AddVideoFormProps {
     courseId: string;
@@ -46,15 +45,9 @@ export default function AddVideoForm({courseId, lessonId}: AddVideoFormProps) {
             return;
         }
 
-        let videoId: string = ''
-        try {
-            videoId = getVideoId(youtubeLink)
-        } catch (error) {
-            if (error instanceof PWAError) {
-                toast.error(error.message);
-                return;
-            }
-            toast.error(new PWAError().message)
+        const response = getVideoId(youtubeLink)
+        if (response.errorMessage) {
+            toast.error(response.errorMessage);
             return;
         }
 
@@ -63,7 +56,7 @@ export default function AddVideoForm({courseId, lessonId}: AddVideoFormProps) {
             lessonId: Number(lessonId),
             title,
             description,
-            youtubeLink: videoId,
+            youtubeLink: response.videoId as string,
         });
     };
 
@@ -102,7 +95,7 @@ export default function AddVideoForm({courseId, lessonId}: AddVideoFormProps) {
                     id='title'
                     value={youtubeLink}
                     onChange={(e) => setYoutubeLink(e.target.value)}
-                    placeholder='Enter youtube link (e.g: https://www.youtube.com/watch?v=aircAruvnKk) - must contains "v=..."'
+                    placeholder='Enter YouTube link'
                 />
             </div>
 
