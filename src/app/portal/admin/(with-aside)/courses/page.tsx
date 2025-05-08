@@ -6,7 +6,7 @@ import CourseSection from './course-section';
 export const dynamic = 'force-dynamic';
 
 export default async function Courses() {
-    const courses = await getCourses();
+    const courses = await getCourses() ?? [];
 
     return (
         <>
