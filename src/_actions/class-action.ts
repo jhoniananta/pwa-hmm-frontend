@@ -2,7 +2,7 @@
 
 import {fetchAction} from "@/lib/fetch";
 import {actionClient} from "@/lib/action-client";
-import {addClassSchema, updateClassSchema, deleteClassSchema} from "@/lib/schema";
+import {addClassSchema, deleteClassSchema, updateClassSchema} from "@/lib/schema";
 import {flattenValidationErrors} from "next-safe-action";
 
 
@@ -93,9 +93,4 @@ export const deleteClass = actionClient
             }
         )();
         return res;
-        //
-        // revalidatePath('/classes');
-        // revalidateTag('classes');
-        // revalidateTag(`course-${courseId}-classes`);
-
     });

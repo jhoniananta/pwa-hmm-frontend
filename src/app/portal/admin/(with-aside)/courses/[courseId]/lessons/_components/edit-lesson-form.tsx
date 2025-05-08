@@ -23,7 +23,7 @@ export default function EditLessonForm({lesson, courseId}: EditLessonFormProps) 
 
     const {execute: executeUpdate, status} = useAction(updateLesson, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

@@ -18,7 +18,7 @@ function ScholarshipTable({data}: { data: ScholarshipResponse[] }) {
 
     const {execute: executeDelete} = useAction(deleteScholarship, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

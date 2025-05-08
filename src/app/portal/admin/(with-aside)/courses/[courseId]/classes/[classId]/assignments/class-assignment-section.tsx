@@ -27,7 +27,7 @@ export default function ClassAssignmentSection({data, courseId, classId}: ClassA
 
     const {execute: executeDelete} = useAction(deleteClassAssignment, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

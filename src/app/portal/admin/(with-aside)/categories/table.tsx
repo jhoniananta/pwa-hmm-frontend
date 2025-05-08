@@ -18,7 +18,7 @@ function CategoryTable({data}: { data: CategoryResponse[] }) {
 
     const {execute: executeDelete} = useAction(deleteCategory, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

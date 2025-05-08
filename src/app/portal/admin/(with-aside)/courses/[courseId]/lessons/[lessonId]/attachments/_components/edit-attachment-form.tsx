@@ -30,7 +30,7 @@ export default function EditAttachmentForm({
 
     const {execute: executeUpdate, status} = useAction(updateAttachment, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

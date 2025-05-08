@@ -72,7 +72,7 @@ export default function EditProfile({user}: { user: UserModel }) {
 
     const {execute, isExecuting} = useAction(editProfile, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

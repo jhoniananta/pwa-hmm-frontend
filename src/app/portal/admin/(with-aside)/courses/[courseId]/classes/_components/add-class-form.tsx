@@ -20,7 +20,7 @@ export default function AddClassForm({courseId}: AddClassFormProps) {
 
     const {execute: executeCreate, status} = useAction(createClass, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

@@ -22,7 +22,7 @@ export default function SignIn() {
     const [showPassword, setShowPassword] = useState(false);
     const {executeAsync, isExecuting} = useAction(signIn, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

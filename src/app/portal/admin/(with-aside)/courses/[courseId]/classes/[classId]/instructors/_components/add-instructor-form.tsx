@@ -24,7 +24,7 @@ export default function AddInstructorForm({users, courseId, classId}: AddInstruc
 
     const {execute: executeCreate, status} = useAction(createInstructor, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

@@ -28,7 +28,7 @@ export default async function AvatarUpload({currentAvatar, name}: AvatarUploadPr
 
     const {execute: executeUpload, isExecuting} = useAction(uploadProfileImage, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

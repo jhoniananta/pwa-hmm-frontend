@@ -28,7 +28,7 @@ export default function EditScheduleForm({schedule, courseId, scheduleId}: EditS
 
     const {execute: executeUpdate, status} = useAction(updateCourseSchedule, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

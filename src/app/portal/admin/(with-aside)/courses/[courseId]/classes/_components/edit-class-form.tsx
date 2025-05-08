@@ -20,7 +20,7 @@ export default function EditClassForm({classData, courseId}: EditClassFormProps)
 
     const {execute: executeUpdate, status} = useAction(updateClass, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

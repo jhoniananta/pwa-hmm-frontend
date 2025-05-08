@@ -26,7 +26,7 @@ export default function InstructorSection({data, courseId, classId}: InstructorS
 
     const {execute: executeDelete} = useAction(deleteInstructor, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

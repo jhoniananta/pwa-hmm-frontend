@@ -45,7 +45,7 @@ export default function EditScholarshipForm({
         updateScholarship,
         {
             onSuccess: (response: any) => {
-                if (response?.data.error) {
+                if (response?.data?.error) {
                     toast.error(response?.data?.error);
                     return;
                 }
@@ -63,7 +63,7 @@ export default function EditScholarshipForm({
         addTagscholarship,
         {
             onSuccess: (response: any) => {
-                if (response?.data.error) {
+                if (response?.data?.error) {
                     toast.error(response?.data?.error);
                     return;
                 }
@@ -82,7 +82,7 @@ export default function EditScholarshipForm({
         deleteTagscholarship,
         {
             onSuccess: (response: any) => {
-                if (response?.data.error) {
+                if (response?.data?.error) {
                     toast.error(response?.data?.error);
                     return;
                 }

@@ -27,7 +27,7 @@ export default function VideoSection({data, courseId, lessonId}: VideoSectionPro
 
     const {execute: executeDelete} = useAction(deleteVideo, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

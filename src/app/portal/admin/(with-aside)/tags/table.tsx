@@ -18,7 +18,7 @@ function TagTable({data}: { data: TagResponse[] }) {
 
     const {execute: executeDelete} = useAction(deleteTag, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

@@ -28,7 +28,7 @@ function AssignmentTable({
     const totalPage = Math.ceil(data.length / assignmentPerPage);
     const {execute: exeDA} = useAction(deleteAssignment, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

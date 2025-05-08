@@ -27,7 +27,7 @@ export default function AttachmentSection({data, courseId, lessonId}: Attachment
 
     const {execute: executeDelete} = useAction(deleteAttachment, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

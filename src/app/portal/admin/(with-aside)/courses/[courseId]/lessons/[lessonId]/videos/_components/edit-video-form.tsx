@@ -32,7 +32,7 @@ export default function EditVideoForm({
 
     const {execute: executeUpdate, status} = useAction(updateVideo, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

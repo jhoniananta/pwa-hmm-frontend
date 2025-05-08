@@ -26,7 +26,7 @@ export default function ScheduleSection({data, courseId}: ScheduleSectionProps) 
 
     const {execute: executeDelete} = useAction(deleteCourseSchedule, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

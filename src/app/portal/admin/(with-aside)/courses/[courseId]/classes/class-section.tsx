@@ -26,10 +26,11 @@ export default function ClassSection({data, courseId}: ClassSectionProps) {
 
     const {execute: executeDelete} = useAction(deleteClass, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }
+            router.refresh()
             toast.success('Class deleted successfully');
         },
         onError: ({error: {fetchError, validationErrors}}) => {

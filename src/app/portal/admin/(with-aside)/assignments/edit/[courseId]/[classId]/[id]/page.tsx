@@ -49,7 +49,7 @@ export default function Page() {
 
     const {execute: executeUpdateAssignment, isExecuting} = useAction(updateAssignment, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

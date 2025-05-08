@@ -26,7 +26,7 @@ export default function AddScheduleForm({courseId}: AddScheduleFormProps) {
 
     const {execute: executeCreate, status} = useAction(createCourseSchedule, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

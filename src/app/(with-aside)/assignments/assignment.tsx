@@ -66,7 +66,7 @@ const Assignment = ({
         );
     const {executeAsync, isExecuting} = useAction(createPersonalAssignment, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }
@@ -182,7 +182,7 @@ const Assignment = ({
 
     const {execute: exeUPA} = useAction(updatePersonalAssignment, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

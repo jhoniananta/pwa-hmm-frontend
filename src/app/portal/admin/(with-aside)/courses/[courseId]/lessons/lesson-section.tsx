@@ -26,7 +26,7 @@ export default function LessonSection({data, courseId}: LessonSectionProps) {
 
     const {execute: executeDelete} = useAction(deleteLesson, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

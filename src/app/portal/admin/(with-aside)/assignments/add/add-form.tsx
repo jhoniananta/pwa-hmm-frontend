@@ -34,7 +34,7 @@ function AddForm({
 }) {
     const {execute, isExecuting} = useAction(createAssignment, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

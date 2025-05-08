@@ -21,7 +21,7 @@ export default function AddLessonForm({courseId}: AddLessonFormProps) {
 
     const {execute: executeCreate, status} = useAction(createLesson, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }

@@ -57,7 +57,7 @@ export default function EditCourseForm({
         uploadCourseImage,
         {
             onSuccess: (response: any) => {
-                if (response?.data.error) {
+                if (response?.data?.error) {
                     toast.error(response?.data?.error);
                     return;
                 }
@@ -73,7 +73,7 @@ export default function EditCourseForm({
         updateCourse,
         {
             onSuccess: (response: any) => {
-                if (response?.data.error) {
+                if (response?.data?.error) {
                     toast.error(response?.data?.error);
                     return;
                 }
@@ -92,7 +92,7 @@ export default function EditCourseForm({
     const {execute: executeAddCategory, isExecuting: isAddingCategories} =
         useAction(addCategoryCourse, {
             onSuccess: (response: any) => {
-                if (response?.data.error) {
+                if (response?.data?.error) {
                     toast.error(response?.data?.error);
                     return;
                 }
@@ -110,7 +110,7 @@ export default function EditCourseForm({
     const {execute: executeDeleteCategory, isExecuting: isDeletingCategories} =
         useAction(deleteCategoryCourse, {
             onSuccess: (response: any) => {
-                if (response?.data.error) {
+                if (response?.data?.error) {
                     toast.error(response?.data?.error);
                     return;
                 }

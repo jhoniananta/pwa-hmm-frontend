@@ -94,7 +94,7 @@ export default function RegistrationBeasiswaHMM() {
 
     const {execute, status} = useAction(createInternalScholarship, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }
@@ -138,7 +138,7 @@ export default function RegistrationBeasiswaHMM() {
             {responseItems},
             {
                 onSuccess: (response: any) => {
-                    if (response?.data.error) {
+                    if (response?.data?.error) {
                         toast.error(response?.data?.error);
                         return;
                     }
