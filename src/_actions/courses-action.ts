@@ -173,7 +173,7 @@ export const updateCourse = actionClient
             flattenValidationErrors(ve).fieldErrors,
     })
     .action(async ({parsedInput}) => {
-        const {courseId, code, status, categoryId, ...rest} = parsedInput;
+        const {courseId, categoryId, ...rest} = parsedInput;
 
         const courseRes = await fetchAction<
             courseAPI.UpdateCourse.Response['data']
