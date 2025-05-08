@@ -12,13 +12,14 @@ export default function CourseSection({
                                       }: {
     data: $CourseAPI.GetCourses.Response['data']
 }) {
+
     const [searchQuery, setSearchQuery] = useState('');
     const debouncedSearch = useDebounce(searchQuery);
 
-    const filteredData = data.filter((course) =>
-        course.title.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-        course.description?.toLowerCase().includes(debouncedSearch.toLowerCase())
-    );
+    // const filteredData = data.filter((course) =>
+    //     course.title.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+    //     course.description?.toLowerCase().includes(debouncedSearch.toLowerCase())
+    // );
 
     return (
         <>
@@ -31,12 +32,12 @@ export default function CourseSection({
                 />
                 <CustomLink href={'courses/add'} className='self-end md:self-auto'>Add Course</CustomLink>
             </div>
-            {filteredData.length === 0 ? (
+            {data.length === 0 ? (
                 <div className="text-center text-muted-foreground mt-8">
                     No courses found
                 </div>
             ) : (
-                <CoursesTable data={filteredData}/>
+                <CoursesTable data={data}/>
             )}
         </>
     );
