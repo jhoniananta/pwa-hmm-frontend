@@ -26,7 +26,7 @@ function CoursesTable({data}: { data: $CourseAPI.GetCourses.Response["data"] }) 
                 return;
             }
             toast.success('Course deleted successfully');
-            router.push('/portal/admin/courses');
+            router.refresh()
         },
         onError: (err) => {
             toast.error(err.error.serverError || 'Failed to delete course');
