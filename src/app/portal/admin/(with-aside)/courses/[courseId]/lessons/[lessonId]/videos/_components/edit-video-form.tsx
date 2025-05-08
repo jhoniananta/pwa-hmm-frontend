@@ -11,7 +11,6 @@ import React, {useState} from 'react';
 import {getVideoId} from "@/_actions/utils/utils";
 import validationErrorToString from "@/lib/validationErrorToString";
 import {updateVideo, VideoResponse} from "@/_actions/videos-action";
-import {PWAError} from "@/lib/error";
 
 interface EditVideoFormProps {
     video: VideoResponse;
@@ -45,15 +44,9 @@ export default function EditVideoForm({
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        let youtubeVideoId: string = ''
-        try {
-            youtubeVideoId = getVideoId(youtubeLink)
-        } catch (error) {
-            if (error instanceof PWAError) {
-                toast.error(error.message);
-                return;
-            }
-            toast.error(new PWAError().message)
+        const response = getVideoId(youtubeLink)
+        if (response.errorMessage) {
+            toast.error(response.errorMessage);
             return;
         }
 
@@ -63,7 +56,7 @@ export default function EditVideoForm({
             videoId: Number(videoId),
             title,
             description,
-            youtubeLink: youtubeVideoId,
+            youtubeLink: response.videoId as string,
         });
     };
 
