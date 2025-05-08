@@ -41,6 +41,7 @@ function CoursesTable({data}: { data: $CourseAPI.GetCourses.Response["data"] }) 
             <Table className='table-admin'>
                 <TableHeader>
                     <TableRow>
+                        <TableHead>Code</TableHead>
                         <TableHead className='w-64 min-w-[16rem]'>Title</TableHead>
                         <TableHead>Description</TableHead>
                         <TableHead>Students</TableHead>
@@ -66,6 +67,7 @@ function CoursesTable({data}: { data: $CourseAPI.GetCourses.Response["data"] }) 
 
                         return (
                             <TableRow key={course.courseId} className='even:bg-navy/5 odd:bg-transparent'>
+                                <TableCell>{course.code}</TableCell>
                                 <TableCell
                                     className='w-64 min-w-[16rem] whitespace-nowrap text-nowrap'>{course.title}</TableCell>
                                 <TableCell
