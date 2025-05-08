@@ -26,7 +26,11 @@ export default function VideoSection({data, courseId, lessonId}: VideoSectionPro
     const totalPage = Math.ceil(data.length / videosPerPage);
 
     const {execute: executeDelete} = useAction(deleteVideo, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Video deleted successfully');
         },
         onError: ({error: {fetchError, validationErrors}}) => {

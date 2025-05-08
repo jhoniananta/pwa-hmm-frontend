@@ -23,6 +23,7 @@ import {TableCell, TableRow} from '@/components/ui/table';
 import Link from 'next/link';
 import {MinusSquare, Pencil, PlusSquare} from 'lucide-react';
 import {CategoryResponse} from '@/_actions/category-action';
+import validationErrorToString from "@/lib/validationErrorToString";
 
 type EditCourseFormProps = {
     categories: CategoryResponse[];
@@ -55,12 +56,12 @@ export default function EditCourseForm({
     const {execute: executeUpload, isExecuting: isUploading} = useAction(
         uploadCourseImage,
         {
-            onSuccess: (result) => {
-                if (result?.data) {
-                    // setValue('image', result.data);
-                    // setPreviewUrl(`${publicBucketUrl}/${result.data}`);
-                    toast.success('Image uploaded successfully');
+            onSuccess: (response: any) => {
+                if (response?.data.error) {
+                    toast.error(response?.data?.error);
+                    return;
                 }
+                toast.success('Image uploaded successfully');
             },
             onError: (error) => {
                 toast.error(error.error?.serverError || 'Failed to upload image');
@@ -71,15 +72,17 @@ export default function EditCourseForm({
     const {execute: executeUpdateCourse, isExecuting} = useAction(
         updateCourse,
         {
-            onSuccess: () => {
+            onSuccess: (response: any) => {
+                if (response?.data.error) {
+                    toast.error(response?.data?.error);
+                    return;
+                }
                 toast.success('Course updated successfully');
                 router.push('/portal/admin/courses');
             },
-            onError: ({error: {serverError, validationErrors, fetchError}}) => {
+            onError: ({error: {validationErrors}}) => {
                 toast.error(
-                    serverError ||
-                    fetchError ||
-                    validationErrors?.toString() ||
+                    validationErrorToString(validationErrors) ||
                     'Failed to update course'
                 );
             },
@@ -88,7 +91,11 @@ export default function EditCourseForm({
 
     const {execute: executeAddCategory, isExecuting: isAddingCategories} =
         useAction(addCategoryCourse, {
-            onSuccess: () => {
+            onSuccess: (response: any) => {
+                if (response?.data.error) {
+                    toast.error(response?.data?.error);
+                    return;
+                }
                 toast.success('Category added successfully!');
             },
             onError: ({error}) => {
@@ -102,7 +109,11 @@ export default function EditCourseForm({
 
     const {execute: executeDeleteCategory, isExecuting: isDeletingCategories} =
         useAction(deleteCategoryCourse, {
-            onSuccess: () => {
+            onSuccess: (response: any) => {
+                if (response?.data.error) {
+                    toast.error(response?.data?.error);
+                    return;
+                }
                 toast.success('Category deleted successfully!');
             },
             onError: ({error}) => {

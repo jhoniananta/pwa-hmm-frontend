@@ -26,7 +26,11 @@ export default function AttachmentSection({data, courseId, lessonId}: Attachment
     const totalPage = Math.ceil(data.length / attachmentsPerPage);
 
     const {execute: executeDelete} = useAction(deleteAttachment, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Attachment deleted successfully');
         },
         onError: ({error: {fetchError, validationErrors}}) => {

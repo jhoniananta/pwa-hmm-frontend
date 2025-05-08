@@ -27,7 +27,11 @@ export default function EditScheduleForm({schedule, courseId, scheduleId}: EditS
     const [endDate, setEndDate] = useState(new Date(schedule.endDate).toISOString());
 
     const {execute: executeUpdate, status} = useAction(updateCourseSchedule, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Schedule updated successfully');
             router.push(`/portal/admin/courses/${courseId}/schedules`);
             router.refresh();

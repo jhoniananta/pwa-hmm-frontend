@@ -6,7 +6,6 @@ import {updateClass} from '@/_actions/class-action';
 import {toast} from 'sonner';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
-import {Textarea} from '@/components/ui/textarea';
 import {cn} from '@/lib/utils';
 import {useState} from 'react';
 
@@ -20,7 +19,11 @@ export default function EditClassForm({classData, courseId}: EditClassFormProps)
     const [name, setName] = useState(classData.name);
 
     const {execute: executeUpdate, status} = useAction(updateClass, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Class updated successfully');
             router.push(`/portal/admin/courses/${courseId}/classes`);
             router.refresh();

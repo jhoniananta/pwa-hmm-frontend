@@ -65,11 +65,15 @@ const Assignment = ({
             item.course.toString().toLowerCase().includes(debouncedSearch.toLowerCase())
         );
     const {executeAsync, isExecuting} = useAction(createPersonalAssignment, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Assignment created');
         },
-        onError: ({error: {serverError, validationErrors}}) => {
-            toast.error(serverError || validationErrors?.toString() || 'Failed to create assignment');
+        onError: ({error: {validationErrors}}) => {
+            toast.error(validationErrors?.toString() || 'Failed to create assignment');
         },
     })
 
@@ -177,7 +181,11 @@ const Assignment = ({
     }
 
     const {execute: exeUPA} = useAction(updatePersonalAssignment, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Assignment updated');
         },
         onError: ({error: {serverError, validationErrors}}) => {

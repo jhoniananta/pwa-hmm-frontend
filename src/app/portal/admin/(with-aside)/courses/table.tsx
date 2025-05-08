@@ -18,7 +18,11 @@ function CoursesTable({data}: { data: $CourseAPI.GetCourses.Response["data"] }) 
     const totalPage = Math.ceil(data.length / coursesPerPage);
 
     const {execute: executeDelete} = useAction(deleteCourse, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Course deleted successfully');
         },
         onError: (err) => {
@@ -62,7 +66,8 @@ function CoursesTable({data}: { data: $CourseAPI.GetCourses.Response["data"] }) 
 
                         return (
                             <TableRow key={course.courseId} className='even:bg-navy/5 odd:bg-transparent'>
-                                <TableCell className='w-64 min-w-[16rem] whitespace-nowrap text-nowrap'>{course.title}</TableCell>
+                                <TableCell
+                                    className='w-64 min-w-[16rem] whitespace-nowrap text-nowrap'>{course.title}</TableCell>
                                 <TableCell
                                     className='whitespace-nowrap text-nowrap'>{description.length > 100 ? description.slice(0, 100) + "..." : description}</TableCell>
                                 <TableCell>{course.numberOfStudents}</TableCell>

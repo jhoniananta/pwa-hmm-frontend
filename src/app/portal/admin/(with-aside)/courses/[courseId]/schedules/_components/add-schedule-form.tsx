@@ -25,7 +25,11 @@ export default function AddScheduleForm({courseId}: AddScheduleFormProps) {
     const [endDate, setEndDate] = useState(new Date().toISOString());
 
     const {execute: executeCreate, status} = useAction(createCourseSchedule, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Schedule created successfully');
             router.push(`/portal/admin/courses/${courseId}/schedules`);
             router.refresh();

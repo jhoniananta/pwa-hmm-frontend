@@ -22,7 +22,11 @@ export default function EditLessonForm({lesson, courseId}: EditLessonFormProps) 
     const [description, setDescription] = useState(lesson.description || '');
 
     const {execute: executeUpdate, status} = useAction(updateLesson, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Lesson updated successfully');
             router.push(`/portal/admin/courses/${courseId}/lessons`);
             router.refresh();

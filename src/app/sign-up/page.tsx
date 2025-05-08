@@ -26,8 +26,12 @@ export default function SignUp() {
     const {executeAsync, isExecuting, hasSucceeded, hasErrored} = useAction(
         signUp,
         {
-            onSuccess: (data) => {
-                toast.success(data.data?.message || 'Sign up success');
+            onSuccess: (response: any) => {
+                if (response?.data.error) {
+                    toast.error(response?.data?.error);
+                    return;
+                }
+                toast.success('Sign up success');
                 router.push('/sign-in');
             },
             onError: ({

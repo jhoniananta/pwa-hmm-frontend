@@ -27,7 +27,11 @@ export default async function AvatarUpload({currentAvatar, name}: AvatarUploadPr
     const router = useRouter();
 
     const {execute: executeUpload, isExecuting} = useAction(uploadProfileImage, {
-        onSuccess: async () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Profile picture updated successfully');
             router.refresh();
             setShowModal(false);

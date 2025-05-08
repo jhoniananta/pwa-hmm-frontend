@@ -28,7 +28,11 @@ function AddForm() {
     });
 
     const {execute, status} = useAction(createTag, {
-        onSuccess: (result) => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Tag created!')
             router.push('/portal/admin/tags');
         },

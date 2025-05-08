@@ -33,7 +33,11 @@ function AddForm({
     })[];
 }) {
     const {execute, isExecuting} = useAction(createAssignment, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Assignment created successfully');
         },
         onError: (err) => {

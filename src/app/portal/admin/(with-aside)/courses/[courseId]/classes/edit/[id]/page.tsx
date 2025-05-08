@@ -43,7 +43,11 @@ export default function Page() {
 
 
     const {execute: executeUpdateClass, isExecuting} = useAction(updateClass, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Class updated successfully');
             router.push(`/portal/admin/courses/${courseId}/classes`);
         },

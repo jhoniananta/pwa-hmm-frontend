@@ -175,7 +175,6 @@ export const updateCourse = actionClient
     .action(async ({parsedInput}) => {
         const {courseId, code, status, categoryId, ...rest} = parsedInput;
 
-        // Update basic course info
         const courseRes = await fetchAction<
             courseAPI.UpdateCourse.Response['data']
         >(courseAPI.UpdateCourse.generateUrl(courseId), 'Failed to update course', {

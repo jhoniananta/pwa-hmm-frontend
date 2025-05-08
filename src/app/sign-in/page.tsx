@@ -15,17 +15,22 @@ import {useAction} from 'next-safe-action/hooks';
 import {toast} from 'sonner';
 import {signInSchema} from '@/lib/schema';
 import {useRouter} from 'next/navigation';
+import validationErrorToString from "@/lib/validationErrorToString";
 
 export default function SignIn() {
     const router = useRouter()
     const [showPassword, setShowPassword] = useState(false);
     const {executeAsync, isExecuting} = useAction(signIn, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Sign in success');
             router.push('/dashboard')
         },
         onError: ({error: {serverError, validationErrors}}) => {
-            toast.error(serverError || validationErrors?.toString() || 'Sign in failed');
+            toast.error(validationErrorToString(validationErrors) || 'Sign in failed');
         },
     });
     const form = useForm<z.infer<typeof signInSchema>>({

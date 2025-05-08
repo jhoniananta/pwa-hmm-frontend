@@ -24,7 +24,11 @@ export default function AddVideoForm({courseId, lessonId}: AddVideoFormProps) {
     const [youtubeLink, setYoutubeLink] = useState('');
 
     const {execute: executeCreate, status} = useAction(createVideo, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Video created successfully');
             router.push(`/portal/admin/courses/${courseId}/lessons/${lessonId}/videos`);
             router.refresh();

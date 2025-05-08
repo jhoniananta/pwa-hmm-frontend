@@ -1,19 +1,8 @@
 'use client';
 
 import React, {useState} from 'react';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover';
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from '@/components/ui/table';
+import {Popover, PopoverContent, PopoverTrigger,} from '@/components/ui/popover';
 import {Ellipsis} from 'lucide-react';
 import Pagination from '@/components/client/pagination';
 import Wrapper from '@/app/portal/admin/wrapper';
@@ -28,7 +17,11 @@ function CategoryTable({data}: { data: CategoryResponse[] }) {
     const totalPage = Math.ceil(data.length / itemsPerPage);
 
     const {execute: executeDelete} = useAction(deleteCategory, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Category deleted successfully');
         },
         onError: (error) => {

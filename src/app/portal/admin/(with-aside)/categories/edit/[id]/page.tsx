@@ -2,7 +2,7 @@
 import React from 'react';
 import AdminBreadcrumb from '@/components/admin/breadcrumb';
 import AdminHeader from '@/components/admin/header';
-import {useParams, useSearchParams} from 'next/navigation';
+import {useParams, useRouter, useSearchParams} from 'next/navigation';
 import Wrapper from '../../../../wrapper';
 import {Label} from '@/components/ui/label';
 import {Input} from '@/components/ui/input';
@@ -12,7 +12,6 @@ import {zodResolver} from '@hookform/resolvers/zod';
 import {z} from 'zod';
 import {useAction} from 'next-safe-action/hooks';
 import {toast} from 'sonner';
-import {useRouter} from 'next/navigation';
 import {updateCategorySchema} from "@/_actions/schema/category-schema";
 import {updateCategory} from "@/_actions/category-action";
 
@@ -37,10 +36,9 @@ export default function Page() {
     });
 
     const {execute, status} = useAction(updateCategory, {
-        onSuccess: (result) => {
-            const data: any = result.data
-            if (data && data?.isError) {
-                toast.error(data?.message)
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
                 return;
             }
             toast.success('Category updated!')

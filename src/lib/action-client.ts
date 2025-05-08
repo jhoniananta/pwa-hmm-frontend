@@ -7,25 +7,25 @@ import {redirect} from 'next/navigation';
 export const actionClient = createSafeActionClient({
     handleServerErrorLog(e) {
         console.log("@handleServerErrorLog * e:", e)
-        throw e;
+        throw {
+            message: e.message
+        }
     },
     defineMetadataSchema() {
         return z.object({
             actionName: z.string(),
         });
     },
-// })
-})
-    .use(async ({next, clientInput, metadata}) => {
-        console.log('@Logging Middleware');
-        const result = await next({ctx: {}});
+}).use(async ({next, clientInput, metadata}) => {
+    console.log('@Logging Middleware');
+    const result = await next({ctx: {}});
 
-        console.log('Result ->', result);
-        console.log('Client input ->', clientInput);
-        console.log('Metadata ->', metadata);
+    console.log('Result ->', result);
+    console.log('Client input ->', clientInput);
+    console.log('Metadata ->', metadata);
 
-        return result;
-    });
+    return result;
+});
 
 export const authActionClient = actionClient
     // Define authorization middleware.

@@ -1,19 +1,8 @@
 'use client';
 
 import React, {useState} from 'react';
-import {
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-    Table,
-} from '@/components/ui/table';
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover';
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from '@/components/ui/table';
+import {Popover, PopoverContent, PopoverTrigger,} from '@/components/ui/popover';
 import {Ellipsis} from 'lucide-react';
 import Pagination from '@/components/client/pagination';
 import {$CourseClassAssignmentAPI, CourseClassModel} from 'lms-types';
@@ -38,7 +27,11 @@ function AssignmentTable({
     const assignmentPerPage = 6;
     const totalPage = Math.ceil(data.length / assignmentPerPage);
     const {execute: exeDA} = useAction(deleteAssignment, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Assignment deleted');
         },
         onError: ({error: {serverError, validationErrors, fetchError}}) => {

@@ -28,17 +28,16 @@ function AddForm() {
     });
 
     const {execute, status} = useAction(createCategory, {
-        onSuccess: (result) => {
-            const data: any = result.data
-            if (data && data?.isError) {
-                toast.error(data?.message)
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
                 return;
             }
             toast.success('Category created!')
             router.push('/portal/admin/categories');
         },
         onError: () => {
-            toast.error('Failed to add category!')
+            toast.error('Failed to create category!')
         },
     });
 

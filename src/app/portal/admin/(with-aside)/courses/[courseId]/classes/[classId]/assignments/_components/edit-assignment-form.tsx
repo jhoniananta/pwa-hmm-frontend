@@ -36,7 +36,11 @@ export default function EditAssignmentForm({
     const [taskType, setTaskType] = useState(assignment.taskType);
 
     const {execute: executeUpdate, status} = useAction(updateClassAssignment, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Assignment updated successfully');
             router.push(`/portal/admin/courses/${courseId}/classes/${classId}/assignments`);
             router.refresh();

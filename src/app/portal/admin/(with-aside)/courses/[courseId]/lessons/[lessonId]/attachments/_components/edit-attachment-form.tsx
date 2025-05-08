@@ -29,7 +29,11 @@ export default function EditAttachmentForm({
     const [description, setDescription] = useState(attachment.description ?? '');
 
     const {execute: executeUpdate, status} = useAction(updateAttachment, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Attachment updated successfully');
             router.push(`/portal/admin/courses/${courseId}/lessons/${lessonId}/attachments`);
             router.refresh();

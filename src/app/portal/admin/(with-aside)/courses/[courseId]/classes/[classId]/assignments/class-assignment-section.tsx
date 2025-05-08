@@ -26,7 +26,11 @@ export default function ClassAssignmentSection({data, courseId, classId}: ClassA
     const totalPage = Math.ceil(data.length / assignmentsPerPage);
 
     const {execute: executeDelete} = useAction(deleteClassAssignment, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Assignment deleted successfully');
         },
         onError: ({error: {fetchError, validationErrors}}) => {

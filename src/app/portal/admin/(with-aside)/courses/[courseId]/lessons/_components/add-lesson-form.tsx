@@ -20,7 +20,11 @@ export default function AddLessonForm({courseId}: AddLessonFormProps) {
     const [description, setDescription] = useState('');
 
     const {execute: executeCreate, status} = useAction(createLesson, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Lesson created successfully');
             router.push(`/portal/admin/courses/${courseId}/lessons`);
             router.refresh();

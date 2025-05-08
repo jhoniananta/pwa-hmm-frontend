@@ -23,7 +23,11 @@ export default function AddInstructorForm({users, courseId, classId}: AddInstruc
     const [userId, setUserId] = useState(-1);
 
     const {execute: executeCreate, status} = useAction(createInstructor, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Instructor created successfully');
             router.push(`/portal/admin/courses/${courseId}/classes/${classId}/instructors`);
             router.refresh();

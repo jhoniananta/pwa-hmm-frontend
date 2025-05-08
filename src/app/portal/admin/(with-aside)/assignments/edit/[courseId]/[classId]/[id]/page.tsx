@@ -2,27 +2,20 @@
 import React from 'react';
 import AdminBreadcrumb from '@/components/admin/breadcrumb';
 import AdminHeader from '@/components/admin/header';
-import {useParams, useSearchParams} from 'next/navigation';
+import {useParams, useRouter, useSearchParams} from 'next/navigation';
 import Wrapper from '../../../../../../wrapper';
 import {Label} from '@/components/ui/label';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {Button} from '@/components/ui/button';
-import {useForm, SubmitHandler} from 'react-hook-form';
+import {SubmitHandler, useForm} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {updateAssignmentSchema} from '@/lib/schema';
 import {z} from 'zod';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from '@/components/ui/select';
 import {useAction} from 'next-safe-action/hooks';
 import {updateAssignment} from '@/_actions/assignment-action';
 import {toast} from 'sonner';
-import {useRouter} from 'next/navigation';
 import {AssignmentTaskType} from "lms-types";
 
 export default function Page() {
@@ -55,7 +48,11 @@ export default function Page() {
     });
 
     const {execute: executeUpdateAssignment, isExecuting} = useAction(updateAssignment, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Assignment updated successfully');
             router.push('/portal/atur-atur/assignments');
         },

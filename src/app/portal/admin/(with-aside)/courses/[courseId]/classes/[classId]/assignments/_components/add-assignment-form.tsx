@@ -29,7 +29,11 @@ export default function AddAssignmentForm({courseId, classId}: AddAssignmentForm
     const [taskType, setTaskType] = useState(AssignmentTaskType.PERSONAL_TASK);
 
     const {execute: executeCreate, status} = useAction(createClassAssignment, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Assignment created successfully');
             router.push(`/portal/admin/courses/${courseId}/classes/${classId}/assignments`);
             router.refresh();

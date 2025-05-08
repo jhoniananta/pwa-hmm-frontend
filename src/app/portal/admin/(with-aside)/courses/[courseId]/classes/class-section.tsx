@@ -1,14 +1,7 @@
 'use client';
 
 import React, {useState} from 'react';
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table';
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from '@/components/ui/table';
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Ellipsis} from 'lucide-react';
 import Link from 'next/link';
@@ -32,7 +25,11 @@ export default function ClassSection({data, courseId}: ClassSectionProps) {
     const totalPage = Math.ceil(data.length / classesPerPage);
 
     const {execute: executeDelete} = useAction(deleteClass, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Class deleted successfully');
         },
         onError: ({error: {fetchError, validationErrors}}) => {

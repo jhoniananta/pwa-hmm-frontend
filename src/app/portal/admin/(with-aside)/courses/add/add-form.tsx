@@ -34,7 +34,11 @@ function AddForm() {
     });
 
     const {execute: executeAddCourse, status} = useAction(createCourse, {
-        onSuccess: (response) => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Course added successfully');
             router.push(`/portal/admin/courses/edit/${response?.data?.courseId ?? ''}`);
         },

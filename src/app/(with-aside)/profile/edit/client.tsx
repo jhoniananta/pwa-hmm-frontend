@@ -9,7 +9,7 @@ import {useState} from 'react';
 import {useAction} from 'next-safe-action/hooks';
 import {toast} from 'sonner';
 import {useRouter} from 'next/navigation';
-import {motion, AnimatePresence} from 'framer-motion';
+import {AnimatePresence, motion} from 'framer-motion';
 import {ArrowBigLeft, ArrowBigRight, Check} from 'lucide-react';
 import Button from '@/components/ui/button/button';
 import FormInput from '@/components/form-input';
@@ -71,7 +71,11 @@ export default function EditProfile({user}: { user: UserModel }) {
     });
 
     const {execute, isExecuting} = useAction(editProfile, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Profile updated successfully');
             router.push('/profile');
         },

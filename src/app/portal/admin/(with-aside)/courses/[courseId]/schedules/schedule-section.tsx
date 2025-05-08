@@ -25,7 +25,11 @@ export default function ScheduleSection({data, courseId}: ScheduleSectionProps) 
     const totalPage = Math.ceil(data.length / schedulesPerPage);
 
     const {execute: executeDelete} = useAction(deleteCourseSchedule, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Schedule deleted successfully');
         },
         onError: ({error: {fetchError, validationErrors}}) => {

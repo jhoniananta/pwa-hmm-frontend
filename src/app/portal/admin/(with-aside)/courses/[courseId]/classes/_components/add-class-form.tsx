@@ -6,7 +6,6 @@ import {createClass} from '@/_actions/class-action';
 import {toast} from 'sonner';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
-import {Textarea} from '@/components/ui/textarea';
 import {cn} from '@/lib/utils';
 import {useState} from 'react';
 import validationErrorToString from "@/lib/validationErrorToString";
@@ -20,7 +19,11 @@ export default function AddClassForm({courseId}: AddClassFormProps) {
     const [name, setName] = useState('');
 
     const {execute: executeCreate, status} = useAction(createClass, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Class created successfully');
             router.push(`/portal/admin/courses/${courseId}/classes`);
             router.refresh();

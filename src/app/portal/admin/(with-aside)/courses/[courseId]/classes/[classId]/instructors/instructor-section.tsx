@@ -25,7 +25,11 @@ export default function InstructorSection({data, courseId, classId}: InstructorS
     const totalPage = Math.ceil(data.length / instructorsPerPage);
 
     const {execute: executeDelete} = useAction(deleteInstructor, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Instructor deleted successfully');
         },
         onError: ({error: {fetchError, validationErrors}}) => {

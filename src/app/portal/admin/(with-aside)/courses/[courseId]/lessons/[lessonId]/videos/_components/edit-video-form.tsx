@@ -31,7 +31,11 @@ export default function EditVideoForm({
     const [youtubeLink, setYoutubeLink] = useState(`https://www.youtube.com/watch?v=${video.youtubeLink}`);
 
     const {execute: executeUpdate, status} = useAction(updateVideo, {
-        onSuccess: () => {
+        onSuccess: (response: any) => {
+            if (response?.data.error) {
+                toast.error(response?.data?.error);
+                return;
+            }
             toast.success('Video updated successfully');
             router.push(`/portal/admin/courses/${courseId}/lessons/${lessonId}/videos`);
             router.refresh();
