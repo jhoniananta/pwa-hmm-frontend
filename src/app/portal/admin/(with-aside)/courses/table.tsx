@@ -62,7 +62,7 @@ function CoursesTable({data}: { data: $CourseAPI.GetCourses.Response["data"] }) 
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {data.map((course, index) => {
+                    {(data || []).map((course, index) => {
                         const description = course.description ?? ''
                         const updatedAt = course.updatedAt ? new Date(course.updatedAt).toDateString() : '-';
 
