@@ -11,19 +11,22 @@ import {useAction} from 'next-safe-action/hooks';
 import {toast} from 'sonner';
 import Link from 'next/link';
 import {deleteCourse} from '@/_actions/courses-action';
+import {useRouter} from "next/navigation";
 
 function CoursesTable({data}: { data: $CourseAPI.GetCourses.Response["data"] }) {
+    const router = useRouter();
     const [page, setPage] = useState(1);
     const coursesPerPage = 6;
     const totalPage = Math.ceil(data.length / coursesPerPage);
 
     const {execute: executeDelete} = useAction(deleteCourse, {
         onSuccess: (response: any) => {
-            if (response?.data.error) {
+            if (response?.data?.error) {
                 toast.error(response?.data?.error);
                 return;
             }
             toast.success('Course deleted successfully');
+            router.push('/portal/admin/courses');
         },
         onError: (err) => {
             toast.error(err.error.serverError || 'Failed to delete course');
