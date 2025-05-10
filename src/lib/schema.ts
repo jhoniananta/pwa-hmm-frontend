@@ -449,10 +449,7 @@ export const deleteScholarshipSchema = z.object({
 // Add this with other schemas
 export const createEnrollmentSchema = z.object({
     courseId: z.number().min(1, {message: 'Course ID is required'}),
-    role: z.enum(['STUDENT', 'TEACHER'] as const, {
-        message: 'Invalid role',
-    }),
-    classId: z.number().min(1, {message: 'Class ID is required'}),
+    classId: z.number(),
 });
 
 export const createScheduleSchema = z.object({

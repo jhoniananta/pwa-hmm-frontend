@@ -32,12 +32,9 @@ const ClientPage = ({courses, categories, isAllCourse}: ClientPageProps) => {
         '/assets/images/printer.png',
     ];
 
-    console.log(checkedList)
-
     let filteredCourses = courses.filter((course) =>
         course.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    console.log(filteredCourses)
 
     filteredCourses = filteredCourses.filter((course) => {
         return filterCheckedList(checkedList).every((checkedListElement) =>
@@ -48,8 +45,6 @@ const ClientPage = ({courses, categories, isAllCourse}: ClientPageProps) => {
             )
         );
     });
-
-    console.log(filterCheckedList(checkedList))
 
     return (
         <>
@@ -95,6 +90,7 @@ const ClientPage = ({courses, categories, isAllCourse}: ClientPageProps) => {
                         subject={'MS2021'}
                         numberOfMaterials={course.numberOfLessons}
                         numberOfVideos={course.numberOfVideos}
+                        isAllCourse={isAllCourse}
                     />
                 ))}
             </div>

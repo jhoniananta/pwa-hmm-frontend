@@ -10,19 +10,21 @@ import {Label} from '@/components/ui/label';
 import {useAction} from 'next-safe-action/hooks';
 import {createEnrollment} from '@/_actions/enrollment-action';
 import {toast} from 'sonner';
-import ErrorText from '@/app/portal/admin/error-text';
 import {useRouter} from 'next/navigation';
 import validationErrorToString from "@/lib/validationErrorToString";
+import {ClassResponse} from "@/_actions/class-action";
 
 export default function EnrollmentModal({
                                             courseId,
-                                            courseTitle
+                                            courseTitle,
+                                            classes
                                         }: {
     courseId: number;
     courseTitle: string;
+    classes: ClassResponse[]
 }) {
     const [isOpen, setIsOpen] = useState(false);
-    const [role, setRole] = useState<'STUDENT' | 'TEACHER' | undefined>();
+    const [classId, setClassId] = useState<number | undefined>();
     const router = useRouter();
 
     const {execute, status} = useAction(createEnrollment, {
@@ -41,11 +43,11 @@ export default function EnrollmentModal({
     });
 
     const handleEnroll = () => {
-        if (!role) {
-            toast.error('Please select a role');
+        if (!classId) {
+            toast.error('Please select a class');
             return;
         }
-        execute({courseId, role});
+        execute({courseId, classId});
     };
 
     return (
@@ -69,19 +71,20 @@ export default function EnrollmentModal({
                             </motion.h3>
 
                             <div className='space-y-2'>
-                                <Label>Select Role</Label>
-                                <Select onValueChange={(value) => setRole(value as 'STUDENT' | 'TEACHER')}>
+                                <Label>Select Class</Label>
+                                <Select onValueChange={(value) => setClassId(Number(value))}>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Select your role"/>
+                                        <SelectValue placeholder="Select your class"/>
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="STUDENT">Student</SelectItem>
-                                        <SelectItem value="TEACHER">Teacher</SelectItem>
+                                        {
+                                            classes.map((theClass) =>
+                                                <SelectItem key={theClass.classId}
+                                                            value={String(theClass.classId)}>{theClass.title}</SelectItem>
+                                            )
+                                        }
                                     </SelectContent>
                                 </Select>
-                                {!role && status === 'hasErrored' && (
-                                    <ErrorText>Role is required</ErrorText>
-                                )}
                             </div>
 
                             <div className='flex justify-end gap-2'>

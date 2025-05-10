@@ -15,6 +15,9 @@ import Image from 'next/image';
 import {getLessons, LessonResponse} from "@/_actions/lessons-action";
 import {getVideos, VideoResponse} from "@/_actions/videos-action";
 import {AttachmentResponse, getAttachments} from "@/_actions/attachments-action";
+import EnrollmentModal from "@/app/(with-aside)/courses/[id]/enrollment-modal";
+import {getClasses} from "@/_actions/class-action";
+import {getPublicUrl} from "@/_actions/utils/utils";
 
 
 export default async function CoursesPage({
@@ -27,38 +30,41 @@ export default async function CoursesPage({
     const course = await getCourseById(Number(id));
     const isEnrolled = true;
 
-    // return (
-    //     <div className="w-full">
-    //         <ScrollArea
-    //             className='w-full bg-white shadow-md rounded-xl md:relative border-t-0 md:h-[calc(100vh-4rem)]'>
-    //             <div className="p-6 space-y-6">
-    //                 <div className="relative rounded-xl overflow-hidden
-    //                       w-full md:w-[600px] lg:w-[800px]
-    //                       h-[200px] md:h-[300px] lg:h-[400px]
-    //                       mx-auto">
-    //                     <Image
-    //                      unoptimized={true}
-    //                         src={course.image || '/images/mesin.png'}
-    //                         alt={course.title}
-    //                         fill
-    //                         className="object-cover"
-    //                         sizes="(max-width: 768px) 100vw,
-    //                    (max-width: 1024px) 600px,
-    //                    800px"
-    //                     />
-    //                 </div>
-    //                 <div className="space-y-4">
-    //                     <h2 className="text-2xl font-semibold">{course.title}</h2>
-    //                     <p className="text-gray-600">{course.description}</p>
-    //                     <EnrollmentModal courseId={Number(id)} courseTitle={course.title}/>
-    //                 </div>
-    //             </div>
-    //         </ScrollArea>
-    //     </div>
-    // );
+    const isEnrollmentPage: boolean = searchParams && searchParams['enrollment_page'] === 'true'
+    if (isEnrollmentPage) {
+        return (<div className="w-full">
+                <ScrollArea
+                    className='w-full bg-white shadow-md rounded-xl md:relative border-t-0 md:h-[calc(100vh-4rem)]'>
+                    <div className="p-6 space-y-6">
+                        <div className="relative rounded-xl overflow-hidden
+                          w-full md:w-[600px] lg:w-[800px]
+                          h-[200px] md:h-[300px] lg:h-[400px]
+                          mx-auto">
+                            <Image
+                                unoptimized={true}
+                                src={getPublicUrl(course.image) || '/images/mesin.png'}
+                                alt={course.title}
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 768px) 100vw,
+                       (max-width: 1024px) 600px,
+                       800px"
+                            />
+                        </div>
+                        <div className="space-y-4">
+                            <h2 className="text-2xl font-semibold">{course.title}</h2>
+                            <p className="text-gray-600">{course.description}</p>
+                            <EnrollmentModal courseId={Number(id)} courseTitle={course.title}
+                                             classes={await getClasses(Number(id))}/>
+                        </div>
+                    </div>
+                </ScrollArea>
+            </div>
+        )
+    }
 
-    const isExpanded = searchParams['expanded'] === 'true';
-    const format = searchParams['format'] || 'video';
+    const isExpanded = searchParams && searchParams['expanded'] === 'true';
+    const format = searchParams && searchParams['format'] || 'video';
 
     let lessons: LessonResponse[] = await getLessons(id);
     let attachments: AttachmentResponse[] = []
