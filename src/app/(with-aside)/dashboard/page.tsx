@@ -55,7 +55,7 @@ export default function Home() {
 
     return (
         <div className="flex flex-col items-stretch flex-1 h-max gap-6 relative">
-            <Button
+            {!subscription && <Button
                 className='bg-navy rounded-full font-semibold py-1.5 text-white hover:bg-navy/80 transition px-6 text-sm md:text-base'
                 disabled={unsupported}
                 onClick={() => registerAndSubscribe(setSubscription)}
@@ -65,7 +65,7 @@ export default function Home() {
                     : subscription
                         ? 'Notification allowed'
                         : 'Allow notification'}
-            </Button>
+            </Button>}
             <Button
                 className='bg-navy rounded-full font-semibold py-1.5 text-white hover:bg-navy/80 transition px-6 text-sm md:text-base'
                 onClick={() => sendWebPush('Submit the task on time!')}
