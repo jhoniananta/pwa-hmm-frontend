@@ -13,7 +13,7 @@ import {Label} from "@/components/ui/label";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {AssignmentTaskType} from "@/_actions/enum/action-enum";
 import validationErrorToString from "@/lib/validationErrorToString";
-import {dateToMinutePrecisionString, fromGMT7ToUTC, fromUTCToGMT7} from "@/_actions/utils/utils";
+import {dateToMinutePrecisionString, fromUTCToGMT7} from "@/_actions/utils/utils";
 
 interface AddAssignmentFormProps {
     courseId: string;
@@ -112,7 +112,7 @@ export default function AddAssignmentForm({courseId, classId}: AddAssignmentForm
                     type='datetime-local'
                     value={dateToMinutePrecisionString(fromUTCToGMT7(new Date(deadline)))}
                     onChange={(e) => {
-                        return setDeadline(fromGMT7ToUTC(new Date(e.target.value)).toISOString());
+                        return setDeadline(new Date(e.target.value).toISOString());
                     }}
                     placeholder='Enter assignment deadline'
                 />
