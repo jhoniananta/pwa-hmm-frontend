@@ -35,7 +35,7 @@ export default function PdfList({
                                 </div>
                             </Link>
                             <Link
-                                href={file}
+                                href={getPublicUrl(file)}
                                 download
                                 className="text-navy hover:text-navy/80"
                             >
