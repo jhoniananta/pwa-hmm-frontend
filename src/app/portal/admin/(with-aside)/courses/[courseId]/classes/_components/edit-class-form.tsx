@@ -2,7 +2,7 @@
 
 import {useRouter} from 'next/navigation';
 import {useAction} from 'next-safe-action/hooks';
-import {updateClass} from '@/_actions/class-action';
+import {ClassResponse, updateClass} from '@/_actions/class-action';
 import {toast} from 'sonner';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
@@ -10,13 +10,13 @@ import {cn} from '@/lib/utils';
 import {useState} from 'react';
 
 interface EditClassFormProps {
-    classData: any;
+    classData: ClassResponse;
     courseId: string;
 }
 
 export default function EditClassForm({classData, courseId}: EditClassFormProps) {
     const router = useRouter();
-    const [name, setName] = useState(classData.name);
+    const [name, setName] = useState(classData.title);
 
     const {execute: executeUpdate, status} = useAction(updateClass, {
         onSuccess: (response: any) => {
