@@ -7,8 +7,10 @@ export default function Add() {
     return <>
         <AdminHeader title='Add Tag'/>
         <AdminBreadcrumb/>
-        <Wrapper>
-            <AddForm/>
-        </Wrapper>
+        <div className={'flex-2'}>
+            <Wrapper>
+                <AddForm/>
+            </Wrapper>
+        </div>
     </>
 } 
