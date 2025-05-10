@@ -8,6 +8,8 @@ import {useState} from 'react';
 import {Separator} from '@/components/ui/separator';
 import {cn} from '@/lib/utils';
 import MotionOverlay from '@/components/client/modal-overlay';
+import {LessonResponse} from "@/_actions/lessons-action";
+import {getDurationString} from "@/utils/utils";
 
 export default function Lesson({
                                    lessonId,
@@ -16,7 +18,7 @@ export default function Lesson({
                                }: {
     lessonId: string;
     params: string;
-    lessons: object[];
+    lessons: LessonResponse[];
 }) {
     const [active, setActive] = useState(false);
     return (
@@ -42,7 +44,8 @@ export default function Lesson({
                             </motion.h3>
                             <Separator/>
                             <ul className='flex flex-col gap-1'>
-                                {lessons.map((lesson: any) => (
+                                {lessons.map((lesson: LessonResponse) => (
+
                                     <Link
                                         key={lesson.lessonId}
                                         onClick={() => setActive(false)}
@@ -53,7 +56,7 @@ export default function Lesson({
                                             'px-4 bg-navy text-white'
                                         )}
                                     >
-                                        {lesson.title}
+                                        {`${lesson.title} (${getDurationString(lesson.numberOfDurations)}) (${lesson.numberOfAttachments} PDF)`}
                                     </Link>
                                 ))}
                             </ul>

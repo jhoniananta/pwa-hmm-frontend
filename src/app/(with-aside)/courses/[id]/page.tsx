@@ -28,6 +28,7 @@ export default async function CoursesPage({
 
     const isEnrolled = true;
 
+
     // return (
     //     <div className="w-full">
     //         <ScrollArea
