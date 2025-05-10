@@ -9,9 +9,11 @@ export default function AddAttachment({params}: { params: { courseId: string, le
         <>
             <AdminHeader title='Add Attachment'/>
             <AdminBreadcrumb/>
-            <Wrapper>
-                <AddAttachmentForm courseId={params.courseId} lessonId={params.lessonId}/>
-            </Wrapper>
+            <div className={'flex-2'}>
+                <Wrapper>
+                    <AddAttachmentForm courseId={params.courseId} lessonId={params.lessonId}/>
+                </Wrapper>
+            </div>
         </>
     );
 }
