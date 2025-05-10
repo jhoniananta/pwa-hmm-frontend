@@ -1,7 +1,8 @@
-import {CourseResponse, getCourses, getEnrolledCourses} from '@/_actions/courses-action';
+import {CategoryResponse, CourseResponse, getCourses, getEnrolledCourses} from '@/_actions/courses-action';
 
 import ClientPage from './client-page';
 import {getPublicUrl} from "@/_actions/utils/utils";
+import {getCategories} from "@/_actions/category-action";
 
 export const dynamic = 'force-dynamic';
 
@@ -19,6 +20,8 @@ const CoursesPage = async ({
         courses = await getEnrolledCourses();
     }
 
+    const categories: CategoryResponse[] = await getCategories()
+
     return (
         <div className='w-full h-full'>
             <ClientPage
@@ -27,6 +30,7 @@ const CoursesPage = async ({
                         course.image = getPublicUrl(course.image);
                         return course
                     })}
+                categories={categories}
                 isAllCourse={isAllCourse}
             />
         </div>

@@ -3,12 +3,14 @@
 import {Checkbox} from '@/components/ui/checkbox';
 import {Dialog, DialogContent, DialogTitle, DialogTrigger,} from '@/components/ui/dialog';
 import {Filter} from 'lucide-react';
-import {useState} from 'react';
+import {Dispatch, SetStateAction} from "react";
 
-export default function CourseDialog() {
-    const [checkedList, setCheckedList] = useState<
-        { id: number; checked: boolean }[]
-    >(Array.from({length: 9}, (_, i) => ({id: i, checked: false})));
+interface CourseDialogProps {
+    checkedList: { id: number; title: string, checked: boolean }[];
+    setCheckedList: Dispatch<SetStateAction<{ id: number; title: string, checked: boolean }[]>>;
+}
+
+export default function CourseDialog({checkedList, setCheckedList}: CourseDialogProps) {
     return (
         <Dialog>
             <DialogTrigger
@@ -19,56 +21,36 @@ export default function CourseDialog() {
             <DialogContent className=''>
                 <DialogTitle className=''>Filter</DialogTitle>
                 <div className='grid grid-cols-3 grid-rows-3 gap-4'>
-                    <div
-                        key={'courses-dialog-sem-'}
-                        className='flex items-center space-x-2'
-                    >
-                        <Checkbox
-                            id={'terms'}
-                            checked={checkedList.find((v) => v.id === 0)?.checked}
-                            onCheckedChange={(c) => {
-                                if (c) {
-                                    setCheckedList((prev) =>
-                                        prev.map((item) => ({...item, checked: true}))
-                                    );
-                                } else {
-                                    setCheckedList((prev) =>
-                                        prev.map((item) => ({...item, checked: false}))
-                                    );
-                                }
-
-                            }}
-                        />
-                        <label
-                            htmlFor={'terms'}
-                            className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
-                        >
-                            All Semester
-                        </label>
-                    </div>
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                    {checkedList.map((checked) => (
                         <div
-                            key={'courses-dialog-sem-' + i}
+                            key={'courses-dialog-sem-' + checked.id}
                             className='flex items-center space-x-2'
                         >
-                            <Checkbox id={'terms' + i} checked={checkedList.find(v => v.id === i)?.checked}
+                            <Checkbox id={'terms' + checked.id}
+                                      checked={checkedList.find(v => v.id === checked.id)?.checked}
                                       onCheckedChange={(c) => {
                                           if (c) {
                                               setCheckedList((prev) =>
-                                                  prev.map((item) => item.id === i ? {...item, checked: true} : item)
+                                                  prev.map((item) => item.id === checked.id ? {
+                                                      ...item,
+                                                      checked: true
+                                                  } : item)
                                               );
                                           } else {
                                               setCheckedList((prev) =>
-                                                  prev.map((item) => item.id === i ? {...item, checked: false} : item)
+                                                  prev.map((item) => item.id === checked.id ? {
+                                                      ...item,
+                                                      checked: false
+                                                  } : item)
                                               );
                                           }
 
                                       }}/>
                             <label
-                                htmlFor={'terms' + i}
+                                htmlFor={'terms' + checked.id}
                                 className='text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70'
                             >
-                                {`Semester ${i}`}
+                                {`${checked.title}`}
                             </label>
                         </div>
                     ))}

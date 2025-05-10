@@ -5,15 +5,25 @@ import CoursesItem from '@/app/(with-aside)/courses/item';
 import Link from 'next/link';
 import CourseDialog from './dialog';
 import {useState} from 'react';
-import {CourseResponse} from "@/_actions/courses-action";
+import {CategoryResponse, CourseResponse} from "@/_actions/courses-action";
 
 interface ClientPageProps {
     courses: CourseResponse[];
+    categories: CategoryResponse[];
     isAllCourse: boolean;
 }
 
-const ClientPage = ({courses, isAllCourse}: ClientPageProps) => {
+type CheckedListElement = { id: number, title: string, checked: boolean }
+
+function filterCheckedList(checkedList: CheckedListElement[]): CheckedListElement[] {
+    return checkedList.filter((item) => item.checked)
+}
+
+const ClientPage = ({courses, categories, isAllCourse}: ClientPageProps) => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [checkedList, setCheckedList] = useState<
+        { id: number; title: string; checked: boolean }[]
+    >(categories.map((category) => ({id: category.categoryId, title: category.title, checked: false})));
 
     const images = [
         '/assets/images/mesin.png',
@@ -22,9 +32,24 @@ const ClientPage = ({courses, isAllCourse}: ClientPageProps) => {
         '/assets/images/printer.png',
     ];
 
-    const filteredCourses = courses.filter((course) =>
+    console.log(checkedList)
+
+    let filteredCourses = courses.filter((course) =>
         course.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
+    console.log(filteredCourses)
+
+    filteredCourses = filteredCourses.filter((course) => {
+        return filterCheckedList(checkedList).every((checkedListElement) =>
+            course.categories.some(
+                (category) =>
+                    category.categoryId === checkedListElement.id &&
+                    category.title === checkedListElement.title
+            )
+        );
+    });
+
+    console.log(filterCheckedList(checkedList))
 
     return (
         <>
@@ -50,7 +75,7 @@ const ClientPage = ({courses, isAllCourse}: ClientPageProps) => {
                     >
                         All Courses
                     </Link>
-                    <CourseDialog/>
+                    <CourseDialog checkedList={checkedList} setCheckedList={setCheckedList}/>
                 </div>
             </div>
             {filteredCourses.length === 0 && (

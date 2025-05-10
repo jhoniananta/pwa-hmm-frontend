@@ -1,9 +1,8 @@
 'use server';
 
 import {fetchAction} from '@/lib/fetch';
-import {$CourseCategoryAPI} from 'lms-types';
 import {actionClient} from '@/lib/action-client';
-import {addCategorySchema, updateCategorySchema, deleteCategorySchema} from '@/lib/schema';
+import {addCategorySchema, deleteCategorySchema, updateCategorySchema} from '@/lib/schema';
 import {flattenValidationErrors} from 'next-safe-action';
 import {verifySession} from '@/lib/session';
 import {env} from '@/env';
@@ -16,8 +15,8 @@ export type CategoryResponse = {
     title: string
 }
 
-export const getCategories = fetchAction<$CourseCategoryAPI.GetCategories.Response['data']>(
-    $CourseCategoryAPI.GetCategories.generateUrl(),
+export const getCategories = fetchAction<CategoryResponse[]>(
+    "/categories",
     'Failed to fetch categories',
     {
         tags: ['categories'],
