@@ -2,6 +2,7 @@ import {Separator} from '@/components/ui/separator';
 import Link from 'next/link';
 import {DownloadIcon, FileIcon} from 'lucide-react';
 import {AttachmentResponse} from "@/_actions/attachments-action";
+import {getPublicUrl} from "@/_actions/utils/utils";
 
 export default function PdfList({
                                     attachments,
@@ -25,7 +26,7 @@ export default function PdfList({
                         <div className='flex justify-between items-center px-2 py-2.5'>
                             <Link
                                 key={file}
-                                href={`?q=${file}&expanded=${isExpanded}&lessonId=${lessonId}&format=pdf`}
+                                href={`?q=${getPublicUrl(file)}&expanded=${isExpanded}&lessonId=${lessonId}&format=pdf`}
                                 className='flex gap-4 items-center text-sm flex-grow'
                             >
                                 <div className='flex items-center gap-3'>
