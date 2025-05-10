@@ -16,6 +16,7 @@ export type ClassResponse = {
     updatedAt: Date;
 }
 
+
 export const getClasses = async (courseId: number) =>
     await fetchAction<ClassResponse[]>(
         `/courses/${courseId}/classes`,

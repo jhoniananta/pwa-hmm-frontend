@@ -12,7 +12,9 @@ type CoursesItemProps = {
     numberOfMaterials: number;
     numberOfVideos: number;
     className?: string;
-    isAllCourse: boolean
+    isAllCourse: boolean;
+    isWatch: boolean;
+    isEnroll: boolean;
 } & LinkProps;
 
 export default function CoursesItem({
@@ -24,13 +26,23 @@ export default function CoursesItem({
                                         numberOfVideos,
                                         className,
                                         href = '',
-                                        isAllCourse
+                                        isAllCourse,
+                                        isWatch,
+                                        isEnroll
                                     }: CoursesItemProps) {
     const COLORS = ['bg-kuning', 'bg-hijau', 'bg-oren', 'bg-blue-500'];
 
+    let query = '?'
+
+    if (isWatch) {
+        query += 'watch=true';
+    } else if (isEnroll) {
+        query += 'enroll=true';
+    }
+
     return (
         <Link
-            href={`/courses/${id}` + (isAllCourse ? '/?enrollment_page=true' : '')}
+            href={`/courses/${id}/${query}`}
             className={cn(
                 'rounded-xl shadow-md flex flex-col justify-end overflow-hidden cursor-pointer aspect-[4/5] md:aspect-[9/10] lg:aspect-square',
                 className

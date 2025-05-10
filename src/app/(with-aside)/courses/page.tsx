@@ -14,6 +14,8 @@ const CoursesPage = async ({
 }) => {
     let courses: CourseResponse[] = []
     const isAllCourse = searchParams['all'] === 'true';
+    const isWatch = searchParams['watch'] === 'true';
+    const isEnroll = searchParams['enroll'] === 'true';
     if (isAllCourse) {
         courses = await getCourses();
     } else {
@@ -30,6 +32,8 @@ const CoursesPage = async ({
                         course.image = getPublicUrl(course.image);
                         return course
                     })}
+                isWatch={isWatch}
+                isEnroll={isEnroll}
                 categories={categories}
                 isAllCourse={isAllCourse}
             />

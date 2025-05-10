@@ -11,6 +11,7 @@ import {env} from '@/env';
 import {verifySession} from '@/lib/session';
 import {cookieGenerator} from '@/lib/utils';
 import {revalidatePath, revalidateTag} from 'next/cache';
+import {EnrollmentResponse} from "@/_actions/enrollment-action";
 
 export type CourseResponse = {
     courseId: number;
@@ -55,6 +56,16 @@ export const getCourses = fetchAction<CourseResponse[]>(
         cache: 'no-cache',
     }
 );
+
+
+export const getUserEnrollments = (courseId: number) =>
+    fetchAction<EnrollmentResponse[]>(
+        `/courses/${courseId}/enrollments`,
+        'Failed to create enrollment',
+        {
+            method: 'GET',
+        }
+    )();
 
 
 export const getCourseById = async (courseId: number) =>
@@ -155,6 +166,7 @@ export const createCourse = actionClient
         )();
         return res
     });
+
 
 export const getMe = fetchAction<userAPI.GetMe.Response['data']>(
     userAPI.GetMe.generateUrl(),

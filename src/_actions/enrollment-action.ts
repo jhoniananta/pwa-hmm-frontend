@@ -1,11 +1,17 @@
 'use server';
 
+
 import {actionClient} from '@/lib/action-client';
 import {createEnrollmentSchema} from '@/lib/schema';
 import {flattenValidationErrors} from 'next-safe-action';
-import {verifySession} from '@/lib/session';
 import {fetchAction} from "@/lib/fetch";
-import {LessonResponse} from "@/_actions/lessons-action";
+
+export type  EnrollmentResponse = {
+    userId: number;
+    courseId: number;
+    classId: number;
+    createdAt: Date;
+}
 
 export const createEnrollment = actionClient
     .metadata({actionName: 'createEnrollment'})
@@ -13,9 +19,8 @@ export const createEnrollment = actionClient
         handleValidationErrorsShape: async (ve) => flattenValidationErrors(ve).fieldErrors,
     })
     .action(async ({parsedInput}) => {
-        const {refresh_token, access_token} = await verifySession();
         const {courseId, classId} = parsedInput
-        const res = await fetchAction<LessonResponse>(
+        const res = await fetchAction<EnrollmentResponse>(
             `/courses/${courseId}/classes/${classId}/enrollments`,
             'Failed to create enrollment',
             {
@@ -25,3 +30,23 @@ export const createEnrollment = actionClient
         )();
         return res;
     });
+
+export const deleteEnrollment = actionClient
+    .metadata({actionName: 'deleteEnrollment'})
+    .schema(createEnrollmentSchema, {
+        handleValidationErrorsShape: async (ve) => flattenValidationErrors(ve).fieldErrors,
+    })
+    .action(async ({parsedInput}) => {
+        const {courseId, classId} = parsedInput
+        const res = await fetchAction<EnrollmentResponse>(
+            `/courses/${courseId}/classes/${classId}/enrollments`,
+            'Failed to delete enrollment',
+            {
+                method: 'DELETE',
+                setContentType: false
+            }
+        )();
+        return res;
+    });
+
+

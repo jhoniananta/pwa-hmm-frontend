@@ -450,6 +450,7 @@ export const deleteScholarshipSchema = z.object({
 export const createEnrollmentSchema = z.object({
     courseId: z.number().min(1, {message: 'Course ID is required'}),
     classId: z.number(),
+    classes: z.array(z.number()).optional(),
 });
 
 export const createScheduleSchema = z.object({

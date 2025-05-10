@@ -11,6 +11,8 @@ interface ClientPageProps {
     courses: CourseResponse[];
     categories: CategoryResponse[];
     isAllCourse: boolean;
+    isWatch: boolean;
+    isEnroll: boolean;
 }
 
 type CheckedListElement = { id: number, title: string, checked: boolean }
@@ -19,7 +21,7 @@ function filterCheckedList(checkedList: CheckedListElement[]): CheckedListElemen
     return checkedList.filter((item) => item.checked)
 }
 
-const ClientPage = ({courses, categories, isAllCourse}: ClientPageProps) => {
+const ClientPage = ({courses, categories, isAllCourse, isWatch, isEnroll}: ClientPageProps) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [checkedList, setCheckedList] = useState<
         { id: number; title: string; checked: boolean }[]
@@ -63,12 +65,20 @@ const ClientPage = ({courses, categories, isAllCourse}: ClientPageProps) => {
                         My Courses
                     </Link>
                     <Link
-                        href={'?all=true'}
+                        href={'?all=true&watch=true'}
                         className={`rounded-full flex items-center md:py-2 md:px-4 py-1.5 px-3 hover:bg-kuning transition drop-shadow-lg font-semibold hover:text-navy md:text-sm text-xs ${
-                            isAllCourse ? 'bg-kuning text-navy' : 'bg-navy text-white'
+                            isWatch ? 'bg-kuning text-navy' : 'bg-navy text-white'
                         }`}
                     >
-                        All Courses
+                        Watch
+                    </Link>
+                    <Link
+                        href={'?all=true&enroll=true'}
+                        className={`rounded-full flex items-center md:py-2 md:px-4 py-1.5 px-3 hover:bg-kuning transition drop-shadow-lg font-semibold hover:text-navy md:text-sm text-xs ${
+                            isEnroll ? 'bg-kuning text-navy' : 'bg-navy text-white'
+                        }`}
+                    >
+                        Enroll
                     </Link>
                     <CourseDialog checkedList={checkedList} setCheckedList={setCheckedList}/>
                 </div>
@@ -91,6 +101,8 @@ const ClientPage = ({courses, categories, isAllCourse}: ClientPageProps) => {
                         numberOfMaterials={course.numberOfLessons}
                         numberOfVideos={course.numberOfVideos}
                         isAllCourse={isAllCourse}
+                        isWatch={isWatch}
+                        isEnroll={isEnroll}
                     />
                 ))}
             </div>

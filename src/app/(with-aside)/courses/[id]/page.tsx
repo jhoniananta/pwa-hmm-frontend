@@ -1,11 +1,11 @@
 import {Skeleton} from '@/components/ui/skeleton';
 import YoutubeEmbed from '@/components/client/youtubeEmbed';
-import {Suspense} from 'react';
+import React, {Suspense} from 'react';
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from '@/components/ui/accordion';
 import VideoList from '@/app/(with-aside)/courses/[id]/videoList';
 import {ScrollArea} from '@/components/ui/scroll-area';
 import Lesson from './lesson';
-import {getCourseById, getVideoData} from '@/_actions/courses-action';
+import {getCourseById, getUserEnrollments, getVideoData} from '@/_actions/courses-action';
 import FormatSelector from './formatSelector';
 import PdfList from './pdfList';
 import LinkList from './linkList';
@@ -16,8 +16,9 @@ import {getLessons, LessonResponse} from "@/_actions/lessons-action";
 import {getVideos, VideoResponse} from "@/_actions/videos-action";
 import {AttachmentResponse, getAttachments} from "@/_actions/attachments-action";
 import EnrollmentModal from "@/app/(with-aside)/courses/[id]/enrollment-modal";
-import {getClasses} from "@/_actions/class-action";
 import {getPublicUrl} from "@/_actions/utils/utils";
+import {EnrollmentResponse} from "@/_actions/enrollment-action";
+import {ClassResponse, getClasses} from "@/_actions/class-action";
 
 
 export default async function CoursesPage({
@@ -30,8 +31,13 @@ export default async function CoursesPage({
     const course = await getCourseById(Number(id));
     const isEnrolled = true;
 
-    const isEnrollmentPage: boolean = searchParams && searchParams['enrollment_page'] === 'true'
-    if (isEnrollmentPage) {
+    const isEnroll: boolean = searchParams && searchParams['enroll'] === 'true'
+    if (isEnroll) {
+        const enrollments: EnrollmentResponse[] = await getUserEnrollments(Number(id))
+        const classes: ClassResponse[] = await getClasses(Number(id))
+
+        console.log(enrollments)
+
         return (<div className="w-full">
                 <ScrollArea
                     className='w-full bg-white shadow-md rounded-xl md:relative border-t-0 md:h-[calc(100vh-4rem)]'>
@@ -55,7 +61,13 @@ export default async function CoursesPage({
                             <h2 className="text-2xl font-semibold">{course.title}</h2>
                             <p className="text-gray-600">{course.description}</p>
                             <EnrollmentModal courseId={Number(id)} courseTitle={course.title}
-                                             classes={await getClasses(Number(id))}/>
+                                             classes={classes}
+                                             enrollments={enrollments}
+                                             defaultValues={{
+                                                 courseId: Number(id),
+                                                 classes: enrollments.map((enrollment) => enrollment.classId),
+                                                 classId: -1
+                                             }}/>
                         </div>
                     </div>
                 </ScrollArea>
