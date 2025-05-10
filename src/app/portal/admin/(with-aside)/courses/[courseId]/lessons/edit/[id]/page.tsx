@@ -20,25 +20,29 @@ export default async function EditLesson({
         <>
             <AdminHeader title='Edit Lesson'/>
             <AdminBreadcrumb/>
-            <Wrapper>
-                <EditLessonForm lesson={lesson} courseId={params.courseId}/>
-            </Wrapper>
-            <Wrapper>
-                <h2 className='text-lg font-semibold mb-4'>Manage Class</h2>
-                <ManageTable>
-                    {["videos", "attachments"].map((item, i) => (
-                        <TableRow key={item + "-edit-course-admin-page"} className='even:bg-abu-1 odd:bg-white'>
-                            <TableCell className='capitalize font-semibold '>{item}</TableCell>
-                            <TableCell className='flex justify-end'>
-                                <Link href={`/portal/admin/courses/${params.courseId}/lessons/${params.id}/${item}`}
-                                      className='text-blue-500 flex gap-2 items-center'>
-                                    <Pencil className='w-4 h-4'/>
-                                    Manage</Link>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </ManageTable>
-            </Wrapper>
+            <div className={'flex-2'}>
+                <Wrapper>
+                    <EditLessonForm lesson={lesson} courseId={params.courseId}/>
+                </Wrapper>
+            </div>
+            <div className={'flex-2'}>
+                <Wrapper>
+                    <h2 className='text-lg font-semibold mb-4'>Manage Lesson</h2>
+                    <ManageTable>
+                        {["videos", "attachments"].map((item, i) => (
+                            <TableRow key={item + "-edit-course-admin-page"} className='even:bg-abu-1 odd:bg-white'>
+                                <TableCell className='capitalize font-semibold '>{item}</TableCell>
+                                <TableCell className='flex justify-end'>
+                                    <Link href={`/portal/admin/courses/${params.courseId}/lessons/${params.id}/${item}`}
+                                          className='text-blue-500 flex gap-2 items-center'>
+                                        <Pencil className='w-4 h-4'/>
+                                        Manage</Link>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </ManageTable>
+                </Wrapper>
+            </div>
         </>
     );
 } 
