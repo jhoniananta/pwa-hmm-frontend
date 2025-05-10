@@ -2,7 +2,7 @@
 
 import {cache} from 'react';
 import {fetchAction} from '@/lib/fetch';
-import {$CourseAPI as courseAPI, $UserAPI as userAPI, CourseModel,} from 'lms-types';
+import {$CourseAPI as courseAPI, $UserAPI as userAPI,} from 'lms-types';
 import {actionClient} from '@/lib/action-client';
 import {addCategoryCourseSchema, addCourseSchema, deleteCourseSchema, updateCourseSchema,} from '@/lib/schema';
 import {flattenValidationErrors} from 'next-safe-action';
@@ -12,35 +12,11 @@ import {verifySession} from '@/lib/session';
 import {cookieGenerator} from '@/lib/utils';
 import {revalidatePath, revalidateTag} from 'next/cache';
 
-export type CategoryResponse = {
-    categoryId: number;
-    title: string;
-};
-
-export const getEnrolledCourses = fetchAction<CourseModel[]>(
-    '/users/enrolled-courses',
-    'Failed to fetch courses',
-    {cache: 'no-cache'}
-);
-
-export const getCourses = fetchAction<courseAPI.GetCourses.Response['data']>(
-    courseAPI.GetCourses.generateUrl(),
-    'Failed to fetch courses',
-    {
-        queryParams: {
-            limit: 999,
-        },
-        tags: ['courses'],
-        name: 'getCourses',
-        cache: 'no-cache',
-    }
-);
-export type CoursesResponse = {
+export type CourseResponse = {
     courseId: number;
     code: string;
     image: string;
     title: string;
-    status: 'PUBLISHED' | 'DRAFT';
     description?: string;
     numberOfStudents: number;
     numberOfInstructors: number;
@@ -53,11 +29,36 @@ export type CoursesResponse = {
     categories: { categoryId: number, title: string }[];
     createdAt: Date;
     updatedAt: Date;
-    lessonPositionVersion: number;
+    lessonPositionVersion: number
 }
 
+export type CategoryResponse = {
+    categoryId: number;
+    title: string;
+};
+
+export const getEnrolledCourses = fetchAction<CourseResponse[]>(
+    '/users/enrolled-courses',
+    'Failed to fetch courses',
+    {cache: 'no-cache'}
+);
+
+export const getCourses = fetchAction<CourseResponse[]>(
+    courseAPI.GetCourses.generateUrl(),
+    'Failed to fetch courses',
+    {
+        queryParams: {
+            limit: 999,
+        },
+        tags: ['courses'],
+        name: 'getCourses',
+        cache: 'no-cache',
+    }
+);
+
+
 export const getCourseById = async (courseId: number) =>
-    await fetchAction<CoursesResponse>(
+    await fetchAction<CourseResponse>(
         `/courses/${courseId}`,
         'Failed to fetch course',
         {

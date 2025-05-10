@@ -5,20 +5,15 @@ import CoursesItem from '@/app/(with-aside)/courses/item';
 import Link from 'next/link';
 import CourseDialog from './dialog';
 import {useState} from 'react';
-import type {$CourseAPI as courseAPI, CourseModel} from 'lms-types';
-import getVerboseStatus from "@/lib/getVerboseStatus";
-
-type Course = courseAPI.GetCourses.Response['data'][number] | CourseModel[][number];
+import {CourseResponse} from "@/_actions/courses-action";
 
 interface ClientPageProps {
-    courses: Course[];
+    courses: CourseResponse[];
     isAllCourse: boolean;
 }
 
 const ClientPage = ({courses, isAllCourse}: ClientPageProps) => {
     const [searchQuery, setSearchQuery] = useState('');
-
-    const isVerbose = getVerboseStatus();
 
     const images = [
         '/assets/images/mesin.png',
@@ -27,10 +22,9 @@ const ClientPage = ({courses, isAllCourse}: ClientPageProps) => {
         '/assets/images/printer.png',
     ];
 
-    // const filteredCourses = courses.filter((course) =>
-    //     course.title.toLowerCase().includes(searchQuery.toLowerCase())
-    // );
-    const filteredCourses = courses;
+    const filteredCourses = courses.filter((course) =>
+        course.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <>

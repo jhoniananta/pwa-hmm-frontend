@@ -1,29 +1,34 @@
-import {getCourses, getEnrolledCourses as courses_action,} from '@/_actions/courses-action';
+import {CourseResponse, getCourses, getEnrolledCourses} from '@/_actions/courses-action';
 
 import ClientPage from './client-page';
-import getVerboseStatus from "@/lib/getVerboseStatus";
-import {CourseModel} from "lms-types";
+import {getPublicUrl} from "@/_actions/utils/utils";
 
 export const dynamic = 'force-dynamic';
+
 
 const CoursesPage = async ({
                                searchParams,
                            }: {
     searchParams: Record<string, string>;
 }) => {
-    const isVerbose = getVerboseStatus()
-
-    let courses: CourseModel[] = []
+    let courses: CourseResponse[] = []
     const isAllCourse = searchParams['all'] === 'true';
     if (isAllCourse) {
         courses = await getCourses();
     } else {
-        courses = await courses_action();
+        courses = await getEnrolledCourses();
     }
 
     return (
         <div className='w-full h-full'>
-            <ClientPage courses={courses} isAllCourse={isAllCourse}/>
+            <ClientPage
+                courses={
+                    courses.map((course) => {
+                        course.image = getPublicUrl(course.image);
+                        return course
+                    })}
+                isAllCourse={isAllCourse}
+            />
         </div>
     );
 };

@@ -11,7 +11,7 @@ import {Button} from "@/components/ui/button";
 import {checkPermissionStateAndAct, notificationUnsupported, registerAndSubscribe, sendWebPush} from "@/app/Push";
 
 export const dynamic = 'force-dynamic';
-
+ 
 export default function Home() {
     const [unsupported, setUnsupported] = useState<boolean>(false);
     const [subscription, setSubscription] = useState<PushSubscription | null>(null);
@@ -45,7 +45,7 @@ export default function Home() {
             ],
         },
         {
-            '2024-07-25': [
+            '2025-05-25': [
                 {title: 'Homework 4 - MS2101 Analisis Numerik'},
                 {title: 'Hearing Machining'},
             ],
@@ -92,7 +92,3 @@ export default function Home() {
         </div>
     );
 }
-//
-// export const metadata = {
-//     title: 'Dashboard',
-// };
