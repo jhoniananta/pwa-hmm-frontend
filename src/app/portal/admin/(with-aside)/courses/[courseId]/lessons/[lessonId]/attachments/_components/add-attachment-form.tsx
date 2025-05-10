@@ -6,8 +6,8 @@ import {toast} from 'sonner';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
 import {Textarea} from '@/components/ui/textarea';
+import React from 'react';
 import {cn} from '@/lib/utils';
-import React, {useState} from 'react';
 import validationErrorToString from '@/lib/validationErrorToString';
 import {createAttachment} from '@/_actions/attachments-action';
 import {FormControl, FormField, FormItem, FormLabel, FormMessage,} from '@/components/ui/form';
@@ -27,30 +27,34 @@ export default function AddAttachmentForm({
                                               lessonId,
                                           }: AddAttachmentFormProps) {
     const router = useRouter();
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
 
     const methods = useForm<z.infer<typeof addAttachmentSchema>>({
         defaultValues: {
             name: '',
             description: '',
-            file: undefined,
+            file: '',
+            pdfFile: undefined,
             courseId: Number(courseId),
             lessonId: Number(lessonId),
         },
-        mode: 'onChange',
         resolver: zodResolver(addAttachmentSchema),
     });
 
-    const {control, handleSubmit} = methods;
+    const {
+        control,
+        handleSubmit,
+        formState: {errors},
+        reset,
+    } = methods;
 
     const {execute: executeCreate, status} = useAction(createAttachment, {
-        onSuccess: (response: any) => {
+        onSuccess: (response) => {
             if (response?.data?.error) {
-                toast.error(response?.data?.error);
+                toast.error(response.data.error);
                 return;
             }
             toast.success('Attachment created successfully');
+            reset(); // Reset the form after success
             router.push(
                 `/portal/admin/courses/${courseId}/lessons/${lessonId}/attachments`
             );
@@ -66,57 +70,71 @@ export default function AddAttachmentForm({
     });
 
     const onSubmit = (data: z.infer<typeof addAttachmentSchema>) => {
+        const formData = new FormData();
+        if (data.pdfFile instanceof File) {
+            formData.append('pdfFile', data.pdfFile);
+        } else {
+            toast.error('Please upload a valid PDF file.');
+            return;
+        }
+
+        const fileUrl = `courses/${courseId}/lessons/${lessonId}/attachments/${Date.now()}-${data.pdfFile.name}`;
         executeCreate({
             courseId: Number(courseId),
             lessonId: Number(lessonId),
             name: data.name,
             description: data.description,
-            file: data.file,
-        });
+            file: fileUrl,
+            pdfFile: formData,
+        })
     };
 
     return (
         <FormProvider {...methods}>
-            <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
-                <div className='space-y-2'>
-                    <label htmlFor='title' className='text-sm font-medium'>
-                        Title
-                    </label>
-                    <Input
-                        id='name'
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder='Enter attachment name'
-                    />
-                </div>
-
-                <div className='space-y-2'>
-                    <label htmlFor='description' className='text-sm font-medium'>
-                        Description
-                    </label>
-                    <Textarea
-                        id='description'
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        placeholder='Enter attachment description'
-                        rows={5}
-                    />
-                </div>
-
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                {/* Title */}
                 <FormField
                     control={control}
-                    name={'file'}
-                    render={() => (
+                    name="name"
+                    render={({field}) => (
                         <FormItem>
-                            <FormLabel>
-                                {'PDF File'}
-                                {true && <span className='text-red-500'>*</span>}
-                            </FormLabel>
+                            <FormLabel>Title</FormLabel>
+                            <FormControl>
+                                <Input {...field} placeholder="Enter attachment name"/>
+                            </FormControl>
+                            <FormMessage/>
+                        </FormItem>
+                    )}
+                />
+
+                {/* Description */}
+                <FormField
+                    control={control}
+                    name="description"
+                    render={({field}) => (
+                        <FormItem>
+                            <FormLabel>Description</FormLabel>
+                            <FormControl>
+                                <Textarea {...field} placeholder="Enter attachment description" rows={5}/>
+                            </FormControl>
+                            <FormMessage/>
+                        </FormItem>
+                    )}
+                />
+
+                {/* PDF File Upload */}
+                <FormField
+                    control={control}
+                    name="pdfFile"
+                    render={({field}) => (
+                        <FormItem>
+                            <FormLabel>PDF File *</FormLabel>
                             <FormControl>
                                 <UploadFile
-                                    sessionIdName={'file'}
+                                    sessionIdName="pdfFile"
                                     accept={{'application/pdf': ['.pdf']}}
                                     maxSizeInBytes={5_000_000}
+                                    onChange={(file: File) => field.onChange(file)}
                                 />
                             </FormControl>
                             <FormMessage/>
@@ -124,13 +142,11 @@ export default function AddAttachmentForm({
                     )}
                 />
 
+                {/* Submit Button */}
                 <Button
-                    type='submit'
+                    type="submit"
                     disabled={status === 'executing'}
-                    className={cn(
-                        'bg-navy hover:bg-navy/80',
-                        status === 'executing' && 'opacity-50 cursor-not-allowed'
-                    )}
+                    className={cn('bg-navy hover:bg-navy/80', status === 'executing' && 'opacity-50 cursor-not-allowed')}
                 >
                     Create
                 </Button>

@@ -5,6 +5,10 @@ import {actionClient} from '@/lib/action-client';
 import {flattenValidationErrors} from 'next-safe-action';
 import {z} from 'zod';
 import {addAttachmentSchema} from "@/_actions/schema/attachment-schema";
+import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
+import {env} from "@/env";
+import {getSignedUrl} from "@aws-sdk/s3-request-presigner";
+import axios from "axios";
 
 export type  AttachmentResponse = {
     attachmentId: number;
@@ -43,7 +47,42 @@ export const createAttachment = actionClient
             flattenValidationErrors(ve),
     })
     .action(async ({parsedInput}) => {
-        const {courseId, lessonId, ...rest} = parsedInput;
+        const {courseId, lessonId, pdfFile, ...rest} = parsedInput;
+
+        const attachmentPdf = pdfFile.get('pdfFile') as File;
+        if (!attachmentPdf) {
+            throw new Error('No file provided');
+        }
+
+
+        const key = parsedInput.file;
+        const s3Client = new S3Client({
+            region: "auto",
+            endpoint: `https://${env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+            credentials: {
+                accessKeyId: env.R2_ACCESS_KEY_ID,
+                secretAccessKey: env.R2_SECRET_ACCESS_KEY,
+            }
+        });
+        const command = new PutObjectCommand({
+            Bucket: env.PUBLIC_BUCKET_NAME,
+            Key: key,
+            ContentType: attachmentPdf.type,
+        });
+
+        const uploadUrl = await getSignedUrl(s3Client, command, {expiresIn: 10});
+
+        try {
+            await axios.put(uploadUrl, attachmentPdf, {
+                headers: {
+                    'Content-Type': attachmentPdf.type,
+                },
+            });
+        } catch (exception) {
+            console.log(exception)
+            return {error: "Failed to upload pdf file, please try again!"};
+        }
+
         const res = await fetchAction<AttachmentResponse>(
             `/courses/${courseId}/lessons/${lessonId}/attachments`,
             'Failed to create attachment',
@@ -53,6 +92,7 @@ export const createAttachment = actionClient
                 revalidateTag: `courses-${courseId}-lessons-${lessonId}-attachments`
             }
         )();
+
         return res;
     });
 
