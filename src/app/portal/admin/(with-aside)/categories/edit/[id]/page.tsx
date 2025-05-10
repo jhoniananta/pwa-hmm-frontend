@@ -57,19 +57,21 @@ export default function Page() {
         <>
             <AdminHeader title='Edit Category'/>
             <AdminBreadcrumb/>
-            <Wrapper>
-                <form onSubmit={onSubmit} className='space-y-4'>
-                    <div>
-                        <Label>Title</Label>
-                        <Input {...register('title')} />
-                        {errors.title && <span className="text-red-500 text-sm">{errors.title.message}</span>}
-                    </div>
+            <div className={'flex-2'}>
+                <Wrapper>
+                    <form onSubmit={onSubmit} className='space-y-4'>
+                        <div>
+                            <Label>Title</Label>
+                            <Input {...register('title')} />
+                            {errors.title && <span className="text-red-500 text-sm">{errors.title.message}</span>}
+                        </div>
 
-                    <Button type='submit' className='bg-navy' disabled={status === 'executing'}>
-                        {status === 'executing' ? 'Updating...' : 'Update Category'}
-                    </Button>
-                </form>
-            </Wrapper>
+                        <Button type='submit' className='bg-navy' disabled={status === 'executing'}>
+                            {status === 'executing' ? 'Updating...' : 'Update Category'}
+                        </Button>
+                    </form>
+                </Wrapper>
+            </div>
         </>
     );
 } 
