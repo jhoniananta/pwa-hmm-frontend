@@ -1,6 +1,5 @@
 import {Skeleton} from '@/components/ui/skeleton';
 import YoutubeEmbed from '@/components/client/youtubeEmbed';
-import Link from 'next/link';
 import {Suspense} from 'react';
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger,} from '@/components/ui/accordion';
 import VideoList from '@/app/(with-aside)/courses/[id]/videoList';
@@ -13,9 +12,10 @@ import LinkList from './linkList';
 import PdfViewer from '@/components/client/PdfViewer';
 import LinkViewer from '@/components/client/LinkViewer';
 import Image from 'next/image';
-import {getLessons} from "@/_actions/lessons-action";
-import {getVideos} from "@/_actions/videos-action";
-import {getAttachments} from "@/_actions/attachments-action";
+import {getLessons, LessonResponse} from "@/_actions/lessons-action";
+import {getVideos, VideoResponse} from "@/_actions/videos-action";
+import {AttachmentResponse, getAttachments} from "@/_actions/attachments-action";
+
 
 export default async function CoursesPage({
                                               searchParams,
@@ -25,9 +25,7 @@ export default async function CoursesPage({
     params: { id: string };
 }) {
     const course = await getCourseById(Number(id));
-
     const isEnrolled = true;
-
 
     // return (
     //     <div className="w-full">
@@ -59,27 +57,35 @@ export default async function CoursesPage({
     //     </div>
     // );
 
-
     const isExpanded = searchParams['expanded'] === 'true';
     const format = searchParams['format'] || 'video';
 
-    const lessons = await getLessons(id);
-    if (lessons.length === 0) return;
+    let lessons: LessonResponse[] = await getLessons(id);
+    let attachments: AttachmentResponse[] = []
+    let videos: VideoResponse[] = []
 
+    if (lessons.length === 0) return;
     const lessonId = searchParams['lessonId'] ?? String(lessons[0].lessonId);
-    const videos = lessonId ? await getVideos(id, lessonId) : [];
-    if (videos.length === 0) {
-        return (<div className='flex gap-6'>
-            <FormatSelector format={format}/>
-            {lessonId && <Lesson
-                lessonId={lessonId}
-                params={`?expanded=${isExpanded}`}
-                lessons={lessons}
-            />}
-        </div>)
+
+    if (format === 'video') {
+        videos = await getVideos(id, lessonId);
+        if (videos.length === 0) {
+            return (<div className='flex gap-6'>
+                <FormatSelector format={format}/>
+                {lessonId && <Lesson
+                    lessonId={lessonId}
+                    params={`?expanded=${isExpanded}`}
+                    lessons={lessons}
+                />}
+            </div>)
+        }
     }
 
-    const materials = await Promise.all(
+    if (format === 'pdf') {
+        attachments = await getAttachments(id, lessonId)
+    }
+
+    const fetchedVideos = await Promise.all(
         videos.map(async ({videoId, youtubeLink, title}) => {
             try {
                 const {thumbnail_url, author_name} = await getVideoData(youtubeLink);
@@ -103,51 +109,29 @@ export default async function CoursesPage({
         })
     );
 
-    const query = searchParams['q'] || materials[0].youtubeLink;
-    const title = materials.find(({youtubeLink}) => youtubeLink === query)?.title;
-    const author = materials.find(
-        ({youtubeLink}) => youtubeLink === query
-    )?.author_name;
+    const defaultPdf = "DEFAULT_PDF"
+    const query = searchParams['q'] || fetchedVideos[0]?.youtubeLink || defaultPdf;
+    let title!: string;
+    let author!: string;
+    if (format === 'video') {
+        title = fetchedVideos.find(({youtubeLink}) => youtubeLink === query)?.title ?? "";
+        author = fetchedVideos.find(
+            ({youtubeLink}) => youtubeLink === query
+        )?.author_name ?? "";
+    }
+
     const params = `?expanded=${isExpanded}`;
 
     const Description = () => (
-        <div className='bg-slate-200 rounded-md p-1.5 h-full flex flex-col gap-3'>
-            <div className=''>
-                <h4 className='text-sm md:text-base'>Ebook Link:</h4>
-                <Link
-                    href='https://www.google.com'
-                    target='_blank'
-                    className='text-xs md:text-sm text-blue-500 underline hover:text-blue-700'
-                >
-                    {"Click here to download the ebook"}
-                </Link>
-            </div>
-            <div className='text-justify'>
-                <h4 className='text-sm md:text-base'>Summary:</h4>
+        format === 'video' && (<div className='bg-slate-200 rounded-md p-1.5 h-full flex flex-col gap-3'>
+            {format === 'video' && <div className='text-justify'>
+                <h4 className='text-sm md:text-base'>Description:</h4>
                 <p className='text-xs md:text-sm'>
-                    {videos.find(({youtubeLink}) => youtubeLink === query)?.description}
+                    {videos.find(({youtubeLink}) => youtubeLink === query)?.description ?? "-"}
                 </p>
-            </div>
-        </div>
+            </div>}
+        </div>)
     );
-
-    const attachments = await getAttachments(id, lessonId)
-
-    const pdfMaterials = [
-        {
-            title: "JavaScript Basics Guide",
-            url: "https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf"
-        },
-        {
-            title: "Web Development Fundamentals",
-            url: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
-        },
-        {
-            title: "React Documentation",
-            url: "https://raw.githubusercontent.com/mozilla/pdf.js/ba2edeae/examples/learning/helloworld.pdf"
-        }
-    ];
-
 
     const linkMaterials = [
         {
@@ -185,9 +169,10 @@ export default async function CoursesPage({
                                     className='rounded-t-xl rounded-b-sm md:rounded-xl'
                                 />
                             ) : format === 'pdf' ? (
-                                <div className="w-full aspect-video rounded-xl bg-gray-50">
-                                    <PdfViewer url={query}/>
-                                </div>
+                                query === defaultPdf ? '' :
+                                    (<div className="w-full aspect-video rounded-xl bg-gray-50">
+                                        <PdfViewer url={query}/>
+                                    </div>)
                             ) : format === 'link' ? (
                                 <div className="w-full aspect-video rounded-xl bg-gray-50">
                                     <LinkViewer url={query}/>
@@ -226,7 +211,8 @@ export default async function CoursesPage({
                             </Accordion>
                             {format === 'video' && lessonId && (
                                 <VideoList
-                                    materials={materials}
+                                    key={lessonId}
+                                    videos={fetchedVideos}
                                     isExpanded={isExpanded}
                                     query={query}
                                     lessonId={lessonId}
@@ -282,7 +268,8 @@ export default async function CoursesPage({
                     <p className='pb-4 sticky top-0 z-[2] bg-background'>All Videos</p>
                     {format === 'video' && (
                         <VideoList
-                            materials={materials}
+                            key={lessonId}
+                            videos={fetchedVideos}
                             isExpanded={true}
                             query={query}
                             lessonId={lessonId}

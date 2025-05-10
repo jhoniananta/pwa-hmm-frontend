@@ -20,14 +20,15 @@ export type LessonResponse = {
 };
 
 
-export const getLessons = async (courseId: string) =>
+export const getLessons = async (courseId: string, pagination?: { limit?: number }) =>
     await fetchAction<LessonResponse[]>(
         `/courses/${courseId}/lessons`,
         'Failed to fetch lessons',
         {
             tags: ['lessons', `course-${courseId}-lessons`],
             name: 'getLessons',
-            cache: 'no-cache'
+            cache: 'no-cache',
+            queryParams: pagination ?? {}
         }
     )();
 

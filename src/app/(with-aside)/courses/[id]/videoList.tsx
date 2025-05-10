@@ -3,12 +3,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export default function VideoList({
-                                      materials,
+                                      videos,
                                       isExpanded,
                                       query,
                                       lessonId,
                                   }: {
-    materials: { videoId: number; youtubeLink: string; title: string; thumbnail_url: string }[];
+    videos: { videoId: number; youtubeLink: string; title: string; thumbnail_url: string }[];
     isExpanded?: boolean;
     query: string;
     lessonId: string;
@@ -16,12 +16,12 @@ export default function VideoList({
     return (
         <div className='w-full'>
             <Separator/>
-            {materials.map(({videoId, youtubeLink, title, thumbnail_url}, index) => {
+            {videos.map(({videoId, youtubeLink, title, thumbnail_url}, index) => {
                 if (!isExpanded && index > 5) return null;
                 return (
                     <>
                         <Link
-                            key={videoId}
+                            key={videoId + Date.now()}
                             href={`?q=${youtubeLink}&expanded=${isExpanded}&lessonId=${lessonId}`}
                             className='px-2 py-2.5 flex gap-4 items-center text-sm'
                         >
@@ -38,7 +38,7 @@ export default function VideoList({
                     </>
                 );
             })}
-            {materials.length > 6 && (
+            {videos.length > 6 && (
                 <div className='relative bg-gray-400 h-px w-full rounded-full md:hidden'>
                     <Link
                         href={`?q=${query}&expanded=${
