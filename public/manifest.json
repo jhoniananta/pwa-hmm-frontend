@@ -24,6 +24,12 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icons/mobile.jpg",
+      "sizes": "853x1280",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
   "screenshots": [

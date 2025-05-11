@@ -53,7 +53,7 @@ export const metadata: Metadata = {
         absolute: 'HMM ITB',
     },
     description: 'Progressive Web Apps for HMM ITB',
-    manifest: '/manifest.json',
+    manifest: '/manifest.json?v=2',
     // themeColor: '#000080',
     // viewport: {
     //     width: 'device-width',
@@ -64,6 +64,7 @@ export const metadata: Metadata = {
         icon: [
             {url: '/assets/icons/icon-192x192.png', sizes: '192x192', type: 'image/png'},
             {url: '/assets/icons/icon-512x512.png', sizes: '512x512', type: 'image/png'},
+            {url: '/assets/icons/mobile.jpg', sizes: '853x1280', type: 'image/jpg'},
         ],
         apple: [{url: '/assets/icons/icon-192x192.png'}],
     },
