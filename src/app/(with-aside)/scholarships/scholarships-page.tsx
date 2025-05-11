@@ -8,12 +8,19 @@ import {ScholarshipResponse} from "@/_actions/scholarship-action";
 import CourseDialog from "@/app/(with-aside)/courses/dialog";
 import {useState} from "react";
 import {TagResponse} from "@/_actions/tag-action";
+import Search from "@/components/client/search";
 
+type CheckedListElement = { id: number, title: string, checked: boolean }
+
+function filterCheckedList(checkedList: CheckedListElement[]): CheckedListElement[] {
+    return checkedList.filter((item) => item.checked)
+}
 
 export const ScholarshipsPage = ({scholarships, tags}: {
     scholarships: ScholarshipResponse[],
     tags: TagResponse[]
 }) => {
+    const [searchQuery, setSearchQuery] = useState('');
     const [checkedList, setCheckedList] = useState<
         { id: number; title: string; checked: boolean }[]
     >(tags.map((tag) => ({
@@ -22,12 +29,36 @@ export const ScholarshipsPage = ({scholarships, tags}: {
         checked: false
     })));
 
+    let filteredScholarships = scholarships.filter((scholarship) =>
+        scholarship.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    filteredScholarships = filteredScholarships.filter((scholarship) => {
+        return filterCheckedList(checkedList).every((checkedListElement) =>
+            scholarship.tags.some(
+                (tag) =>
+                    tag.tagId === checkedListElement.id &&
+                    tag.title === checkedListElement.title
+            )
+        );
+    });
+
     return (
         <>
-            <CourseDialog checkedList={checkedList} setCheckedList={setCheckedList}/>
+            <div style={{display: 'flex', gap: '16px', alignItems: 'center'}}>
+                <Search
+                    query={searchQuery}
+                    setQuery={setSearchQuery}
+                />
+                <CourseDialog
+                    checkedList={checkedList}
+                    setCheckedList={setCheckedList}
+                />
+            </div>
+
             <ul className='w-full py-2 rounded-2xl shadow-md bg-white'>
                 <Separator/>
-                {scholarships.map((scholarship) => {
+                {filteredScholarships.map((scholarship) => {
                     return {...scholarship, funding: 'FULLY FUNDED', scope: 'Semester 1, 2, 3'}
                 }).map(({title, provider, deadline, scholarshipId, funding, scope}, i) => (
                     <>
