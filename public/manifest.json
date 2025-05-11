@@ -34,7 +34,7 @@
       "form_factor": "wide"
     },
     {
-      "src": "/assets/screenshots/mobile.png",
+      "src": "/assets/screenshots/mobile.jpg",
       "sizes": "720x1280",
       "type": "image/png",
       "form_factor": "narrow"
