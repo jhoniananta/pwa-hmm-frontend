@@ -64,7 +64,7 @@ export const metadata: Metadata = {
         icon: [
             {url: '/assets/icons/icon-192x192.png', sizes: '192x192', type: 'image/png'},
             {url: '/assets/icons/icon-512x512.png', sizes: '512x512', type: 'image/png'},
-            {url: '/assets/icons/mobile.jpg', sizes: '853x1280', type: 'image/jpg'},
+            {url: '/assets/icons/mobile.png', sizes: '853x1280', type: 'image/png'},
         ],
         apple: [{url: '/assets/icons/icon-192x192.png'}],
     },
