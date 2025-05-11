@@ -36,10 +36,10 @@ function ScholarshipTable({data}: { data: ScholarshipResponse[] }) {
                 <TableHeader>
                     <TableRow>
                         <TableHead>Title</TableHead>
+                        <TableHead>Description</TableHead>
                         <TableHead>Provider</TableHead>
+                        <TableHead>Reference</TableHead>
                         <TableHead>Deadline</TableHead>
-                        <TableHead>Funding</TableHead>
-                        <TableHead>Scope</TableHead>
                         <TableHead>
                             <span className='sr-only'>Actions</span>
                         </TableHead>
@@ -61,18 +61,26 @@ function ScholarshipTable({data}: { data: ScholarshipResponse[] }) {
                         )
                             return null;
 
+                        const description = scholarship.description ?? ''
+
                         return (
                             <TableRow
                                 key={scholarship.scholarshipId}
                                 className='even:bg-navy/5 odd:bg-transparent'
                             >
                                 <TableCell>{scholarship.title || ''}</TableCell>
+                                <TableCell
+                                    className='whitespace-nowrap text-nowrap'>{description.length > 100 ? description.slice(0, 100) + "..." : description}</TableCell>
                                 <TableCell>{scholarship.provider}</TableCell>
+                                <TableCell> <a href={scholarship.reference}
+                                               target="_blank"
+                                               rel="noopener noreferrer"
+                                               style={{color: 'blue', fontStyle: 'italic'}}>
+                                    Open
+                                </a></TableCell>
                                 <TableCell>
                                     {new Date(scholarship.deadline).toLocaleDateString()}
                                 </TableCell>
-                                <TableCell>{'FUNDING TYPE'}</TableCell>
-                                <TableCell>{'SCOPE'}</TableCell>
                                 <TableCell>
                                     <Popover>
                                         <PopoverTrigger>
