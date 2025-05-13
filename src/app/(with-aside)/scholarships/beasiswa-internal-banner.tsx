@@ -18,9 +18,9 @@ export default function BeasiswaInternalBanner() {
                 <div className="text-8xl leading-[70px] text-zinc-900 max-md:text-4xl max-md:leading-9">
                     {/*<div*/}
                     {/*    className="flex shrink-0 border-black border-solid border-[7px] max-sm:w-[60px] max-sm:h-[60px] h-[118px] rounded-[129px] w-[118px]"/>*/}
-                    <div className="mt-8 flex flex-col max-sm:gap-1 gap-4">
-                        <h1 className="text-black max-md:text-2xl text-[50px]">Beasiswa</h1>
-                        <h1 className="text-black max-md:text-2xl text-[50px]">HMM ITB</h1>
+                    <div className="mt-8 flex flex-col items-start">
+                        <h1 className="text-black text-[50px] lg:text-[96px] font-poltawski leading-tight">Beasiswa</h1>
+                        <h1 className="text-black text-[50px] lg:text-[96px] font-poltawski leading-tight">HMM ITB</h1>
                     </div>
                 </div>
                 <div
