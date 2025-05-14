@@ -28,15 +28,18 @@ export async function middleware(request: NextRequest) {
     const session = await decrypt(cookie);
     const role = session?.role;
 
+    const path = request.nextUrl.pathname.split('/')[1]
+
     if (
-        request.nextUrl.pathname.split('/')[1] !== 'sign-in' &&
+        (path !== 'sign-in' && path !== 'sign-up') &&
         !session?.userId
     ) {
         return NextResponse.redirect(new URL('/sign-in', request.url));
     }
 
+
     if (
-        request.nextUrl.pathname.split('/')[1] === 'portal' &&
+        path === 'portal' &&
         role !== UserRole.ADMIN
     ) {
         return NextResponse.redirect(new URL('/dashboard', request.url));

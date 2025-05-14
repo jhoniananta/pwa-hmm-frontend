@@ -47,14 +47,6 @@ function ScholarshipTable({data}: { data: ScholarshipResponse[] }) {
                 </TableHeader>
                 <TableBody>
                     {data.map((scholarship, index) => {
-                        let param = `?test=ok`
-                        for (const key in scholarship) {
-                            if (scholarship.hasOwnProperty(key)) {
-                                // @ts-ignore
-                                param += `&${key}=${scholarship[key] || ''}`;
-                            }
-                        }
-
                         if (
                             index < (page - 1) * itemsPerPage ||
                             index >= page * itemsPerPage
@@ -94,7 +86,7 @@ function ScholarshipTable({data}: { data: ScholarshipResponse[] }) {
                                                 <h3 className='font-bold text-sm p-2'>Action</h3>
                                                 <Link
                                                     href={
-                                                        `/portal/admin/scholarships/edit/${scholarship.scholarshipId}/${param}`
+                                                        `/portal/admin/scholarships/edit/${scholarship.scholarshipId}`
                                                     }
                                                     className='hover:bg-navy/40 p-2 rounded-md transition'
                                                 >

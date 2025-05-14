@@ -36,39 +36,22 @@ export const signUp = actionClient
         handleValidationErrorsShape: async (ve) =>
             flattenValidationErrors(ve).fieldErrors,
     })
-    .action(async ({parsedInput: {confirmPassword, dateOfBirth, email, ...input}}) => {
-        try {
-            const bodyInput: userAPI.CreateUser.Dto = {
-                dateOfBirth: new Date(dateOfBirth),
-                // NIM: email.split('@')[0],
-                email,
-                ...input,
-                avatar: '',
-                enrolledStudentUnits: []
-            }
-            const res = await fetch(env.API_URL + userAPI.CreateUser.generateUrl(), {
+    .action(async ({parsedInput: {avatar, medicalHistories, UKM, hobbies, confirmPassword, dateOfBirth, ...rest}}) => {
+        const res = await fetchAction<PublicUserResponse>(
+            `/users`,
+            'Failed to create user',
+            {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
+                bodyObject: {
+                    ...rest,
+                    dateOfBirth: new Date(dateOfBirth),
+                    medicalHistories: medicalHistories ?? [],
+                    hobbies: hobbies ?? [],
+                    enrolledStudentUnits: UKM ?? []
                 },
-                body: JSON.stringify(bodyInput),
-            });
-
-            if (!res.ok) {
-                throw new PWAError('Failed to sign up');
             }
-
-            return {
-                message: 'User created successfully',
-                status: 'success',
-            };
-        } catch (err) {
-            if (err instanceof Error) {
-                throw new PWAError(err.message);
-            }
-
-            throw new PWAError('Failed to sign up');
-        }
+        )();
+        return res;
     });
 
 export const signIn = actionClient

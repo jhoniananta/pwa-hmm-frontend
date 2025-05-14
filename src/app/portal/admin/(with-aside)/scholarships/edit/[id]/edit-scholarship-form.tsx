@@ -37,7 +37,6 @@ export default function EditScholarshipForm({
         setValue,
     } = useForm<z.infer<typeof updateScholarshipSchema>>({
         resolver: zodResolver(updateScholarshipSchema),
-        // Use the defaultValues passed from the server component
         defaultValues,
     });
 
@@ -145,10 +144,9 @@ export default function EditScholarshipForm({
                     <Label>Deadline</Label>
                     <Input
                         type='datetime-local'
-                        // Format the date for the input value
-                        defaultValue={defaultValues.deadline?.toISOString().slice(0, 16)}
+                        defaultValue={new Date().toISOString()}
                         {...register('deadline', {
-                            setValueAs: (value) => (value ? new Date(value) : undefined), // Handle empty value
+                            setValueAs: (value) => (value ? new Date(value).toISOString() : undefined), // Handle empty value
                         })}
                     />
                     {errors.deadline && (
@@ -218,31 +216,6 @@ export default function EditScholarshipForm({
                     </div>
                 </div>
 
-                {/* Funding Type (Example - uncomment and adjust if needed) */}
-                {/* <div>
-          <Label>Funding Type</Label>
-          <Select
-            onValueChange={(value) =>
-              setValue('funding', value as ScholarshipFundingModel)
-            }
-            defaultValue={defaultValues.funding}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder='Select funding type' />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem value='FULLY_FUNDED'>Fully Funded</SelectItem>
-                <SelectItem value='PARTIALLY_FUNDED'>Partially Funded</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          {errors.funding && (
-            <span className='text-red-500 text-sm'>{errors.funding.message}</span>
-          )}
-        </div> */}
-
-                {/* Description */}
                 <div>
                     <Label>Description</Label>
                     <Textarea {...register('description')} rows={5}/>

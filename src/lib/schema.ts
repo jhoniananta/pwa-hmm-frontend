@@ -431,7 +431,7 @@ export const updateScholarshipSchema = z.object({
         .optional(),
     description: z.string().optional(),
     provider: z.string().min(1, {message: 'Provider is required'}).optional(),
-    deadline: z.date().optional(),
+    deadline: z.string().datetime().optional(),
     reference: z.string().url({message: 'Must be a valid URL'}).optional(),
     funding: z
         .enum(['PARTIALLY_FUNDED', 'FULLY_FUNDED'] as const, {
