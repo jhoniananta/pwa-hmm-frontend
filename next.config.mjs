@@ -20,6 +20,11 @@ const config = withPWA({
         remotePatterns: [
             {
                 protocol: 'https',
+                hostname: 'via.placeholder.com',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
                 hostname: 'i.ytimg.com',
                 pathname: '/vi/**',
             },

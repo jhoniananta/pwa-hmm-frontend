@@ -9,7 +9,7 @@ export default function TujuanBeasiswaSection() {
                     className="min-h-[235px] md:w-1/2 md:h-auto max-w-[720px] max-h-[550px] max-md:rounded-2xl md:rounded-3xl relative">
                     <Image
                         unoptimized={true}
-                        src="/images/informasi-beasiswa/toples-tujuan.png"
+                        src="/assets/images/informasi-beasiswa/toples-tujuan.png"
                         width={720}
                         height={550}
                         alt="background"

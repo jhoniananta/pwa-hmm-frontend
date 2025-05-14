@@ -1,5 +1,6 @@
-import type {Config} from "tailwindcss"
-import plugin from "tailwindcss/plugin";
+import type { Config } from 'tailwindcss';
+import plugin from 'tailwindcss/plugin';
+import { fontFamily } from 'tailwindcss/defaultTheme';
 
 const config = {
   darkMode: ['class'],
@@ -70,6 +71,10 @@ const config = {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      fontFamily: {
+        sans: ['var(--font-poppins)', ...fontFamily.sans], // ← override default
+        poltawski: ['var(--font-poltawski)', ...fontFamily.serif],
+      },
       fontSize: {
         '2xs': '0.625rem',
         '3xs': '0.5rem',
@@ -77,12 +82,12 @@ const config = {
       },
       keyframes: {
         'accordion-down': {
-          from: {height: '0'},
-          to: {height: 'var(--radix-accordion-content-height)'},
+          from: { height: '0' },
+          to: { height: 'var(--radix-accordion-content-height)' },
         },
         'accordion-up': {
-          from: {height: 'var(--radix-accordion-content-height)'},
-          to: {height: '0'},
+          from: { height: 'var(--radix-accordion-content-height)' },
+          to: { height: '0' },
         },
       },
       animation: {
@@ -91,30 +96,33 @@ const config = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate'), plugin(function ({addComponents, theme}) {
-    addComponents({
-      '.table-admin': {
-        '*': {
-          '*': {
-            '*': {
-              fontSize: theme('fontSize.xs'),
-            }
-          }
-        }
-      },
-      '@media (min-width: 780px)': {
+  plugins: [
+    require('tailwindcss-animate'),
+    plugin(function ({ addComponents, theme }) {
+      addComponents({
         '.table-admin': {
           '*': {
             '*': {
               '*': {
-                fontSize: theme('fontSize.sm'),
-              }
-            }
-          }
-        }
-      }
-    })
-  })],
+                fontSize: theme('fontSize.xs'),
+              },
+            },
+          },
+        },
+        '@media (min-width: 780px)': {
+          '.table-admin': {
+            '*': {
+              '*': {
+                '*': {
+                  fontSize: theme('fontSize.sm'),
+                },
+              },
+            },
+          },
+        },
+      });
+    }),
+  ],
 } satisfies Config;
 
-export default config
+export default config;

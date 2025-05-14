@@ -1,5 +1,5 @@
-import ProfileMenu from './profileMenu';
 import HeaderX from './header-';
+import ProfileMenu from './profileMenu';
 
 export default function HeaderNav() {
   return (
