@@ -579,10 +579,10 @@ const Assignment = ({
                                                     {card.name}
                                                 </motion.h2>
                                                 <p className='flex gap-2 items-center'>
-                          <span className='text-xs md:text-sm text-muted-foreground'>
-                            {`test`}
-                          </span>
-                                                    -
+                                                    {/*<span className='text-xs md:text-sm text-muted-foreground'>*/}
+                                                    {/*  {`test`}*/}
+                                                    {/*</span>*/}
+                                                    
                                                     <span
                                                         className='text-xs md:text-sm text-muted-foreground line-clamp-1'>
                             {card.course}
