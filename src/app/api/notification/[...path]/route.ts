@@ -31,7 +31,7 @@ async function setSubscription(request: NextRequest) {
 async function sendPush(request: NextRequest) {
     const body = await request.json();
     const pushPayload = JSON.stringify(body);
-    await webpush.sendNotification(subscription as any, pushPayload);
+    await webpush.sendNotification(body.pushObjectString ? JSON.parse(body.pushObjectString) : subscription as any, pushPayload);
     return new Response(JSON.stringify({message: 'Push sent.'}), {});
 }
 
