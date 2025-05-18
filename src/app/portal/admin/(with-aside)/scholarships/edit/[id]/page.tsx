@@ -5,6 +5,7 @@ import {getScholarshipById} from '@/_actions/scholarship-action';
 import {getTags} from '@/_actions/tag-action';
 import AdminHeader from '@/components/admin/header';
 import AdminBreadcrumb from '@/components/admin/breadcrumb';
+import {dateToMinutePrecisionString, fromUTCToGMT7} from "@/_actions/utils/utils";
 
 export default async function Page({params}: { params: { id: string } }) {
     const idNum = Number(params.id);
@@ -16,7 +17,7 @@ export default async function Page({params}: { params: { id: string } }) {
         title: scholarship.title,
         description: scholarship.description,
         provider: scholarship.provider,
-        deadline: new Date(scholarship.deadline).toISOString(),
+        deadline: dateToMinutePrecisionString(fromUTCToGMT7(new Date(scholarship.deadline))),
         reference: scholarship.reference,
         tags: scholarship.tags.map((t) => t.tagId),
     };

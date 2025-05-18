@@ -34,7 +34,6 @@ export default function EditScholarshipForm({
         register,
         handleSubmit,
         formState: {errors},
-        setValue,
     } = useForm<z.infer<typeof updateScholarshipSchema>>({
         resolver: zodResolver(updateScholarshipSchema),
         defaultValues,
@@ -144,7 +143,6 @@ export default function EditScholarshipForm({
                     <Label>Deadline</Label>
                     <Input
                         type='datetime-local'
-                        defaultValue={new Date().toISOString()}
                         {...register('deadline', {
                             setValueAs: (value) => (value ? new Date(value).toISOString() : undefined), // Handle empty value
                         })}
