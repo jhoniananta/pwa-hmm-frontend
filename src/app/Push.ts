@@ -23,6 +23,7 @@ export function checkPermissionStateAndAct(
             registerAndSubscribe(onSubscribe, deviceId);
             break;
         case 'default':
+            onSubscribe(null)
             break;
     }
 }

@@ -15,16 +15,20 @@ export const dynamic = 'force-dynamic';
 
 export default function Home() {
     const [unsupported, setUnsupported] = useState<boolean>(false);
-    const [subscription, setSubscription] = useState<PushSubscription | null>(null);
+    const [subscription, setSubscription] = useState<PushSubscription | null>("Value" as any);
     const [assignments, setAssignments] = useState<any>([]);
     const [calendar, setCalendar] = useState<any>(null);
     const [schedules, setSchedules] = useState<any>([]);
 
-    let deviceId: string | null = localStorage.getItem('deviceId')
-    if (!deviceId) {
-        deviceId = crypto.randomUUID()
-        localStorage.setItem('deviceId', deviceId)
-    }
+    let deviceId: string | null;
+
+    useEffect(() => {
+        deviceId = localStorage.getItem('deviceId')
+        if (!deviceId) {
+            deviceId = crypto.randomUUID()
+            localStorage.setItem('deviceId', deviceId)
+        }
+    })
 
     useEffect(() => {
         const isUnsupported = notificationUnsupported();
@@ -35,7 +39,7 @@ export default function Home() {
 
         const fetchData = async () => {
             const userId = await getUserId()
-            checkPermissionStateAndAct(setSubscription, deviceId);
+            checkPermissionStateAndAct(setSubscription, deviceId as string);
 
             const assignmentsResponse = await getUserAssignment();
             setAssignments(assignmentsResponse);
@@ -68,7 +72,7 @@ export default function Home() {
             {!subscription && <Button
                 className='bg-navy rounded-full font-semibold py-1.5 text-white hover:bg-navy/80 transition px-6 text-sm md:text-base'
                 disabled={unsupported}
-                onClick={() => registerAndSubscribe(setSubscription, deviceId)}
+                onClick={() => registerAndSubscribe(setSubscription, deviceId as string)}
             >
                 {unsupported
                     ? 'Notification Unsupported'
