@@ -8,7 +8,7 @@ import {getAllUserSchedules} from "@/_actions/schedule-action";
 import Assignments from "@/app/(with-aside)/dashboard/assignments";
 import {getUserAssignment} from "@/_actions/assignment-action";
 import {Button} from "@/components/ui/button";
-import {checkPermissionStateAndAct, notificationUnsupported, registerAndSubscribe, sendWebPush} from "@/app/Push";
+import {checkPermissionStateAndAct, notificationUnsupported, registerAndSubscribe} from "@/app/Push";
 import {getUserId} from "@/_actions/session-action";
 
 export const dynamic = 'force-dynamic';
@@ -76,12 +76,6 @@ export default function Home() {
                         ? 'Notification allowed'
                         : 'Allow notification'}
             </Button>}
-            <Button
-                className='bg-navy rounded-full font-semibold py-1.5 text-white hover:bg-navy/80 transition px-6 text-sm md:text-base'
-                onClick={() => sendWebPush('Submit the task on time!')}
-            >
-                Test Push Notification
-            </Button>
 
             <div className="flex flex-col md:flex-row gap-6">
                 <UpcomingSchedule schedules={schedules as any}/>
