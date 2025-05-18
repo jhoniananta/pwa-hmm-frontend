@@ -1,14 +1,14 @@
 import {env} from "@/env";
 import {NextRequest} from "next/server";
 import webpush from 'web-push';
+import {getUserId} from "@/_actions/session-action";
+import axios from "axios";
 
 webpush.setVapidDetails(
     'mailto:mail@example.com',
     env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
     env.NEXT_PUBLIC_VAPID_PRIVATE_KEY,
 );
-
-let subscription: PushSubscription;
 
 export async function POST(request: NextRequest) {
     const {pathname} = new URL(request.url);
@@ -23,15 +23,26 @@ export async function POST(request: NextRequest) {
 }
 
 async function setSubscription(request: NextRequest) {
-    const body: { subscription: PushSubscription } = await request.json();
-    subscription = body.subscription;
+    console.log(`request: ${request}`)
+
+    const body: { subscription: PushSubscription, deviceId: string } = await request.json();
+    const subscription = body.subscription;
+    const deviceId = body.deviceId;
+    const userId = await getUserId() ?? -1;
+
+    await axios.post(`${env.API_URL}/push-objects`, {
+        deviceId,
+        userId: userId,
+        pushObjectString: JSON.stringify(subscription)
+    });
+
     return new Response(JSON.stringify({message: 'Subscription set.'}), {});
 }
 
 async function sendPush(request: NextRequest) {
     const body = await request.json();
     const pushPayload = JSON.stringify(body);
-    await webpush.sendNotification(body.pushObjectString ? JSON.parse(body.pushObjectString) : subscription as any, pushPayload);
+    await webpush.sendNotification(body.pushObjectString ? JSON.parse(body.pushObjectString) : {} as any, pushPayload);
     return new Response(JSON.stringify({message: 'Push sent.'}), {});
 }
 

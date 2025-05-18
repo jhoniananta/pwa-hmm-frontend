@@ -9,9 +9,10 @@ import Assignments from "@/app/(with-aside)/dashboard/assignments";
 import {getUserAssignment} from "@/_actions/assignment-action";
 import {Button} from "@/components/ui/button";
 import {checkPermissionStateAndAct, notificationUnsupported, registerAndSubscribe, sendWebPush} from "@/app/Push";
+import {getUserId} from "@/_actions/session-action";
 
 export const dynamic = 'force-dynamic';
- 
+
 export default function Home() {
     const [unsupported, setUnsupported] = useState<boolean>(false);
     const [subscription, setSubscription] = useState<PushSubscription | null>(null);
@@ -19,19 +20,28 @@ export default function Home() {
     const [calendar, setCalendar] = useState<any>(null);
     const [schedules, setSchedules] = useState<any>([]);
 
+    let deviceId: string | null = localStorage.getItem('deviceId')
+    if (!deviceId) {
+        deviceId = crypto.randomUUID()
+        localStorage.setItem('deviceId', deviceId)
+    }
+
     useEffect(() => {
         const isUnsupported = notificationUnsupported();
         setUnsupported(isUnsupported);
         if (isUnsupported) {
             return;
         }
-        checkPermissionStateAndAct(setSubscription);
 
         const fetchData = async () => {
+            const userId = await getUserId()
+            checkPermissionStateAndAct(setSubscription, deviceId);
+
             const assignmentsResponse = await getUserAssignment();
             setAssignments(assignmentsResponse);
             const schedulesResponse = await getAllUserSchedules();
             setSchedules(schedulesResponse);
+
         };
         fetchData()
     }, []);
@@ -58,7 +68,7 @@ export default function Home() {
             {!subscription && <Button
                 className='bg-navy rounded-full font-semibold py-1.5 text-white hover:bg-navy/80 transition px-6 text-sm md:text-base'
                 disabled={unsupported}
-                onClick={() => registerAndSubscribe(setSubscription)}
+                onClick={() => registerAndSubscribe(setSubscription, deviceId)}
             >
                 {unsupported
                     ? 'Notification Unsupported'

@@ -13,21 +13,21 @@ export function notificationUnsupported(): boolean {
 }
 
 export function checkPermissionStateAndAct(
-    onSubscribe: (subs: PushSubscription | null) => void,
+    onSubscribe: (subs: PushSubscription | null) => void, deviceId: string,
 ): void {
     const state: NotificationPermission = Notification.permission;
     switch (state) {
         case 'denied':
             break;
         case 'granted':
-            registerAndSubscribe(onSubscribe);
+            registerAndSubscribe(onSubscribe, deviceId);
             break;
         case 'default':
             break;
     }
 }
 
-async function subscribe(onSubscribe: (subs: PushSubscription | null) => void): Promise<void> {
+async function subscribe(onSubscribe: (subs: PushSubscription | null) => void, deviceId: string): Promise<void> {
     navigator.serviceWorker.ready
         .then((registration: ServiceWorkerRegistration) => {
             return registration.pushManager.subscribe({
@@ -36,7 +36,7 @@ async function subscribe(onSubscribe: (subs: PushSubscription | null) => void): 
             });
         })
         .then((subscription: PushSubscription) => {
-            submitSubscription(subscription).then(_ => {
+            submitSubscription(subscription, deviceId).then(_ => {
                 onSubscribe(subscription);
             });
         })
@@ -45,24 +45,24 @@ async function subscribe(onSubscribe: (subs: PushSubscription | null) => void): 
         });
 }
 
-async function submitSubscription(subscription: PushSubscription): Promise<void> {
+async function submitSubscription(subscription: PushSubscription, deviceId: string): Promise<void> {
     const endpointUrl = '/api/notification/subscription';
     const res = await fetch(endpointUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({subscription}),
+        body: JSON.stringify({subscription, deviceId}),
     });
     const result = await res.json();
 }
 
 export async function registerAndSubscribe(
-    onSubscribe: (subs: PushSubscription | null) => void,
+    onSubscribe: (subs: PushSubscription | null) => void, deviceId: string
 ): Promise<void> {
     try {
         await navigator.serviceWorker.register(SERVICE_WORKER_FILE_PATH);
-        await subscribe(onSubscribe);
+        await subscribe(onSubscribe, deviceId);
     } catch (e) {
         console.error('Failed to register service-worker: ', e);
     }
