@@ -332,19 +332,12 @@ export const deleteUserSchema = z.object({
 
 // Add these with other schemas
 export const addScholarshipSchema = z.object({
+    image: z.string(),
     title: z.string().min(3, {message: 'Title must be at least 3 characters'}),
     description: z.string().optional(),
     provider: z.string().min(1, {message: 'Provider is required'}),
-    deadline: z.date({
-        required_error: 'Deadline is required',
-        invalid_type_error: 'Invalid date format',
-    }),
+    deadline: z.string().datetime({message: 'Invalid date format'}),
     reference: z.string().url({message: 'Must be a valid URL'}),
-    // funding: z.enum(['PARTIALLY_FUNDED', 'FULLY_FUNDED'] as const, {
-    //     message: 'Invalid funding type',
-    // }),
-    // scope: z.string().min(1, {message: 'Scope is required'}),
-    tags: z.array(z.number()).optional(),
 });
 
 export const beasiswaFormSchema = z.object({

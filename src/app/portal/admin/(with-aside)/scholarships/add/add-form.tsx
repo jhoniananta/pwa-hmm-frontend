@@ -17,7 +17,7 @@ import {createScholarship} from '@/_actions/scholarship-action';
 import {TagResponse} from '@/_actions/tag-action';
 import {useAction} from 'next-safe-action/hooks';
 import {z} from 'zod';
-import {MinusSquare, PlusSquare} from 'lucide-react';
+import {dateToMinutePrecisionString, fromUTCToGMT7} from "@/_actions/utils/utils";
 
 type AddFormProps = {
     tags: TagResponse[];
@@ -30,23 +30,19 @@ export default function AddForm({tags}: AddFormProps) {
         register,
         handleSubmit,
         formState: {errors},
-        setValue,
-        watch,
+        control,
     } = useForm<z.infer<typeof addScholarshipSchema>>({
         resolver: zodResolver(addScholarshipSchema),
         defaultValues: {
+            image: '',
             title: '',
             provider: '',
-            deadline: new Date(),
+            deadline: dateToMinutePrecisionString(fromUTCToGMT7(new Date())),
             reference: '',
-            // funding: undefined,
-            // scope: '',
             description: '',
-            tags: [],
         },
     });
-    console.log('Selected Tags:', watch('tags'));
-    // create scholarship
+
     const {execute: execCreate, isExecuting: creating} = useAction(
         createScholarship,
         {
@@ -56,7 +52,7 @@ export default function AddForm({tags}: AddFormProps) {
                     return;
                 }
                 toast.success('Scholarship created');
-                router.push('/portal/admin/scholarships');
+                router.push(`/portal/admin/scholarships/edit/${response?.data?.scholarshipId}`);
             },
             onError: ({error: {serverError, validationErrors, fetchError}}) => {
                 console.log(
@@ -73,55 +69,19 @@ export default function AddForm({tags}: AddFormProps) {
         }
     );
 
-    const selectedTags: TagResponse[] = (watch('tags') || []).map(
-        (tagId) => tags.find((tag) => tag.tagId === tagId) as TagResponse
-    );
-
-    // add tag
-    const addTag = (tag: TagResponse) => {
-        const isAlreadySelected = selectedTags.some(
-            (selectedTag) => selectedTag.tagId === tag.tagId
-        );
-        if (!isAlreadySelected) {
-            const updatedTags = [...selectedTags, tag];
-            setValue(
-                'tags',
-                updatedTags.map((tag) => tag.tagId)
-            );
-            toast.success(`Tag "${tag.title}" added`);
-        }
-    };
-
-    // delete tag
-    const removeTag = (tag: TagResponse) => {
-        const updatedTags = selectedTags.filter(
-            (selectedTag) => selectedTag.tagId !== tag.tagId
-        );
-        setValue(
-            'tags',
-            updatedTags.map((tag) => tag.tagId)
-        );
-        toast.success(`Tag "${tag.title}" removed`);
-    };
-
     const onSubmit = handleSubmit((data) => {
-        // Include the selected tags in the payload
+        data.image = `scholarships/${crypto.randomUUID()}`
+
         const payload = {
             ...data,
-            tags: selectedTags.map((tag) => ({
-                tagId: tag.tagId,
-                title: tag.title,
-            })),
         };
 
-        console.log('Payload being sent:', payload);
         execCreate(payload);
     });
 
     return (
         <Wrapper>
             <form onSubmit={onSubmit} className='space-y-4'>
-                {/* same fields as edit */}
                 <div>
                     <Label>Title</Label>
                     <Input {...register('title')} placeholder='Enter scholarship title'/>
@@ -136,8 +96,8 @@ export default function AddForm({tags}: AddFormProps) {
                     <Label>Deadline</Label>
                     <Input
                         type='datetime-local'
-                        defaultValue={new Date().toISOString().slice(0, 16)}
-                        {...register('deadline', {setValueAs: (v) => new Date(v)})}
+                        defaultValue={dateToMinutePrecisionString(fromUTCToGMT7(new Date()))}
+                        {...register('deadline', {setValueAs: (v) => new Date(v).toISOString()})}
                     />
                     {errors.deadline && <ErrorText>{errors.deadline.message}</ErrorText>}
                 </div>
@@ -162,49 +122,6 @@ export default function AddForm({tags}: AddFormProps) {
                     {errors.description && (
                         <ErrorText>{errors.description.message}</ErrorText>
                     )}
-                </div>
-
-                {/* tags picker */}
-                <div>
-                    <Label>Available Tags</Label>
-                    <div className='mt-2 space-y-2 border p-4 rounded-md'>
-                        {tags.length > 0 ? (
-                            tags.map((tag: TagResponse, index) => {
-                                const isSelected = selectedTags.some(
-                                    (selectedTag) => selectedTag.tagId === tag.tagId
-                                );
-                                return (
-                                    <div
-                                        key={`${tag.tagId}-${index}`} // Ensure uniqueness by appending the index
-                                        className='flex justify-between items-center'
-                                    >
-                                        <span>{tag.title}</span>
-                                        <Button
-                                            type='button'
-                                            variant='ghost'
-                                            size='sm'
-                                            onClick={() => {
-                                                isSelected ? removeTag(tag) : addTag(tag);
-                                            }}
-                                            aria-label={
-                                                isSelected ? `Remove ${tag.title}` : `Add ${tag.title}`
-                                            }
-                                        >
-                                            {isSelected ? (
-                                                <MinusSquare className='h-5 w-5 text-red-500'/>
-                                            ) : (
-                                                <PlusSquare className='h-5 w-5 text-green-500'/>
-                                            )}
-                                        </Button>
-                                    </div>
-                                );
-                            })
-                        ) : (
-                            <p className='text-sm text-muted-foreground'>
-                                No tags available.
-                            </p>
-                        )}
-                    </div>
                 </div>
 
                 <Button type='submit' className='bg-navy' disabled={creating}>
