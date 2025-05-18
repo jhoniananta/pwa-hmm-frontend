@@ -11,10 +11,12 @@ export type  NotificationResponse = {
     description?: string;
 }
 
-export const getNotifications = fetchAction<NotificationResponse[]>(
-    '/notifications',
-    'Failed to fetch notifications',
-    {tags: ['notifications'], cache: 'no-cache'}
-);
+export const getNotifications = async (param?: { limit?: number, lastEvaluatedId?: number }) => {
+    return (fetchAction<NotificationResponse[]>(
+        '/notifications',
+        'Failed to fetch notifications',
+        {queryParams: {limit: param?.limit, lastEvaluatedId: param?.lastEvaluatedId}}
+    )());
+}
 
 

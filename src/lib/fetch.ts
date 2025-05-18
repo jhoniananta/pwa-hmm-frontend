@@ -48,7 +48,10 @@ export function fetchAction<T>(
         if (queryParams) {
             fetchUrl += '?';
             for (const key in queryParams) {
-                fetchUrl += `${key}=${queryParams[key]}&`;
+                if (queryParams[key]) {
+                    fetchUrl += `${key}=${queryParams[key]}&`;
+
+                }
             }
             fetchUrl = fetchUrl.slice(0, -1);
         }
