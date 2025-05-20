@@ -3,6 +3,8 @@ import Link, {type LinkProps} from 'next/link';
 import Image from 'next/image';
 import {FileSpreadsheet, SquarePlay} from 'lucide-react';
 import {Separator} from '@/components/ui/separator';
+import {useState} from "react";
+import {getRandomValue} from "@/utils/utils";
 
 type CoursesItemProps = {
     id: string | number;
@@ -17,6 +19,13 @@ type CoursesItemProps = {
     isEnroll: boolean;
 } & LinkProps;
 
+const images = [
+    '/assets/images/mesin.png',
+    '/assets/images/pengukuran.png',
+    '/assets/images/pipe_system.png',
+    '/assets/images/printer.png',
+];
+
 export default function CoursesItem({
                                         id,
                                         title,
@@ -30,6 +39,8 @@ export default function CoursesItem({
                                         isWatch,
                                         isEnroll
                                     }: CoursesItemProps) {
+    const [imageUrl, setImageurl] = useState(image)
+
     const COLORS = ['bg-kuning', 'bg-hijau', 'bg-oren', 'bg-blue-500'];
 
     let query = '?'
@@ -50,11 +61,12 @@ export default function CoursesItem({
         >
             <Image
                 unoptimized={true}
-                src={image}
+                src={imageUrl}
                 alt='item'
                 width={300}
                 height={200}
                 className='object-cover h-3/5'
+                onError={() => setImageurl(getRandomValue(images) as string)}
             />
             <div
                 className='bg-white py-2 md:pt-4 px-5 md:px-7 relative overflow-hidden flex flex-col justify-between h-2/5'>
