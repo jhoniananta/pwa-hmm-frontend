@@ -4,6 +4,7 @@ import {FileSpreadsheet, SquarePlay} from 'lucide-react';
 import {Separator} from '@/components/ui/separator';
 import {getRandomValue} from "@/utils/utils";
 import {ImageWithFallback} from "@/components/ui/image-with-fallback";
+import {getPublicUrl} from "@/_actions/utils/utils";
 
 type CoursesItemProps = {
     id: string | number;
@@ -58,8 +59,8 @@ export default function CoursesItem({
             )}
         >
             <ImageWithFallback
-                src={image}
-                fallbackSrc={getRandomValue(images) as string}
+                src={getPublicUrl(image)}
+                fallbackSrc={getPublicUrl(getRandomValue(images) as string)}
                 alt='item'
                 width={300}
                 height={200}

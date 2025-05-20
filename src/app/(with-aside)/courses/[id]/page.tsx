@@ -265,7 +265,7 @@ export default async function CoursesPage({
                           h-[200px] md:h-[300px] lg:h-[400px]
                           mx-auto">
                             <Image unoptimized={true}
-                                   src={course.image || '/assets/images/mesin.png'}
+                                   src={course.image || getPublicUrl('/assets/images/mesin.png')}
                                    alt={course.title}
                                    fill
                                    className="object-cover"

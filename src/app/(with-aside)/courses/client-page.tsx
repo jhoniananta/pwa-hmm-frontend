@@ -27,12 +27,6 @@ const ClientPage = ({courses, categories, isAllCourse, isWatch, isEnroll}: Clien
         { id: number; title: string; checked: boolean }[]
     >(categories.map((category) => ({id: category.categoryId, title: category.title, checked: false})));
 
-    const images = [
-        '/assets/images/mesin.png',
-        '/assets/images/pengukuran.png',
-        '/assets/images/pipe_system.png',
-        '/assets/images/printer.png',
-    ];
 
     let filteredCourses = courses.filter((course) =>
         course.title.toLowerCase().includes(searchQuery.toLowerCase())

@@ -7,6 +7,7 @@ import NavLinks from './nav-links';
 import PathTitle from './path-title';
 import {verifySession} from '@/lib/session';
 import {getUser} from "@/lib/dal";
+import {getPublicUrl} from "@/_actions/utils/utils";
 
 type SidebarProps = HTMLAttributes<HTMLDivElement>;
 
@@ -24,7 +25,7 @@ async function Sidebar({className, children, ...props}: SidebarProps) {
             <div className='flex mb-6 items-center gap-3'>
                 <Image
                     unoptimized={true}
-                    src='/assets/images/logo.png'
+                    src={getPublicUrl('/assets/images/logo.png')}
                     width={40}
                     height={40}
                     alt='logo'

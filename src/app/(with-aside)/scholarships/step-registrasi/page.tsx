@@ -6,6 +6,7 @@ import {cn} from '@/lib/utils';
 import Image from 'next/image';
 import {Button} from '@/components/ui/button';
 import Link from 'next/link';
+import {getPublicUrl} from "@/_actions/utils/utils";
 
 export default function MultiStepPage() {
     const [activeStep, setActiveStep] = useState(1);
@@ -27,7 +28,7 @@ export default function MultiStepPage() {
             content:
                 'Pada tahap ini, mahasiswa akan diminta untuk melakukan pengisian data-data penting yang dibutuhkan dalam rangka seleksi dan penyaringan calon penerima beasiswa.',
             images: [
-                '/assets/images/informasi-beasiswa/bg-kart.png',
+                getPublicUrl('/assets/images/informasi-beasiswa/bg-kart.png'),
                 '/placeholder.svg?height=200&width=300',
             ],
         },
