@@ -16,15 +16,13 @@ export default function BeasiswaInternalBanner() {
             />
             <div className="flex relative flex-wrap gap-5 justify-between font-bold max-md:mr-1">
                 <div className="text-8xl leading-[70px] text-zinc-900 max-md:text-4xl max-md:leading-9">
-                    {/*<div*/}
-                    {/*    className="flex shrink-0 border-black border-solid border-[7px] max-sm:w-[60px] max-sm:h-[60px] h-[118px] rounded-[129px] w-[118px]"/>*/}
                     <div className="mt-8 flex flex-col items-start">
                         <h1 className="text-black text-[50px] lg:text-[96px] font-poltawski leading-tight">Beasiswa</h1>
                         <h1 className="text-black text-[50px] lg:text-[96px] font-poltawski leading-tight">HMM ITB</h1>
                     </div>
                 </div>
                 <div
-                    className="self-end grid grid-rows-3 gap-4 mt-11 max-sm:text-lg text-2xl text-center text-blue-950 max-md:mt-10">
+                    className="max-[1025px]:w-full xl:w-[240px] self-end grid grid-rows-3 gap-4 mt-11 max-sm:text-lg text-2xl text-center text-blue-950 max-md:mt-10">
                     <Button
                         variant={'outline'}
                         className="px-12 text-center whitespace-nowrap border-4 border-solid border-blue-950 rounded-[91px] max-md:px-5"
