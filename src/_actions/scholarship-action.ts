@@ -4,10 +4,9 @@ import {fetchAction} from '@/lib/fetch';
 import {actionClient} from '@/lib/action-client';
 import {
     addScholarshipSchema,
-    updateScholarshipSchema,
     deleteScholarshipSchema,
-    beasiswaFormSchema,
     responseItemsSchema,
+    updateScholarshipSchema,
 } from '@/lib/schema';
 import {flattenValidationErrors} from 'next-safe-action';
 import {verifySession} from '@/lib/session';
@@ -19,12 +18,13 @@ import {ResponseItem} from 'lms-types';
 
 export type ScholarshipResponse = {
     scholarshipId: number,
+    image: string,
     title: string,
     description: string,
     provider: string,
     deadline: Date,
     reference: string,
-    tags: {tagId: number, title: string}[],
+    tags: { tagId: number, title: string }[],
     categories: string[]
 }
 

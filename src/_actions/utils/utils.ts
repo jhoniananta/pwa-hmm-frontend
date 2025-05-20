@@ -14,8 +14,8 @@ export async function getS3SignedUrl(key: string): Promise<string> {
 }
 
 export function getPublicUrl(path: string): string {
-    console.log(`${process.env.PUBLIC_BUCKET_URL}/${path}`)
-    return `${process.env.PUBLIC_BUCKET_URL}/${path}`
+    console.log(`${process.env.NEXT_PUBLIC_BUCKET_URL}/${path}`)
+    return `${process.env.PUBLIC_BUCKET_URL ?? process.env.NEXT_PUBLIC_BUCKET_URL}/${path}`
 }
 
 export function fromGMT7ToUTC(date: Date): Date {
