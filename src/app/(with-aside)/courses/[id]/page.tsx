@@ -11,7 +11,6 @@ import PdfList from './pdfList';
 import LinkList from './linkList';
 import PdfViewer from '@/components/client/PdfViewer';
 import LinkViewer from '@/components/client/LinkViewer';
-import Image from 'next/image';
 import {getLessons, LessonResponse} from "@/_actions/lessons-action";
 import {getVideos, VideoResponse} from "@/_actions/videos-action";
 import {AttachmentResponse, getAttachments} from "@/_actions/attachments-action";
@@ -19,6 +18,7 @@ import EnrollmentModal from "@/app/(with-aside)/courses/[id]/enrollment-modal";
 import {getPublicUrl} from "@/_actions/utils/utils";
 import {EnrollmentResponse} from "@/_actions/enrollment-action";
 import {ClassResponse, getClasses} from "@/_actions/class-action";
+import Image from "next/image";
 
 
 export default async function CoursesPage({
@@ -48,7 +48,7 @@ export default async function CoursesPage({
                           mx-auto">
                             <Image
                                 unoptimized={true}
-                                src={getPublicUrl(course.image) || '/images/mesin.png'}
+                                src={getPublicUrl(course.image)}
                                 alt={course.title}
                                 fill
                                 className="object-cover"
@@ -264,12 +264,13 @@ export default async function CoursesPage({
                           w-full md:w-[600px] lg:w-[800px]
                           h-[200px] md:h-[300px] lg:h-[400px]
                           mx-auto">
-                            <Image unoptimized={true}
-                                   src={course.image || getPublicUrl('/assets/images/mesin.png')}
-                                   alt={course.title}
-                                   fill
-                                   className="object-cover"
-                                   sizes="(max-width: 768px) 100vw,
+                            <Image
+                                unoptimized={true}
+                                src={getPublicUrl(course.image)}
+                                alt={course.title}
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 768px) 100vw,
                        (max-width: 1024px) 600px,
                        800px"
                             />

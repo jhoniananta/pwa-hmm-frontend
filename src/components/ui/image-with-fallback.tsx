@@ -6,8 +6,10 @@ type ImageWithFallbackProps = {
     fallbackSrc: string;
     alt: string;
     width?: number;
+    fill?: boolean;
     height?: number;
     className?: string;
+    sizes?: string;
 };
 
 export const ImageWithFallback = ({
@@ -17,6 +19,8 @@ export const ImageWithFallback = ({
                                       width,
                                       height,
                                       className,
+                                      sizes,
+                                      fill,
                                   }: ImageWithFallbackProps) => {
     const [imageSrc, setImageSrc] = useState(src || fallbackSrc);
 
@@ -31,6 +35,8 @@ export const ImageWithFallback = ({
             src={imageSrc}
             unoptimized={true}
             alt={alt}
+            fill={fill}
+            sizes={sizes}
             width={width}
             height={height}
             className={className}
@@ -38,3 +44,4 @@ export const ImageWithFallback = ({
         />
     );
 };
+

@@ -59,7 +59,7 @@ export default function CoursesItem({
             )}
         >
             <ImageWithFallback
-                src={getPublicUrl(image)}
+                src={image}
                 fallbackSrc={getPublicUrl(getRandomValue(images) as string)}
                 alt='item'
                 width={300}
