@@ -20,8 +20,17 @@ import getVerboseStatus from "@/lib/getVerboseStatus";
 
 type getUserAssignmentsRT = $PersonalAssignmentAPI.GetAssignments.Response['data'];
 
-export const getUserAssignment = fetchAction<getUserAssignmentsRT>(
+export const getUserAssignments = fetchAction<getUserAssignmentsRT>(
     $PersonalAssignmentAPI.GetAssignments.endpoint,
+    'Failed to fetch assignments',
+    {
+        tags: ['assignments'],
+        name: 'getUserAssignment'
+    }
+);
+
+export const getUpcomingUserAssignments = fetchAction<getUserAssignmentsRT>(
+    $PersonalAssignmentAPI.GetAssignments.endpoint + "/upcoming",
     'Failed to fetch assignments',
     {
         tags: ['assignments'],

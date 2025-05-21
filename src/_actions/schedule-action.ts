@@ -129,4 +129,22 @@ export const getAllUserSchedules = async () => {
         console.error('Failed to fetch all schedules:', error);
         return [];
     }
-}; 
+};
+
+export const getUpcomingUserSchedules = async () => {
+    try {
+        const userSchedules = await fetchAction<UserScheduleResponse[]>(
+            '/user-schedules/upcoming',
+            'Failed to fetch user schedules',
+            {tags: ['user-schedules', `user-schedules`]}
+        )();
+
+        // return schedules.flat().sort((a: { date: string | number | Date; }, b: { date: string | number | Date; }) =>
+        //   new Date(a.date).getTime() - new Date(b.date).getTime()
+        // );
+        return userSchedules
+    } catch (error) {
+        console.error('Failed to fetch all schedules:', error);
+        return [];
+    }
+};

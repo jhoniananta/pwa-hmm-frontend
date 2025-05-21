@@ -4,9 +4,9 @@ import Calendar, {type EventMap} from './calendar-x';
 import UpcomingSchedule from './upcomingSched';
 import News from './news';
 import {useEffect, useState} from "react";
-import {getAllUserSchedules} from "@/_actions/schedule-action";
+import {getUpcomingUserSchedules} from "@/_actions/schedule-action";
 import Assignments from "@/app/(with-aside)/dashboard/assignments";
-import {getUserAssignment} from "@/_actions/assignment-action";
+import {getUpcomingUserAssignments} from "@/_actions/assignment-action";
 import {Button} from "@/components/ui/button";
 import {checkPermissionStateAndAct, notificationUnsupported, registerAndSubscribe} from "@/app/Push";
 import {getUserId} from "@/_actions/session-action";
@@ -41,9 +41,9 @@ export default function Home() {
             const userId = await getUserId()
             checkPermissionStateAndAct(setSubscription, deviceId as string);
 
-            const assignmentsResponse = await getUserAssignment();
+            const assignmentsResponse = await getUpcomingUserAssignments();
             setAssignments(assignmentsResponse);
-            const schedulesResponse = await getAllUserSchedules();
+            const schedulesResponse = await getUpcomingUserSchedules();
             setSchedules(schedulesResponse);
 
         };
