@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/select';
 import {useInterval} from '@/hooks/useInterval';
 import MotionFramer from '@/components/client/modal-framer';
-import {$PersonalAssignmentAPI, AssignmentType, CourseModel,} from 'lms-types';
+import {$PersonalAssignmentAPI, AssignmentType,} from 'lms-types';
 import MotionOverlay from '@/components/client/modal-overlay';
 import {Badge} from "@/components/ui/badge";
 import {useAction} from "next-safe-action/hooks";
@@ -37,7 +37,6 @@ const Assignment = ({
                         assignments,
                     }: {
     assignments: $PersonalAssignmentAPI.GetAssignments.Response['data'];
-    courses: CourseModel[];
 }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const debouncedSearch = useDebounce(searchQuery);
