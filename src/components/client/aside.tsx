@@ -6,14 +6,13 @@ import BurgerX from './burger-x';
 import NavLinks from './nav-links';
 import PathTitle from './path-title';
 import {verifySession} from '@/lib/session';
-import {getUser} from "@/lib/dal";
+import {getAdminStatus} from "@/lib/dal";
 import {getPublicUrl} from "@/_actions/utils/utils";
 
 type SidebarProps = HTMLAttributes<HTMLDivElement>;
 
 async function Sidebar({className, children, ...props}: SidebarProps) {
-    const user = await getUser()
-    const isAdmin = user?.role === 'ADMIN';
+    const isAdmin = await getAdminStatus()
     return (
         <aside
             className={cn(

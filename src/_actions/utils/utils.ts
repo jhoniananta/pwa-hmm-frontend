@@ -14,8 +14,6 @@ export async function getS3SignedUrl(key: string): Promise<string> {
 }
 
 export function getPublicUrl(path: string): string {
-
-
     console.log(`${process.env.NEXT_PUBLIC_BUCKET_URL}/${path}`)
     return `${process.env.PUBLIC_BUCKET_URL ?? process.env.NEXT_PUBLIC_BUCKET_URL}/${path[0] == '/' ? path.substring(1) : path}`
 }

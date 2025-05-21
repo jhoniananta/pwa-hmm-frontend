@@ -36,6 +36,35 @@ export const getUser = cache(async () => {
     }
 });
 
+export const getAdminStatus = cache(async () => {
+    const session = await verifySession();
+    if (!session.isAuth) return null;
+
+    try {
+        const {refresh_token, access_token, userId} = await verifySession();
+
+        const data = await fetch(env.API_URL + '/users/is-admin',
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Cookie: cookieGenerator(access_token, refresh_token),
+                },
+            }
+        );
+
+
+        if (!data.ok) {
+            throw new PWAError('Error fetching user data');
+        }
+
+        const response = await data.json();
+
+        return response.isAdmin
+    } catch (err) {
+        throw new PWAError('Error fetching user data');
+    }
+});
+
 export const getFullUser = cache(async () => {
     const {refresh_token, access_token, isAuth} = await verifySession();
     if (!isAuth) return null;

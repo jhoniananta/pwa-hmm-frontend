@@ -8,6 +8,7 @@ import Image from 'next/image';
 import {AnimatePresence, motion} from 'framer-motion';
 import MotionFramer from '@/components/client/modal-framer';
 import MotionOverlay from '@/components/client/modal-overlay';
+import {getPublicUrl} from "@/_actions/utils/utils";
 
 const Main = ({className, ...props}: {} & HTMLAttributes<HTMLDivElement>) => {
     const [active, setActive] = useState<(typeof data)[number] | boolean | null>(
