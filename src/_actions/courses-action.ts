@@ -57,6 +57,21 @@ export const getCourses = fetchAction<CourseResponse[]>(
     }
 );
 
+export type  UserManagedClassResponse = {
+    courseId: number;
+    classId: number;
+    courseTitle: string;
+    className: string;
+}
+
+export const getUserManagedClasses = fetchAction<UserManagedClassResponse[]>(
+    '/users/managed-classes',
+    'Failed to fetch classes',
+    {
+        name: 'getUserManagedClasses',
+        cache: 'no-cache',
+    }
+);
 
 export const getUserEnrollments = (courseId: number) =>
     fetchAction<EnrollmentResponse[]>(

@@ -5,20 +5,13 @@ import AssignmentTable from './table';
 import Search from '@/components/client/search';
 import {useState} from 'react';
 import useDebounce from '@/hooks/useDebounce';
-import {$CourseClassAssignmentAPI, CourseClassModel} from 'lms-types';
+import {UserManagedClassResponse} from "@/_actions/courses-action";
 
-type AssignmentData = ($CourseClassAssignmentAPI.GetAssignments.Response['data'][number] & {
-    class: CourseClassModel;
-} & {
-    course: string;
-    courseId: number;
-    classId: number;
-})[];
 
 export default function AssignmentSection({
                                               data
                                           }: {
-    data: AssignmentData
+    data: UserManagedClassResponse[]
 }) {
     const [searchQuery, setSearchQuery] = useState('');
     const debouncedSearch = useDebounce(searchQuery);

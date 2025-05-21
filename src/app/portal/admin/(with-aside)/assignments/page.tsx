@@ -1,43 +1,12 @@
 import AdminHeader from '@/components/admin/header';
-import {getAssignments} from '@/_actions/assignment-action';
-import {getCourses} from '@/_actions/courses-action';
+import {getUserManagedClasses} from '@/_actions/courses-action';
 import AdminBreadcrumb from '@/components/admin/breadcrumb';
-import {getClasses} from '@/_actions/class-action';
 import AssignmentSection from './assignment-section';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Assignments() {
-    const courses = await getCourses();
-    const classes = await Promise.all(
-        courses.map(async ({courseId, title}) => {
-            const classes_ = await getClasses(courseId);
-            return classes_.map((class_) => ({
-                courseId,
-                courseTitle: title,
-                class: class_,
-            }));
-        })
-    );
-
-    const assignments_ = await Promise.all(
-        classes.map(async (c_) => {
-            return await Promise.all(
-                c_.map(async (c) => {
-                    const as = await getAssignments(c.courseId, c.class.classId);
-                    return as.map((a) => ({
-                        ...a,
-                        course: c.courseTitle,
-                        courseId: c.courseId,
-                        classId: c.class.classId,
-                        class: c.class,
-                    }));
-                })
-            );
-        })
-    );
-
-    const assignments = assignments_.flat(2);
+    const userManagedClasses = await getUserManagedClasses();
 
     return (
         <>
@@ -45,7 +14,7 @@ export default async function Assignments() {
             <div className='flex justify-between items-center'>
                 <AdminBreadcrumb/>
             </div>
-            <AssignmentSection data={assignments}/>
+            <AssignmentSection data={userManagedClasses}/>
         </>
     );
 }

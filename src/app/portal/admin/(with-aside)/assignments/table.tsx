@@ -5,44 +5,18 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from '@/
 import {Popover, PopoverContent, PopoverTrigger,} from '@/components/ui/popover';
 import {Ellipsis} from 'lucide-react';
 import Pagination from '@/components/client/pagination';
-import {$CourseClassAssignmentAPI, CourseClassModel} from 'lms-types';
 import Wrapper from '@/app/portal/admin/wrapper';
-import {useAction} from 'next-safe-action/hooks';
-import {deleteAssignment} from '@/_actions/assignment-action';
-import {toast} from 'sonner';
 import Link from 'next/link';
+import {UserManagedClassResponse} from "@/_actions/courses-action";
 
 function AssignmentTable({
                              data,
                          }: {
-    data: ($CourseClassAssignmentAPI.GetAssignments.Response['data'][number] & {
-        class: CourseClassModel;
-    } & {
-        course: string;
-        courseId: number;
-        classId: number;
-    })[];
+    data: (UserManagedClassResponse)[];
 }) {
     const [page, setPage] = useState(1);
     const assignmentPerPage = 6;
     const totalPage = Math.ceil(data.length / assignmentPerPage);
-    const {execute: exeDA} = useAction(deleteAssignment, {
-        onSuccess: (response: any) => {
-            if (response?.data?.error) {
-                toast.error(response?.data?.error);
-                return;
-            }
-            toast.success('Assignment deleted');
-        },
-        onError: ({error: {serverError, validationErrors, fetchError}}) => {
-            toast.error(
-                serverError ||
-                fetchError ||
-                validationErrors?.toString() ||
-                'Failed to delete assignment'
-            );
-        },
-    });
 
     return (
         <Wrapper>
@@ -50,10 +24,7 @@ function AssignmentTable({
                 <TableHeader>
                     <TableRow>
                         <TableHead>Course</TableHead>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Due Date</TableHead>
-                        <TableHead>Submission</TableHead>
-                        <TableHead>Task Type</TableHead>
+                        <TableHead>Class</TableHead>
                         <TableHead>
                             <span className='sr-only'>Actions</span>
                         </TableHead>
@@ -63,14 +34,10 @@ function AssignmentTable({
                     {data.map(
                         (
                             {
-                                assignmentId,
-                                title,
-                                deadline,
-                                course,
-                                submission,
-                                taskType,
-                                classId,
                                 courseId,
+                                classId,
+                                courseTitle,
+                                className,
                             },
                             index
                         ) => {
@@ -81,14 +48,9 @@ function AssignmentTable({
                                 return null;
 
                             return (
-                                <TableRow key={assignmentId + title} className='even:bg-navy/5 odd:bg-transparent'>
-                                    <TableCell>{course}</TableCell>
-                                    <TableCell>{title}</TableCell>
-                                    <TableCell className='whitespace-nowrap text-nowrap'>
-                                        {new Date(deadline).toDateString()}
-                                    </TableCell>
-                                    <TableCell className='capitalize'>{submission}</TableCell>
-                                    <TableCell>{taskType}</TableCell>
+                                <TableRow key={`${courseId}-${classId}`} className='even:bg-navy/5 odd:bg-transparent'>
+                                    <TableCell>{courseTitle}</TableCell>
+                                    <TableCell>{className}</TableCell>
                                     <TableCell>
                                         <Popover>
                                             <PopoverTrigger>
@@ -101,23 +63,11 @@ function AssignmentTable({
                                                 <div className='flex flex-col text-sm *:text-left *:font-medium'>
                                                     <h3 className='font-bold text-sm p-2'>Action</h3>
                                                     <Link
-                                                        href={`assignments/edit/${courseId}/${classId}/${assignmentId}?title=${encodeURIComponent(title)}&deadline=${encodeURIComponent(new Date(deadline).toDateString())}&submission=${encodeURIComponent(submission)}&taskType=${encodeURIComponent(taskType)}&description=${encodeURIComponent(course)}`}
+                                                        href={`/portal/admin/courses//${courseId}/classes/${classId}/assignments`}
                                                         className='hover:bg-navy/40 p-2 rounded-md transition'
                                                     >
-                                                        Edit
+                                                        Manage
                                                     </Link>
-                                                    <button
-                                                        className='hover:bg-navy/40 p-2 rounded-md transition'
-                                                        onClick={() =>
-                                                            exeDA({
-                                                                courseId: Number(courseId),
-                                                                classId: Number(classId),
-                                                                assignmentId: Number(assignmentId),
-                                                            })
-                                                        }
-                                                    >
-                                                        Delete
-                                                    </button>
                                                 </div>
                                             </PopoverContent>
                                         </Popover>
