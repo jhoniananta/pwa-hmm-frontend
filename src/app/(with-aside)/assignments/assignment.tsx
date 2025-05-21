@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/select';
 import {useInterval} from '@/hooks/useInterval';
 import MotionFramer from '@/components/client/modal-framer';
-import {$PersonalAssignmentAPI, AssignmentType,} from 'lms-types';
+import {$PersonalAssignmentAPI,} from 'lms-types';
 import MotionOverlay from '@/components/client/modal-overlay';
 import {Badge} from "@/components/ui/badge";
 import {useAction} from "next-safe-action/hooks";
@@ -31,7 +31,6 @@ import {UUC2N} from "@/lib/utils";
 import Search from '@/components/client/search';
 import useDebounce from '@/hooks/useDebounce';
 import Pagination from '@/components/client/pagination';
-import {PWAError} from "@/lib/error";
 
 const Assignment = ({
                         assignments,
@@ -196,14 +195,10 @@ const Assignment = ({
     })
 
     function updateComp(assignment: (typeof data)[number], status: "NOT_STARTED" | "IN_PROGRESS" | "DONE") {
-        if (assignment.type === AssignmentType.PERSONAL_ASSIGNMENT) {
-            exeUPA({
-                assignmentId: Number(assignment.id),
-                completionStatus: status,
-            })
-        } else {
-            throw new PWAError('Assignment type is not personal assignment');
-        }
+        exeUPA({
+            assignmentId: Number(assignment.id),
+            completionStatus: status,
+        })
     }
 
     const sortedData = [...data].sort((a, b) => {
