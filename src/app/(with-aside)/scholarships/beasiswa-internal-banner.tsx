@@ -8,7 +8,7 @@ export default function BeasiswaInternalBanner() {
             className="flex relative flex-col max-sm:px-5 max-sm:py-6 px-14 py-16 min-w-full rounded-[20px] min-h-[552px] max-md:w-full max-md:origin-top shadow-lg">
             <Image
                 unoptimized={true}
-                src="/assets/images/bg-hmm-internal.png"
+                src="/assets/images/informasi-beasiswa/bg-kart.png"
                 alt="backgroud internal"
                 className="object-cover absolute inset-0 size-full rounded-[20px]"
                 width="1280"
@@ -17,8 +17,9 @@ export default function BeasiswaInternalBanner() {
             <div className="flex relative flex-wrap gap-5 justify-between font-bold max-md:mr-1">
                 <div className="text-8xl leading-[70px] text-zinc-900 max-md:text-4xl max-md:leading-9">
                     <div className="mt-8 flex flex-col items-start">
-                        <h1 className="text-black text-[50px] lg:text-[96px] font-poltawski leading-tight">Beasiswa</h1>
-                        <h1 className="text-black text-[50px] lg:text-[96px] font-poltawski leading-tight">HMM ITB</h1>
+                        <h1 className="text-black text-[50px] lg:text-[96px] font-poltawski leading-tight text-white">Beasiswa</h1>
+                        <h1 className="text-black text-[50px] lg:text-[96px] font-poltawski leading-tight text-white">HMM
+                            ITB</h1>
                     </div>
                 </div>
                 <div
@@ -45,7 +46,7 @@ export default function BeasiswaInternalBanner() {
                     </Button>
                 </div>
             </div>
-            <article className="relative mt-12 max-sm:text-md text-xl text-black">
+            <article className="relative mt-12 max-sm:text-md text-xl text-white">
                 <p>
                     Beasiswa HMM ITB merupakan program yang diselenggarakan oleh HMM ITB
                     dengan tujuan memberikan bantuan finansial kepada seluruh anggota HMM
