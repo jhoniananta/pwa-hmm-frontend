@@ -1,6 +1,5 @@
 'use client';
 
-import CustomLink from '@/components/admin/custom-link';
 import AssignmentTable from './table';
 import Search from '@/components/client/search';
 import {useState} from 'react';
@@ -31,7 +30,6 @@ export default function AssignmentSection({
                     setQuery={setSearchQuery}
                     className="w-full md:w-[300px]"
                 />
-                <CustomLink href={'assignments/add'} className='self-end md:self-auto'>Add Assignment</CustomLink>
             </div>
             {data.length === 0 ? (
                 <div className="text-center text-muted-foreground mt-8">
