@@ -461,8 +461,6 @@ export const updateScheduleSchema = z.object({
     title: z.string().min(1, {message: 'Title is required'}).optional(),
     description: z.string().optional(),
     location: z.string().optional(),
-    startDate: z.string().datetime({message: 'Invalid date time'}).optional(),
-    endDate: z.string().datetime({message: 'Invalid date time'}).optional(),
 });
 
 export const deleteScheduleSchema = z.object({

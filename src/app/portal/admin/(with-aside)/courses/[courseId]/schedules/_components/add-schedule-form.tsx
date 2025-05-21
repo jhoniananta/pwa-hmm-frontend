@@ -10,7 +10,7 @@ import {cn} from '@/lib/utils';
 import React, {useState} from 'react';
 import {createCourseSchedule} from "@/_actions/schedule-action";
 import validationErrorToString from "@/lib/validationErrorToString";
-import {dateToMinutePrecisionString, fromGMT7ToUTC, fromUTCToGMT7} from "@/_actions/utils/utils";
+import {dateToMinutePrecisionString, fromUTCToGMT7} from "@/_actions/utils/utils";
 
 interface AddScheduleFormProps {
     courseId: string;
@@ -46,6 +46,11 @@ export default function AddScheduleForm({courseId}: AddScheduleFormProps) {
             return;
         }
 
+        if (new Date(startDate).getTime() > new Date(endDate).getTime()) {
+            toast.error('Start date must be before end date!');
+            return;
+        }
+
         executeCreate({
             courseId: Number(courseId),
             title,
@@ -54,6 +59,7 @@ export default function AddScheduleForm({courseId}: AddScheduleFormProps) {
             startDate,
             endDate,
         });
+        router.push(`/portal/admin/courses/${courseId}/schedules`);
     };
 
     return (
@@ -105,7 +111,7 @@ export default function AddScheduleForm({courseId}: AddScheduleFormProps) {
                     type='datetime-local'
                     value={dateToMinutePrecisionString(fromUTCToGMT7(new Date(startDate)))}
                     onChange={(e) => {
-                        return setStartDate(fromGMT7ToUTC(new Date(e.target.value)).toISOString());
+                        return setStartDate((new Date(e.target.value)).toISOString());
                     }}
                     placeholder='Enter schedule start date'
                 />
@@ -120,7 +126,7 @@ export default function AddScheduleForm({courseId}: AddScheduleFormProps) {
                     type='datetime-local'
                     value={dateToMinutePrecisionString(fromUTCToGMT7(new Date(endDate)))}
                     onChange={(e) => {
-                        return setEndDate(fromGMT7ToUTC(new Date(e.target.value)).toISOString());
+                        return setEndDate((new Date(e.target.value)).toISOString());
                     }}
                     placeholder='Enter schedule end date'
                 />

@@ -10,7 +10,6 @@ import {Textarea} from '@/components/ui/textarea';
 import {cn} from '@/lib/utils';
 import React, {useState} from 'react';
 import validationErrorToString from "@/lib/validationErrorToString";
-import {dateToMinutePrecisionString, fromGMT7ToUTC, fromUTCToGMT7} from "@/_actions/utils/utils";
 
 interface EditScheduleFormProps {
     schedule: CourseScheduleResponse;
@@ -23,8 +22,6 @@ export default function EditScheduleForm({schedule, courseId, scheduleId}: EditS
     const [title, setTitle] = useState(schedule.title);
     const [description, setDescription] = useState(schedule.description ?? '');
     const [location, setLocation] = useState(schedule.location);
-    const [startDate, setStartDate] = useState(new Date(schedule.startDate).toISOString());
-    const [endDate, setEndDate] = useState(new Date(schedule.endDate).toISOString());
 
     const {execute: executeUpdate, status} = useAction(updateCourseSchedule, {
         onSuccess: (response: any) => {
@@ -50,8 +47,6 @@ export default function EditScheduleForm({schedule, courseId, scheduleId}: EditS
             title,
             description,
             location,
-            startDate,
-            endDate
         });
     };
 
@@ -92,36 +87,6 @@ export default function EditScheduleForm({schedule, courseId, scheduleId}: EditS
                     onChange={(e) => setLocation(e.target.value)}
                     placeholder='Enter schedule location'
                     rows={5}
-                />
-            </div>
-
-            <div className='space-y-2'>
-                <label htmlFor='deadline' className='text-sm font-medium'>
-                    Start Date
-                </label>
-                <Input
-                    id='deadline'
-                    type='datetime-local'
-                    value={dateToMinutePrecisionString(fromUTCToGMT7(new Date(startDate)))}
-                    onChange={(e) => {
-                        return setStartDate(fromGMT7ToUTC(new Date(e.target.value)).toISOString());
-                    }}
-                    placeholder='Enter schedule start date'
-                />
-            </div>
-
-            <div className='space-y-2'>
-                <label htmlFor='deadline' className='text-sm font-medium'>
-                    End Date
-                </label>
-                <Input
-                    id='deadline'
-                    type='datetime-local'
-                    value={dateToMinutePrecisionString(fromUTCToGMT7(new Date(endDate)))}
-                    onChange={(e) => {
-                        return setEndDate(fromGMT7ToUTC(new Date(e.target.value)).toISOString());
-                    }}
-                    placeholder='Enter schedule end date'
                 />
             </div>
 

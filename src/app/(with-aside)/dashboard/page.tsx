@@ -51,24 +51,6 @@ export default function Home() {
         fetchData()
     }, []);
 
-    //
-    // const events: EventMap[] = [
-    //     {
-    //         '2024-07-28': [
-    //             {title: 'Ngaso Bareng Dosen'},
-    //             {title: 'Kinematika dan Dinamika Permesinan'},
-    //             {title: 'Tugas Besar - MS2200 Termodinamika'},
-    //         ],
-    //     },
-    //     {
-    //         '2025-05-25': [
-    //             {title: 'Homework 4 - MS2101 Analisis Numerik'},
-    //             {title: 'Hearing Machining'},
-    //         ],
-    //     },
-    //     {'2024-07-31': [{title: 'Pre-Machining'}, {title: 'FRS'}]},
-    // ];
-
     const userCalendarToEvents = (userCalendarResponses: UserCalendarResponse[]): EventMap[] => {
         const year = new Date().getFullYear()
         const month = new Date().getMonth() + 1
@@ -88,7 +70,7 @@ export default function Home() {
             const title = modifiedUserCalendar.title
             if (tempObj.hasOwnProperty(fullDate)) {
                 // @ts-ignore
-                tempObj[fullDate].push([{title}])
+                tempObj[fullDate].push({title})
             } else {
                 // @ts-ignore
                 tempObj[fullDate] = [{title}]

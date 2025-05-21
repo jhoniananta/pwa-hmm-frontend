@@ -58,7 +58,7 @@ const UpcomingSchedule = ({
                         <UpSchedCard
                             key={schedule.scheduleId}
                             title={schedule.title}
-                            description={`${schedule.courseName}${schedule.description ? ` - ${schedule.description}` : ''}`}
+                            description={`${schedule.location} - ${schedule.description ?? ''}`}
                             time={new Date(schedule.startDate as unknown as string).toLocaleTimeString([], {
                                 hour: '2-digit',
                                 minute: '2-digit'
