@@ -17,6 +17,8 @@ type AssignmentsProp = {
 }
 
 export default function Assignments({assignments}: AssignmentsProp) {
+    console.log('assignments:', assignments)
+
     // const assignmentsData = await getUserAssignment();
     const assignmentsData = assignments;
     const today = new Date();

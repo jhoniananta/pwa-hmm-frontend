@@ -4,7 +4,7 @@ import Calendar, {type EventMap} from './calendar-x';
 import UpcomingSchedule from './upcomingSched';
 import News from './news';
 import {useEffect, useState} from "react";
-import {getUpcomingUserSchedules} from "@/_actions/schedule-action";
+import {getUpcomingUserSchedules, getUserCalendar, UserCalendarResponse} from "@/_actions/schedule-action";
 import Assignments from "@/app/(with-aside)/dashboard/assignments";
 import {getUpcomingUserAssignments} from "@/_actions/assignment-action";
 import {Button} from "@/components/ui/button";
@@ -13,11 +13,12 @@ import {getUserId} from "@/_actions/session-action";
 
 export const dynamic = 'force-dynamic';
 
+
 export default function Home() {
     const [unsupported, setUnsupported] = useState<boolean>(false);
     const [subscription, setSubscription] = useState<PushSubscription | null>("Value" as any);
     const [assignments, setAssignments] = useState<any>([]);
-    const [calendar, setCalendar] = useState<any>(null);
+    const [calendar, setCalendar] = useState<any>([]);
     const [schedules, setSchedules] = useState<any>([]);
 
     let deviceId: string | null;
@@ -40,32 +41,68 @@ export default function Home() {
         const fetchData = async () => {
             const userId = await getUserId()
             checkPermissionStateAndAct(setSubscription, deviceId as string);
-
-            const assignmentsResponse = await getUpcomingUserAssignments();
-            setAssignments(assignmentsResponse);
-            const schedulesResponse = await getUpcomingUserSchedules();
-            setSchedules(schedulesResponse);
-
+            const responses = await Promise.allSettled([getUpcomingUserAssignments(), getUpcomingUserSchedules(), getUserCalendar()]);
+            [setAssignments, setSchedules, setCalendar].map((set, idx) => {
+                if (responses[idx].status === 'fulfilled') {
+                    set(responses[idx].value)
+                }
+            })
         };
         fetchData()
     }, []);
 
-    const events: EventMap[] = [
-        {
-            '2024-07-28': [
-                {title: 'Ngaso Bareng Dosen'},
-                {title: 'Kinematika dan Dinamika Permesinan'},
-                {title: 'Tugas Besar - MS2200 Termodinamika'},
-            ],
-        },
-        {
-            '2025-05-25': [
-                {title: 'Homework 4 - MS2101 Analisis Numerik'},
-                {title: 'Hearing Machining'},
-            ],
-        },
-        {'2024-07-31': [{title: 'Pre-Machining'}, {title: 'FRS'}]},
-    ];
+    //
+    // const events: EventMap[] = [
+    //     {
+    //         '2024-07-28': [
+    //             {title: 'Ngaso Bareng Dosen'},
+    //             {title: 'Kinematika dan Dinamika Permesinan'},
+    //             {title: 'Tugas Besar - MS2200 Termodinamika'},
+    //         ],
+    //     },
+    //     {
+    //         '2025-05-25': [
+    //             {title: 'Homework 4 - MS2101 Analisis Numerik'},
+    //             {title: 'Hearing Machining'},
+    //         ],
+    //     },
+    //     {'2024-07-31': [{title: 'Pre-Machining'}, {title: 'FRS'}]},
+    // ];
+
+    const userCalendarToEvents = (userCalendarResponses: UserCalendarResponse[]): EventMap[] => {
+        const year = new Date().getFullYear()
+        const month = new Date().getMonth() + 1
+
+        const modifiedUserCalendarResponse: (UserCalendarResponse & {
+            fullDate: string
+        })[] = userCalendarResponses.map((userCalendar) => {
+            return {
+                ...userCalendar,
+                fullDate: `${year}-${month.toString().padStart(2, '0')}-${userCalendar.date.toString().padStart(2, '0')}`
+            }
+        })
+
+        let tempObj = {}
+        for (const modifiedUserCalendar of modifiedUserCalendarResponse) {
+            const fullDate = modifiedUserCalendar.fullDate
+            const title = modifiedUserCalendar.title
+            if (tempObj.hasOwnProperty(fullDate)) {
+                // @ts-ignore
+                tempObj[fullDate].push([{title}])
+            } else {
+                // @ts-ignore
+                tempObj[fullDate] = [{title}]
+            }
+        }
+
+        const events: EventMap[] = []
+        for (const key in tempObj) {
+            // @ts-ignore
+            events.push({[key]: tempObj[key]})
+        }
+
+        return events
+    }
 
     return (
         <div className="flex flex-col items-stretch flex-1 h-max gap-6 relative">
@@ -86,7 +123,7 @@ export default function Home() {
                 <Assignments assignments={assignments}/>
             </div>
             <div className="flex flex-col md:flex-row w-full gap-6 items-center">
-                <Calendar events={events}/>
+                <Calendar events={userCalendarToEvents(calendar)}/>
                 <News/>
             </div>
             <div className="relative bg-white w-full rounded-xl shadow-md py-2">
