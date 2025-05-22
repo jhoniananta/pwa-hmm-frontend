@@ -18,7 +18,7 @@ type AvatarUploadProps = {
     name: string;
 };
 
-export default async function AvatarUpload({currentAvatar, name}: AvatarUploadProps) {
+export default function AvatarUpload({currentAvatar, name}: AvatarUploadProps) {
 
     const [showModal, setShowModal] = useState(false);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
